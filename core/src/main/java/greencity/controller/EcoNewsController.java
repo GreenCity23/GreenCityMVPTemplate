@@ -104,7 +104,7 @@ public class EcoNewsController {
      * Method for uploading eco news images.
      *
      * @param images - array of eco news images
-     * @return array of images path
+     * @return array of an image path
      */
     @ApiOperation(value = "Upload array of images for eco news.")
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -182,7 +182,7 @@ public class EcoNewsController {
     }
 
     /**
-     * Method for getting eco news by authorised user.
+     * Method for getting eco news by authorized user.
      *
      * @return list of {@link EcoNewsDto} instances.
      * @author Vira Maksymets
@@ -194,6 +194,7 @@ public class EcoNewsController {
     })
     @GetMapping("/byUser")
     public ResponseEntity<List<EcoNewsDto>> getEcoNewsByUser(@ApiIgnore @CurrentUser UserVO user) {
+        if (user == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return ResponseEntity.status(HttpStatus.OK)
             .body(ecoNewsService.getAllPublishedNewsByUser(user));
     }
@@ -350,7 +351,7 @@ public class EcoNewsController {
     }
 
     /**
-     * Method to get amount of likes by eco news id.
+     * Method to get number of likes by eco news id.
      *
      * @return count of likes for eco news;
      */
