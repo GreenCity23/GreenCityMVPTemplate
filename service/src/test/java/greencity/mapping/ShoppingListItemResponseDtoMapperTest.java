@@ -33,8 +33,8 @@ class ShoppingListItemResponseDtoMapperTest {
         ShoppingListItem shoppingListItem = getShoppingListItem();
 
         ShoppingListItemResponseDto expected = new ShoppingListItemResponseDto()
-                .setId(1L)
-                .setTranslations(convertAllToDtos(getShoppingListItemTranslations()));
+            .setId(1L)
+            .setTranslations(convertAllToDtos(getShoppingListItemTranslations()));
 
         ShoppingListItemResponseDto actual = mapper.convert(shoppingListItem);
         assertEquals(expected, actual);
@@ -43,14 +43,14 @@ class ShoppingListItemResponseDtoMapperTest {
 
     public ShoppingListItemTranslationDTO convertToDto(ShoppingListItemTranslation translation) {
         return ShoppingListItemTranslationDTO.builder()
-                .id(translation.getId())
-                .content(translation.getContent())
-                .build();
+            .id(translation.getId())
+            .content(translation.getContent())
+            .build();
     }
 
     public List<ShoppingListItemTranslationDTO> convertAllToDtos(List<ShoppingListItemTranslation> translations) {
         return translations.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+            .map(this::convertToDto)
+            .collect(Collectors.toList());
     }
 }

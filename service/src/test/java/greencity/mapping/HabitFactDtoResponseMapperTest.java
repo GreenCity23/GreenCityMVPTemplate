@@ -25,30 +25,30 @@ class HabitFactDtoResponseMapperTest {
     @Test
     void testConvert() {
         HabitFactVO habitFactVO = HabitFactVO.builder()
+            .id(1L)
+            .translations(Collections.singletonList(ModelUtils.getFactTranslationVO()))
+            .habit(HabitVO.builder()
                 .id(1L)
-                .translations(Collections.singletonList(ModelUtils.getFactTranslationVO()))
-                .habit(HabitVO.builder()
-                        .id(1L)
-                        .image("Image")
-                        .complexity(0)
-                        .build())
-                .build();
+                .image("Image")
+                .complexity(0)
+                .build())
+            .build();
 
         HabitFactDtoResponse expected = HabitFactDtoResponse.builder()
-                .id(habitFactVO.getId())
-                .habit(habitFactVO.getHabit())
-                .translations(habitFactVO.getTranslations().stream().map(
-                                habitFactTranslationVO -> HabitFactTranslationDto.builder()
-                                        .id(habitFactTranslationVO.getId())
-                                        .content(habitFactTranslationVO.getContent())
-                                        .factOfDayStatus(habitFactTranslationVO.getFactOfDayStatus())
-                                        .language(LanguageDTO.builder()
-                                                .id(habitFactTranslationVO.getLanguage().getId())
-                                                .code(habitFactTranslationVO.getLanguage().getCode())
-                                                .build())
-                                        .build())
-                        .collect(Collectors.toList()))
-                .build();
+            .id(habitFactVO.getId())
+            .habit(habitFactVO.getHabit())
+            .translations(habitFactVO.getTranslations().stream().map(
+                habitFactTranslationVO -> HabitFactTranslationDto.builder()
+                    .id(habitFactTranslationVO.getId())
+                    .content(habitFactTranslationVO.getContent())
+                    .factOfDayStatus(habitFactTranslationVO.getFactOfDayStatus())
+                    .language(LanguageDTO.builder()
+                        .id(habitFactTranslationVO.getLanguage().getId())
+                        .code(habitFactTranslationVO.getLanguage().getCode())
+                        .build())
+                    .build())
+                .collect(Collectors.toList()))
+            .build();
 
         assertEquals(expected, habitFactDtoResponseMapper.convert(habitFactVO));
     }

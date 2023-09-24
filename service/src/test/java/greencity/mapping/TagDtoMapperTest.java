@@ -28,9 +28,9 @@ class TagDtoMapperTest {
         TagTranslation tagTranslation = getTagTranslations().get(1).setTag(new Tag().setId(1L));
 
         TagDto expected = TagDto.builder()
-                .id(1L)
-                .name("News")
-                .build();
+            .id(1L)
+            .name("News")
+            .build();
 
         TagDto actual = mapper.convert(tagTranslation);
 

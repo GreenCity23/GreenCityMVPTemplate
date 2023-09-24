@@ -18,8 +18,9 @@ class CustomHabitMapperTest {
 
     @Test
     @DisplayName("AddCustomHabitDtoRequest convert to Habit test")
-    public void testConvert(){
-        AddCustomHabitDtoRequest addCustomHabitDtoRequest = new AddCustomHabitDtoRequest().setImage("Image").setComplexity(2).setDefaultDuration(30);
+    public void testConvert() {
+        AddCustomHabitDtoRequest addCustomHabitDtoRequest =
+            new AddCustomHabitDtoRequest().setImage("Image").setComplexity(2).setDefaultDuration(30);
 
         Habit habit = customHabitMapper.convert(addCustomHabitDtoRequest);
 
