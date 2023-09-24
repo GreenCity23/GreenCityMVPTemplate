@@ -184,7 +184,7 @@ public class EcoNewsController {
     }
 
     /**
-     * Method for getting eco news by authorised user.
+     * Method for getting eco news by authorized user.
      *
      * @return list of {@link EcoNewsDto} instances.
      * @author Vira Maksymets
@@ -196,6 +196,7 @@ public class EcoNewsController {
     })
     @GetMapping("/byUser")
     public ResponseEntity<List<EcoNewsDto>> getEcoNewsByUser(@ApiIgnore @CurrentUser UserVO user) {
+        if (user == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return ResponseEntity.status(HttpStatus.OK)
             .body(ecoNewsService.getAllPublishedNewsByUser(user));
     }
