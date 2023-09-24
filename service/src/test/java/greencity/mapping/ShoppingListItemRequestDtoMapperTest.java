@@ -12,16 +12,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class ShoppingListItemRequestDtoMapperTest {
+class ShoppingListItemRequestDtoMapperTest {
     @InjectMocks
     private ShoppingListItemRequestDtoMapper shoppingListItemRequestDtoMapper;
 
     @Test
     void convertTest() {
         ShoppingListItemRequestDto shoppingListItemRequestDto = new ShoppingListItemRequestDto(1L);
-        UserShoppingListItem userShoppingListItem = shoppingListItemRequestDtoMapper.convert(shoppingListItemRequestDto);
+        UserShoppingListItem userShoppingListItem =
+            shoppingListItemRequestDtoMapper.convert(shoppingListItemRequestDto);
 
-        assertEquals(ShoppingListItem.builder().id(shoppingListItemRequestDto.getId()).build(), userShoppingListItem.getShoppingListItem());
+        assertEquals(ShoppingListItem.builder().id(shoppingListItemRequestDto.getId()).build(),
+            userShoppingListItem.getShoppingListItem());
         assertEquals(ShoppingListItemStatus.ACTIVE, userShoppingListItem.getStatus());
     }
 }

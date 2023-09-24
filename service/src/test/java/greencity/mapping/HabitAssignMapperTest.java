@@ -33,41 +33,40 @@ class HabitAssignMapperTest {
         habitAssign.setUserShoppingListItems(userShoppingListItems);
 
         HabitAssignDto habitAssignDto = HabitAssignDto.builder()
-                .id(habitAssign.getId())
-                .status(habitAssign.getStatus())
-                .habit(HabitDto.builder()
-                        .id(habitAssign.getHabit().getId())
-                        .complexity(habitAssign.getHabit().getComplexity())
-                        .defaultDuration(habitAssign.getHabit().getDefaultDuration())
-                        .build())
-                .createDateTime(habitAssign.getCreateDate())
-                .duration(habitAssign.getDuration())
-                .userId(habitAssign.getUser().getId())
-                .habitStreak(habitAssign.getHabitStreak())
-                .workingDays(habitAssign.getWorkingDays())
-                .lastEnrollmentDate(habitAssign.getLastEnrollmentDate())
-                .userShoppingListItems(userShoppingListItems
-                        .stream().map(userShoppingListItem ->
-                                UserShoppingListItemAdvanceDto.builder()
-                                        .id(userShoppingListItem.getId())
-                                        .shoppingListItemId(userShoppingListItem.getShoppingListItem().getId())
-                                        .status(userShoppingListItem.getStatus())
-                                        .dateCompleted(userShoppingListItem.getDateCompleted())
-                                        .build()
-                        ).collect(Collectors.toList()))
-                .habitStatusCalendarDtoList(habitAssign.getHabitStatusCalendars().stream().map(
-                                habitStatusCalendar -> HabitStatusCalendarDto.builder()
-                                        .id(habitStatusCalendar.getId())
-                                        .enrollDate(habitStatusCalendar.getEnrollDate())
-                                        .build())
-                        .collect(Collectors.toList()))
-                .build();
+            .id(habitAssign.getId())
+            .status(habitAssign.getStatus())
+            .habit(HabitDto.builder()
+                .id(habitAssign.getHabit().getId())
+                .complexity(habitAssign.getHabit().getComplexity())
+                .defaultDuration(habitAssign.getHabit().getDefaultDuration())
+                .build())
+            .createDateTime(habitAssign.getCreateDate())
+            .duration(habitAssign.getDuration())
+            .userId(habitAssign.getUser().getId())
+            .habitStreak(habitAssign.getHabitStreak())
+            .workingDays(habitAssign.getWorkingDays())
+            .lastEnrollmentDate(habitAssign.getLastEnrollmentDate())
+            .userShoppingListItems(userShoppingListItems
+                .stream().map(userShoppingListItem -> UserShoppingListItemAdvanceDto.builder()
+                    .id(userShoppingListItem.getId())
+                    .shoppingListItemId(userShoppingListItem.getShoppingListItem().getId())
+                    .status(userShoppingListItem.getStatus())
+                    .dateCompleted(userShoppingListItem.getDateCompleted())
+                    .build())
+                .collect(Collectors.toList()))
+            .habitStatusCalendarDtoList(habitAssign.getHabitStatusCalendars().stream().map(
+                habitStatusCalendar -> HabitStatusCalendarDto.builder()
+                    .id(habitStatusCalendar.getId())
+                    .enrollDate(habitStatusCalendar.getEnrollDate())
+                    .build())
+                .collect(Collectors.toList()))
+            .build();
         HabitAssign habitAssignConverted = mapper.convert(habitAssignDto);
 
         assertEquals(habitAssign.getUserShoppingListItems().get(0).getId(),
-                habitAssignConverted.getUserShoppingListItems().get(0).getId());
+            habitAssignConverted.getUserShoppingListItems().get(0).getId());
         assertEquals(habitAssign.getUserShoppingListItems().get(0).getStatus(),
-                habitAssignConverted.getUserShoppingListItems().get(0).getStatus());
+            habitAssignConverted.getUserShoppingListItems().get(0).getStatus());
         assertEquals(habitAssign.getHabit().getId(), habitAssignConverted.getHabit().getId());
         assertEquals(habitAssign.getHabit().getComplexity(), habitAssignConverted.getHabit().getComplexity());
         assertEquals(habitAssign.getHabitStreak(), habitAssignConverted.getHabitStreak());

@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class LanguageControllerTest {
+class LanguageControllerTest {
     private MockMvc mockMvc;
     @Mock
     private LanguageService languageService;
@@ -26,14 +26,14 @@ public class LanguageControllerTest {
     @BeforeEach
     void setup() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(languageController)
-                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-                .build();
+            .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+            .build();
     }
 
     @Test
-    public void getAllLanguageCodesTest() throws Exception {
+    void getAllLanguageCodesTest() throws Exception {
         mockMvc.perform(get("/language"))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
 
         verify(languageService).findAllLanguageCodes();
     }

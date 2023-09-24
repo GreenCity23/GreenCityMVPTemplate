@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class HabitFactControllerTest {
+class HabitFactControllerTest {
 
     private static final String factsLink = "/facts";
     private MockMvc mockMvc;
@@ -56,18 +56,18 @@ public class HabitFactControllerTest {
     public void setUp() {
 
         this.mockMvc = MockMvcBuilders
-                .standaloneSetup(habitFactController)
-                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver(),
-                        new UserArgumentResolver(userService, modelMapper))
-                .setControllerAdvice(new CustomExceptionHandler(errorAttributes, objectMapper))
-                .setValidator(mockValidator)
-                .build();
+            .standaloneSetup(habitFactController)
+            .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver(),
+                new UserArgumentResolver(userService, modelMapper))
+            .setControllerAdvice(new CustomExceptionHandler(errorAttributes, objectMapper))
+            .setValidator(mockValidator)
+            .build();
     }
 
     @Test
     void getRandomFactByHabitIdTest() throws Exception {
         mockMvc.perform(get(factsLink + "/random" + "/{id}", 1))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
 
         verify(habitFactService).getRandomHabitFactByHabitIdAndLanguage(1L, "en");
     }
@@ -75,7 +75,7 @@ public class HabitFactControllerTest {
     @Test
     void getHabitFactOfTheDayTest() throws Exception {
         mockMvc.perform(get(factsLink + "/dayFact/{languageId}", 1))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
 
         verify(habitFactService).getHabitFactOfTheDay(1L);
     }
@@ -87,7 +87,7 @@ public class HabitFactControllerTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
         mockMvc.perform(get(factsLink + "?page=1"))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
 
         verify(habitFactService).getAllHabitFacts(pageable, "en");
     }
@@ -96,38 +96,38 @@ public class HabitFactControllerTest {
     void saveHabitFactTest() throws Exception {
 
         String content = "{\n" +
-                "  \"habit\": {\n" +
-                "    \"id\": 1\n" +
-                "  },\n" +
-                "  \"translations\": [\n" +
-                "    {\n" +
-                "      \"content\": \"content content content\",\n" +
-                "      \"language\": {\n" +
-                "        \"code\": \"ua\",\n" +
-                "        \"id\": 1\n" +
-                "      }\n" +
-                "    },\n" +
-                "    {\n" +
-                "      \"content\": \"content content content\",\n" +
-                "      \"language\": {\n" +
-                "        \"code\": \"en\",\n" +
-                "        \"id\": 2\n" +
-                "      }\n" +
-                "    },\n" +
-                "    {\n" +
-                "      \"content\": \"content content content\",\n" +
-                "      \"language\": {\n" +
-                "        \"code\": \"ru\",\n" +
-                "        \"id\": 3\n" +
-                "      }\n" +
-                "    }\n" +
-                "  ]\n" +
-                "}";
+            "  \"habit\": {\n" +
+            "    \"id\": 1\n" +
+            "  },\n" +
+            "  \"translations\": [\n" +
+            "    {\n" +
+            "      \"content\": \"content content content\",\n" +
+            "      \"language\": {\n" +
+            "        \"code\": \"ua\",\n" +
+            "        \"id\": 1\n" +
+            "      }\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"content\": \"content content content\",\n" +
+            "      \"language\": {\n" +
+            "        \"code\": \"en\",\n" +
+            "        \"id\": 2\n" +
+            "      }\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"content\": \"content content content\",\n" +
+            "      \"language\": {\n" +
+            "        \"code\": \"ru\",\n" +
+            "        \"id\": 3\n" +
+            "      }\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
 
         mockMvc.perform(post(factsLink)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content))
-                .andExpect(status().isCreated());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(content))
+            .andExpect(status().isCreated());
 
         ObjectMapper mapper = new ObjectMapper();
         HabitFactPostDto dto = mapper.readValue(content, HabitFactPostDto.class);
@@ -138,25 +138,25 @@ public class HabitFactControllerTest {
     @Test
     void updateHabitFactTest() throws Exception {
         String content = "{\n" +
-                "  \"habit\": {\n" +
-                "    \"id\": 1\n" +
-                "  },\n" +
-                "  \"translations\": [\n" +
-                "    {\n" +
-                "      \"content\": \"Test Test Test\",\n" +
-                "      \"factOfDayStatus\": \"POTENTIAL\",\n" +
-                "      \"language\": {\n" +
-                "        \"code\": \"en\",\n" +
-                "        \"id\": 2\n" +
-                "      }\n" +
-                "    }\n" +
-                "  ]\n" +
-                "}";
+            "  \"habit\": {\n" +
+            "    \"id\": 1\n" +
+            "  },\n" +
+            "  \"translations\": [\n" +
+            "    {\n" +
+            "      \"content\": \"Test Test Test\",\n" +
+            "      \"factOfDayStatus\": \"POTENTIAL\",\n" +
+            "      \"language\": {\n" +
+            "        \"code\": \"en\",\n" +
+            "        \"id\": 2\n" +
+            "      }\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
 
         mockMvc.perform(put(factsLink + "/{id}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content))
-                .andExpect(status().isOk());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(content))
+            .andExpect(status().isOk());
 
         ObjectMapper mapper = new ObjectMapper();
         HabitFactUpdateDto dto = mapper.readValue(content, HabitFactUpdateDto.class);
@@ -166,7 +166,7 @@ public class HabitFactControllerTest {
     @Test
     void deleteHabitFactTest() throws Exception {
         mockMvc.perform(delete(factsLink + "/{id}", 1))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
 
         verify(habitFactService).delete(1L);
     }
@@ -177,7 +177,7 @@ public class HabitFactControllerTest {
         Mockito.when(habitFactService.delete(1L)).thenThrow(NotFoundException.class);
 
         mockMvc.perform(delete(factsLink + "/{id}", 1))
-                .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound());
 
         verify(habitFactService).delete(1L);
     }
