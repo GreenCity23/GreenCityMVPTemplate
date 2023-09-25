@@ -22,21 +22,21 @@ class HabitAssignDtoMapperTest {
     void convertTest() {
         HabitAssign habitAssign = getHabitAssign();
         HabitAssignDto expected = HabitAssignDto.builder()
-                .id(habitAssign.getId())
-                .status(habitAssign.getStatus())
-                .createDateTime(habitAssign.getCreateDate())
-                .userId(habitAssign.getUser().getId())
-                .duration(habitAssign.getDuration())
-                .habitStreak(habitAssign.getHabitStreak())
-                .workingDays(habitAssign.getWorkingDays())
-                .lastEnrollmentDate(habitAssign.getLastEnrollmentDate())
-                .habitStatusCalendarDtoList(habitAssign.getHabitStatusCalendars().stream().map(
-                                habitStatusCalendar -> HabitStatusCalendarDto.builder()
-                                        .id(habitStatusCalendar.getId())
-                                        .enrollDate(habitStatusCalendar.getEnrollDate())
-                                        .build())
-                        .collect(Collectors.toList()))
-                .build();
+            .id(habitAssign.getId())
+            .status(habitAssign.getStatus())
+            .createDateTime(habitAssign.getCreateDate())
+            .userId(habitAssign.getUser().getId())
+            .duration(habitAssign.getDuration())
+            .habitStreak(habitAssign.getHabitStreak())
+            .workingDays(habitAssign.getWorkingDays())
+            .lastEnrollmentDate(habitAssign.getLastEnrollmentDate())
+            .habitStatusCalendarDtoList(habitAssign.getHabitStatusCalendars().stream().map(
+                habitStatusCalendar -> HabitStatusCalendarDto.builder()
+                    .id(habitStatusCalendar.getId())
+                    .enrollDate(habitStatusCalendar.getEnrollDate())
+                    .build())
+                .collect(Collectors.toList()))
+            .build();
 
         assertEquals(expected, mapper.convert(habitAssign));
     }

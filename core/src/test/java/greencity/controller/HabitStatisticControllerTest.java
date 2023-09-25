@@ -61,9 +61,9 @@ class HabitStatisticControllerTest {
     @BeforeEach
     void setup() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(habitStatisticController)
-                .setCustomArgumentResolvers(new UserArgumentResolver(userService, modelMapper))
-                .setControllerAdvice(new CustomExceptionHandler(errorAttributes, objectMapper))
-                .build();
+            .setCustomArgumentResolvers(new UserArgumentResolver(userService, modelMapper))
+            .setControllerAdvice(new CustomExceptionHandler(errorAttributes, objectMapper))
+            .build();
     }
 
     @Test
@@ -73,23 +73,23 @@ class HabitStatisticControllerTest {
         when(modelMapper.map(userVO, UserVO.class)).thenReturn(userVO);
 
         String content = "{\n" +
-                         "  \"amountOfItems\": 1,\n" +
-                         "  \"createDate\": \"2023-09-12T17:14:28.616Z\",\n" +
-                         "  \"habitRate\": \"DEFAULT\"\n" +
-                         "}";
+            "  \"amountOfItems\": 1,\n" +
+            "  \"createDate\": \"2023-09-12T17:14:28.616Z\",\n" +
+            "  \"habitRate\": \"DEFAULT\"\n" +
+            "}";
 
         mockMvc.perform(post(habitStatisticControllerLink + "/{habitId}", 1)
-                        .principal(principal)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content))
-                .andExpect(status().isCreated());
+            .principal(principal)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(content))
+            .andExpect(status().isCreated());
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         AddHabitStatisticDto addHabitStatisticDto = mapper.readValue(content, AddHabitStatisticDto.class);
 
         verify(habitStatisticService)
-                .saveByHabitIdAndUserId(1L, userVO.getId(), addHabitStatisticDto);
+            .saveByHabitIdAndUserId(1L, userVO.getId(), addHabitStatisticDto);
     }
 
     @Test
@@ -99,34 +99,34 @@ class HabitStatisticControllerTest {
         when(modelMapper.map(userVO, UserVO.class)).thenReturn(userVO);
 
         String content = "{\n" +
-                         "  \"amountOfItems\": 2,\n" +
-                         "  \"createDate\": \"2023-10-11T17:14:28.616Z\",\n" +
-                         "  \"habitRate\": \"DEFAULT\"\n" +
-                         "}";
+            "  \"amountOfItems\": 2,\n" +
+            "  \"createDate\": \"2023-10-11T17:14:28.616Z\",\n" +
+            "  \"habitRate\": \"DEFAULT\"\n" +
+            "}";
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         AddHabitStatisticDto addHabitStatisticDto = mapper.readValue(content, AddHabitStatisticDto.class);
 
         when(habitStatisticService.saveByHabitIdAndUserId(2L, userVO.getId(), addHabitStatisticDto))
-                .thenThrow(NotFoundException.class);
+            .thenThrow(NotFoundException.class);
 
         mockMvc.perform(post(habitStatisticControllerLink + "/{habitId}", 2)
-                        .principal(principal)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content))
-                .andExpect(status().isNotFound());
+            .principal(principal)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(content))
+            .andExpect(status().isNotFound());
 
         verify(habitStatisticService)
-                .saveByHabitIdAndUserId(2L, userVO.getId(), addHabitStatisticDto);
+            .saveByHabitIdAndUserId(2L, userVO.getId(), addHabitStatisticDto);
     }
 
     @Test
     void saveHabitStatisticBadRequestTest() throws Exception {
         mockMvc.perform(post(habitStatisticControllerLink + "/{habitId}", 1)
-                        .principal(principal)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
-                .andExpect(status().isBadRequest());
+            .principal(principal)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{}"))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -136,22 +136,22 @@ class HabitStatisticControllerTest {
         when(modelMapper.map(userVO, UserVO.class)).thenReturn(userVO);
 
         String content = "{\n" +
-                         "  \"amountOfItems\": 0,\n" +
-                         "  \"habitRate\": \"DEFAULT\"\n" +
-                         "}";
+            "  \"amountOfItems\": 0,\n" +
+            "  \"habitRate\": \"DEFAULT\"\n" +
+            "}";
 
         mockMvc.perform(put(habitStatisticControllerLink + "/{id}", 1)
-                        .principal(principal)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content))
-                .andExpect(status().isOk());
+            .principal(principal)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(content))
+            .andExpect(status().isOk());
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         UpdateHabitStatisticDto updateHabitStatisticDto = mapper.readValue(content, UpdateHabitStatisticDto.class);
 
         verify(habitStatisticService)
-                .update(1L, userVO.getId(), updateHabitStatisticDto);
+            .update(1L, userVO.getId(), updateHabitStatisticDto);
     }
 
     @Test
@@ -161,40 +161,40 @@ class HabitStatisticControllerTest {
         when(modelMapper.map(userVO, UserVO.class)).thenReturn(userVO);
 
         String content = "{\n" +
-                         "  \"amountOfItems\": 0,\n" +
-                         "  \"habitRate\": \"DEFAULT\"\n" +
-                         "}";
+            "  \"amountOfItems\": 0,\n" +
+            "  \"habitRate\": \"DEFAULT\"\n" +
+            "}";
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         UpdateHabitStatisticDto updateHabitStatisticDto = mapper.readValue(content, UpdateHabitStatisticDto.class);
 
         when(habitStatisticService.update(2L, userVO.getId(), updateHabitStatisticDto))
-                .thenThrow(NotFoundException.class);
+            .thenThrow(NotFoundException.class);
 
         mockMvc.perform(put(habitStatisticControllerLink + "/{id}", 2)
-                        .principal(principal)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content))
-                .andExpect(status().isNotFound());
+            .principal(principal)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(content))
+            .andExpect(status().isNotFound());
 
         verify(habitStatisticService)
-                .update(2L, userVO.getId(), updateHabitStatisticDto);
+            .update(2L, userVO.getId(), updateHabitStatisticDto);
     }
 
     @Test
     void updateStatisticsBadRequestTest() throws Exception {
         mockMvc.perform(put(habitStatisticControllerLink + "/{id}", 1)
-                        .principal(principal)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
-                .andExpect(status().isBadRequest());
+            .principal(principal)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{}"))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
     void findAllByHabitIdTest() throws Exception {
         mockMvc.perform(get(habitStatisticControllerLink + "/{habitId}", 1))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
 
         verify(habitStatisticService).findAllStatsByHabitId(1L);
     }
@@ -202,7 +202,7 @@ class HabitStatisticControllerTest {
     @Test
     void findAllStatsByHabitAssignIdTest() throws Exception {
         mockMvc.perform(get(habitStatisticControllerLink + "/assign/{habitAssignId}", 1))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
 
         verify(habitStatisticService).findAllStatsByHabitAssignId(1L);
     }
@@ -210,8 +210,8 @@ class HabitStatisticControllerTest {
     @Test
     void getTodayStatisticsForAllHabitItemsTest() throws Exception {
         mockMvc.perform(get(habitStatisticControllerLink + "/todayStatisticsForAllHabitItems")
-                        .param("locale", "en"))
-                .andExpect(status().isOk());
+            .param("locale", "en"))
+            .andExpect(status().isOk());
 
         verify(habitStatisticService).getTodayStatisticsForAllHabitItems("en");
     }
@@ -219,8 +219,8 @@ class HabitStatisticControllerTest {
     @Test
     void findAmountOfAcquiredHabitsTest() throws Exception {
         mockMvc.perform(get(habitStatisticControllerLink + "/acquired/count")
-                        .param("userId", String.valueOf(1)))
-                .andExpect(status().isOk());
+            .param("userId", String.valueOf(1)))
+            .andExpect(status().isOk());
 
         verify(habitStatisticService).getAmountOfAcquiredHabitsByUserId(1L);
     }
@@ -228,8 +228,8 @@ class HabitStatisticControllerTest {
     @Test
     void findAmountOfHabitsInProgressTest() throws Exception {
         mockMvc.perform(get(habitStatisticControllerLink + "/in-progress/count")
-                        .param("userId", String.valueOf(1)))
-                .andExpect(status().isOk());
+            .param("userId", String.valueOf(1)))
+            .andExpect(status().isOk());
 
         verify(habitStatisticService).getAmountOfHabitsInProgressByUserId(1L);
     }

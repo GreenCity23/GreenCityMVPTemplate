@@ -30,9 +30,8 @@ class UtilsMapperTest {
     @DisplayName("Mapping of list of objects test")
     void testMapAllToList() {
         List<Source> sourceList = Arrays.asList(
-                new Source(1, "Test1"),
-                new Source(2, "Test2")
-        );
+            new Source(1, "Test1"),
+            new Source(2, "Test2"));
 
         List<Target> targetList = UtilsMapper.mapAllToList(sourceList, Target.class);
 
@@ -48,19 +47,18 @@ class UtilsMapperTest {
     @DisplayName("Mapping of set of objects test")
     void testMapAllToSet() {
         Set<Source> sourceSet = Set.of(
-                new Source(1, "Test1"),
-                new Source(2, "Test2")
-        );
+            new Source(1, "Test1"),
+            new Source(2, "Test2"));
 
         Set<Target> targetSet = UtilsMapper.mapAllToSet(sourceSet, Target.class);
 
         assertEquals(sourceSet.size(), targetSet.size());
 
         for (Target target : targetSet) {
-            assertTrue(sourceSet.stream().anyMatch(source -> source.getId().equals(target.getId()) && source.getName().equals(target.getName())));
+            assertTrue(sourceSet.stream().anyMatch(
+                source -> source.getId().equals(target.getId()) && source.getName().equals(target.getName())));
         }
     }
-
 
     @Setter
     @Getter

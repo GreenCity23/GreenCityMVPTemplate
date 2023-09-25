@@ -32,16 +32,16 @@ public class SearchControllerTest {
     @BeforeEach
     void setup() {
         this.mockMvc = MockMvcBuilders
-                .standaloneSetup(searchController)
-                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-                .build();
+            .standaloneSetup(searchController)
+            .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+            .build();
     }
 
     @Test
     void searchTest() throws Exception {
         mockMvc.perform(get(searchLink)
-                        .param("searchQuery", "test"))
-                .andExpect(status().isOk());
+            .param("searchQuery", "test"))
+            .andExpect(status().isOk());
 
         verify(searchService).search(anyString(), anyString());
     }
@@ -49,8 +49,8 @@ public class SearchControllerTest {
     @Test
     void searchEcoNewsTest() throws Exception {
         mockMvc.perform(get(searchEcoNewsLink)
-                        .param("searchQuery", "test"))
-                .andExpect(status().isOk());
+            .param("searchQuery", "test"))
+            .andExpect(status().isOk());
 
         verify(searchService).searchAllNews(any(), anyString(), any());
     }

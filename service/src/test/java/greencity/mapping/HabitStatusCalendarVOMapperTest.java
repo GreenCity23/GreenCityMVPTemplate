@@ -22,10 +22,10 @@ class HabitStatusCalendarVOMapperTest {
     @Test
     void convertTest() {
         HabitStatusCalendar habitStatusCalendar = HabitStatusCalendar.builder()
-                .id(1L)
-                .enrollDate(LocalDate.of(2023, 9, 12))
-                .habitAssign(HabitAssign.builder().id(2L).build())
-                .build();
+            .id(1L)
+            .enrollDate(LocalDate.of(2023, 9, 12))
+            .habitAssign(HabitAssign.builder().id(2L).build())
+            .build();
 
         HabitStatusCalendarVO habitStatusCalendarVO = mapper.convert(habitStatusCalendar);
 

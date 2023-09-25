@@ -19,9 +19,11 @@ public class ShoppingListItemRequestDtoMapperTest {
     @Test
     void convertTest() {
         ShoppingListItemRequestDto shoppingListItemRequestDto = new ShoppingListItemRequestDto(1L);
-        UserShoppingListItem userShoppingListItem = shoppingListItemRequestDtoMapper.convert(shoppingListItemRequestDto);
+        UserShoppingListItem userShoppingListItem =
+            shoppingListItemRequestDtoMapper.convert(shoppingListItemRequestDto);
 
-        assertEquals(ShoppingListItem.builder().id(shoppingListItemRequestDto.getId()).build(), userShoppingListItem.getShoppingListItem());
+        assertEquals(ShoppingListItem.builder().id(shoppingListItemRequestDto.getId()).build(),
+            userShoppingListItem.getShoppingListItem());
         assertEquals(ShoppingListItemStatus.ACTIVE, userShoppingListItem.getStatus());
     }
 }

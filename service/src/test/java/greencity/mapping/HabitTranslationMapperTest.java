@@ -21,10 +21,10 @@ class HabitTranslationMapperTest {
     @Test
     void convertTest() {
         HabitTranslationDto habitTranslationDto = HabitTranslationDto.builder()
-                .name("Test Habit")
-                .description("This is a test habit.")
-                .habitItem("Test Item")
-                .build();
+            .name("Test Habit")
+            .description("This is a test habit.")
+            .habitItem("Test Item")
+            .build();
 
         HabitTranslation habitTranslation = mapper.convert(habitTranslationDto);
 
@@ -37,15 +37,15 @@ class HabitTranslationMapperTest {
     void mapAllToListTest() {
         List<HabitTranslationDto> dtoList = new ArrayList<>();
         dtoList.add(HabitTranslationDto.builder()
-                .name("Test Habit 1")
-                .description("This is a test habit 1.")
-                .habitItem("Test Item 1")
-                .build());
+            .name("Test Habit 1")
+            .description("This is a test habit 1.")
+            .habitItem("Test Item 1")
+            .build());
         dtoList.add(HabitTranslationDto.builder()
-                .name("Test Habit 2")
-                .description("This is a test habit 2.")
-                .habitItem("Test Item 2")
-                .build());
+            .name("Test Habit 2")
+            .description("This is a test habit 2.")
+            .habitItem("Test Item 2")
+            .build());
 
         List<HabitTranslation> translationList = mapper.mapAllToList(dtoList);
 

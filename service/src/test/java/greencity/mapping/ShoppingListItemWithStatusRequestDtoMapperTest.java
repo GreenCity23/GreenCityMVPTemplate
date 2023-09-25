@@ -25,13 +25,14 @@ class ShoppingListItemWithStatusRequestDtoMapperTest {
     @Test
     @DisplayName("Convert ShoppingListItemWithStatusRequestDto to UserShoppingListItem test")
     void convertTest() {
-        ShoppingListItemWithStatusRequestDto shoppingListItemWithStatusRequestDto = new ShoppingListItemWithStatusRequestDto();
+        ShoppingListItemWithStatusRequestDto shoppingListItemWithStatusRequestDto =
+            new ShoppingListItemWithStatusRequestDto();
         shoppingListItemWithStatusRequestDto.setStatus(ShoppingListItemStatus.INPROGRESS);
 
         UserShoppingListItem expected = UserShoppingListItem.builder()
-                .status(ShoppingListItemStatus.INPROGRESS)
-                .shoppingListItem(ShoppingListItem.builder().build())
-                .build();
+            .status(ShoppingListItemStatus.INPROGRESS)
+            .shoppingListItem(ShoppingListItem.builder().build())
+            .build();
 
         UserShoppingListItem actual = mapper.convert(shoppingListItemWithStatusRequestDto);
 
