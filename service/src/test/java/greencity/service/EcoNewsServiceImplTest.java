@@ -16,10 +16,7 @@ import greencity.entity.EcoNews;
 import greencity.entity.Tag;
 import greencity.entity.User;
 import greencity.enums.TagType;
-import greencity.exception.exceptions.BadRequestException;
-import greencity.exception.exceptions.NotFoundException;
-import greencity.exception.exceptions.NotSavedException;
-import greencity.exception.exceptions.UnsupportedSortException;
+import greencity.exception.exceptions.*;
 import greencity.filters.EcoNewsSpecification;
 import greencity.filters.SearchCriteria;
 import greencity.repository.EcoNewsRepo;
@@ -354,18 +351,18 @@ class EcoNewsServiceImplTest {
         assertEquals(dtoList, actual);
     }
 
-//    @Test
-//    void deleteThrowExceptionTest() {
-//        EcoNews ecoNews = ModelUtils.getEcoNews();
-//        EcoNewsVO ecoNewsVO = ModelUtils.getEcoNewsVO();
-//        UserVO author = ModelUtils.getUserVO();
-//        author.setId(2L);
-//        UserVO userVO = ModelUtils.getUserVO();
-//        when(ecoNewsRepo.findById(1L)).thenReturn(Optional.of(ecoNews));
-//        when(modelMapper.map(ecoNews, EcoNewsVO.class)).thenReturn(ecoNewsVO);
-//        ecoNewsVO.setAuthor(author);
-//        assertThrows(BadRequestException.class, () -> ecoNewsService.delete(1L, userVO));
-//    }
+    @Test
+    void deleteThrowExceptionTest() {
+        EcoNews ecoNews = ModelUtils.getEcoNews();
+        EcoNewsVO ecoNewsVO = ModelUtils.getEcoNewsVO();
+        UserVO author = ModelUtils.getUserVO();
+        author.setId(2L);
+        UserVO userVO = ModelUtils.getUserVO();
+        when(ecoNewsRepo.findById(1L)).thenReturn(Optional.of(ecoNews));
+        when(modelMapper.map(ecoNews, EcoNewsVO.class)).thenReturn(ecoNewsVO);
+        ecoNewsVO.setAuthor(author);
+        assertThrows(UserHasNoPermissionToAccessException.class, () -> ecoNewsService.delete(1L, userVO));
+    }
 
     @Test
     void deleteAllTest() {
