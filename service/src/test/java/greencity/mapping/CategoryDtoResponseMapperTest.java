@@ -13,7 +13,7 @@ class CategoryDtoResponseMapperTest {
     private CategoryDtoResponseMapper categoryDtoResponseMapper;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         categoryDtoResponseMapper = new CategoryDtoResponseMapper();
     }
 

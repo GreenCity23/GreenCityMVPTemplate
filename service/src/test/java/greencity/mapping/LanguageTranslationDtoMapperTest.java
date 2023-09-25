@@ -19,19 +19,17 @@ class LanguageTranslationDtoMapperTest {
 
     @Test
     void convertTest() {
-        FactOfDayStatus factOfDayStatus= FactOfDayStatus.CURRENT;
+        FactOfDayStatus factOfDayStatus = FactOfDayStatus.CURRENT;
         HabitFactTranslation habitFactTranslation = HabitFactTranslation.builder()
-                .content("This is a test translation.")
-                .factOfDayStatus(factOfDayStatus)
-                .language(Language.builder()
-                        .id(1L)
-                        .code("en")
-                        .build())
-                .build();
-
+            .content("This is a test translation.")
+            .factOfDayStatus(factOfDayStatus)
+            .language(Language.builder()
+                .id(1L)
+                .code("en")
+                .build())
+            .build();
 
         LanguageTranslationDTO translationDTO = mapper.convert(habitFactTranslation);
-
 
         assertEquals(habitFactTranslation.getContent(), translationDTO.getContent());
         assertEquals(habitFactTranslation.getLanguage().getId(), translationDTO.getLanguage().getId());

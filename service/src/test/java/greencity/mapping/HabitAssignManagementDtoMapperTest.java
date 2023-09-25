@@ -20,16 +20,16 @@ class HabitAssignManagementDtoMapperTest {
         HabitAssign habitAssign = getHabitAssign();
 
         HabitAssignManagementDto expected = HabitAssignManagementDto.builder()
-                .id(habitAssign.getId())
-                .status(habitAssign.getStatus())
-                .createDateTime(habitAssign.getCreateDate())
-                .userId(habitAssign.getUser().getId())
-                .habitId(habitAssign.getHabit().getId())
-                .duration(habitAssign.getDuration())
-                .habitStreak(habitAssign.getHabitStreak())
-                .workingDays(habitAssign.getWorkingDays())
-                .lastEnrollment(habitAssign.getLastEnrollmentDate())
-                .build();
+            .id(habitAssign.getId())
+            .status(habitAssign.getStatus())
+            .createDateTime(habitAssign.getCreateDate())
+            .userId(habitAssign.getUser().getId())
+            .habitId(habitAssign.getHabit().getId())
+            .duration(habitAssign.getDuration())
+            .habitStreak(habitAssign.getHabitStreak())
+            .workingDays(habitAssign.getWorkingDays())
+            .lastEnrollment(habitAssign.getLastEnrollmentDate())
+            .build();
 
         assertEquals(expected, mapper.convert(habitAssign));
     }

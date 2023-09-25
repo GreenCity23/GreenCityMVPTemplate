@@ -679,9 +679,9 @@ public class ModelUtils {
 
     public static HabitFactViewDto getHabitFactViewDto() {
         return HabitFactViewDto.builder()
-                .id("1L")
-                .habitId("1L")
-                .content("Test content")
-                .build();
+            .id("1L")
+            .habitId("1L")
+            .content("Test content")
+            .build();
     }
 }

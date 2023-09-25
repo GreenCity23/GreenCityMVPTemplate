@@ -403,7 +403,7 @@ class HabitAssignControllerTest {
 
         mockMvc.perform(put(habitAssignLink + "/{habitAssignId}/updateProgressNotificationHasDisplayed",
             habitAssignId)
-            .principal(principal))
+                .principal(principal))
             .andExpect(status().isOk());
 
         verify(habitAssignService).updateProgressNotificationHasDisplayed(habitAssignId, userVO.getId());

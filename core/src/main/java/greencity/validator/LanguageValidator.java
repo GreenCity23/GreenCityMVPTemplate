@@ -9,6 +9,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.List;
 import java.util.Locale;
+
 @Slf4j
 public class LanguageValidator implements ConstraintValidator<ValidLanguage, Locale> {
     private List<String> codes;

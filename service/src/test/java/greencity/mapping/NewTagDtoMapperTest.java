@@ -22,16 +22,16 @@ public class NewTagDtoMapperTest {
         NewTagDto newTagDto = newTagDtoMapper.convert(source);
 
         String expectedName = source.getTagTranslations().stream()
-                .filter(tagTranslation -> tagTranslation.getLanguage().getCode().equals("en"))
-                .map(TagTranslation::getName)
-                .findFirst()
-                .orElse("");
+            .filter(tagTranslation -> tagTranslation.getLanguage().getCode().equals("en"))
+            .map(TagTranslation::getName)
+            .findFirst()
+            .orElse("");
 
         String expectedNameUa = source.getTagTranslations().stream()
-                .filter(tagTranslation -> tagTranslation.getLanguage().getCode().equals("ua"))
-                .map(TagTranslation::getName)
-                .findFirst()
-                .orElse("");
+            .filter(tagTranslation -> tagTranslation.getLanguage().getCode().equals("ua"))
+            .map(TagTranslation::getName)
+            .findFirst()
+            .orElse("");
 
         assertEquals(expectedName, newTagDto.getName());
         assertEquals(expectedNameUa, newTagDto.getNameUa());
