@@ -25,7 +25,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/custom/shopping-list-items")
 public class CustomShoppingListItemController {
-
     private final CustomShoppingListItemService customShoppingListItemService;
 
     /**
@@ -43,7 +42,6 @@ public class CustomShoppingListItemController {
     @GetMapping("/{userId}/{habitId}")
     public ResponseEntity<List<CustomShoppingListItemResponseDto>> getAllAvailableCustomShoppingListItems(
         @PathVariable Long userId, @PathVariable Long habitId) {
-
         return ResponseEntity.status(HttpStatus.OK)
             .body(customShoppingListItemService.findAllAvailableCustomShoppingListItems(userId, habitId));
     }
