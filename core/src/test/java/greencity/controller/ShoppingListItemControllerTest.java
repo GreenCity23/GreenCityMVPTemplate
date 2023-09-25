@@ -56,8 +56,8 @@ public class ShoppingListItemControllerTest {
         when(modelMapper.map(userVO, UserVO.class)).thenReturn(userVO);
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(shoppingListItemController)
-                .setCustomArgumentResolvers(new UserArgumentResolver(userService, modelMapper))
-                .build();
+            .setCustomArgumentResolvers(new UserArgumentResolver(userService, modelMapper))
+            .build();
     }
 
     @Test
@@ -70,31 +70,30 @@ public class ShoppingListItemControllerTest {
         List<UserShoppingListItemResponseDto> responseDtoList = new ArrayList<>();
 
         when(shoppingListItemService.saveUserShoppingListItems(anyLong(), anyLong(), anyList(), anyString()))
-                .thenReturn(responseDtoList);
+            .thenReturn(responseDtoList);
 
         mockMvc.perform(post(shoppingListItemControllerLink)
-                        .contentType("application/json")
-                        .content(jsonString)
-                        .param("habitId", Long.toString(habitId))
-                        .principal(principal)
-                        .param("locale", Locale.US.toLanguageTag()))
-                .andExpect(status().isCreated());
+            .contentType("application/json")
+            .content(jsonString)
+            .param("habitId", Long.toString(habitId))
+            .principal(principal)
+            .param("locale", Locale.US.toLanguageTag()))
+            .andExpect(status().isCreated());
     }
 
     @Test
     public void getShoppingListItemsAssignedToUserTest() throws Exception {
         Long habitId = 1L;
         List<UserShoppingListItemResponseDto> shoppingListItems = Collections.singletonList(
-                new UserShoppingListItemResponseDto(1L, "Item 1", ShoppingListItemStatus.ACTIVE)
-        );
+            new UserShoppingListItemResponseDto(1L, "Item 1", ShoppingListItemStatus.ACTIVE));
 
         when(shoppingListItemService.getUserShoppingList(anyLong(), eq(habitId), anyString()))
-                .thenReturn(shoppingListItems);
+            .thenReturn(shoppingListItems);
 
         mockMvc.perform(get(shoppingListItemControllerLink + "/habits/{habitId}/shopping-list", habitId)
-                        .principal(principal)
-                        .param("locale", Locale.US.toLanguageTag()))
-                .andExpect(status().isOk());
+            .principal(principal)
+            .param("locale", Locale.US.toLanguageTag()))
+            .andExpect(status().isOk());
         verify(shoppingListItemService).getUserShoppingList(anyLong(), eq(habitId), anyString());
     }
 
@@ -104,13 +103,13 @@ public class ShoppingListItemControllerTest {
         Long shoppingListItemId = 2L;
 
         mockMvc.perform(delete(shoppingListItemControllerLink)
-                        .param("habitId", habitId.toString())
-                        .param("shoppingListItemId", shoppingListItemId.toString())
-                        .principal(principal))
-                .andExpect(status().isOk());
+            .param("habitId", habitId.toString())
+            .param("shoppingListItemId", shoppingListItemId.toString())
+            .principal(principal))
+            .andExpect(status().isOk());
 
         verify(shoppingListItemService).deleteUserShoppingListItemByItemIdAndUserIdAndHabitId(
-                shoppingListItemId, userVO.getId(), habitId);
+            shoppingListItemId, userVO.getId(), habitId);
     }
 
     @Test
@@ -119,10 +118,11 @@ public class ShoppingListItemControllerTest {
         locale = Locale.US;
 
         mockMvc.perform(patch(shoppingListItemControllerLink + "/{userShoppingListItemId}", userShoppingListItemId)
-                        .principal(principal))
-                .andExpect(status().isCreated());
+            .principal(principal))
+            .andExpect(status().isCreated());
 
-        verify(shoppingListItemService).updateUserShopingListItemStatus(userVO.getId(), userShoppingListItemId, locale.getLanguage());
+        verify(shoppingListItemService).updateUserShopingListItemStatus(userVO.getId(), userShoppingListItemId,
+            locale.getLanguage());
     }
 
     @Test
@@ -132,11 +132,12 @@ public class ShoppingListItemControllerTest {
         locale = Locale.US;
 
         mockMvc.perform(patch(shoppingListItemControllerLink + "/{userShoppingListItemId}/status/{status}",
-                        userShoppingListItemId, status)
-                        .principal(principal))
-                .andExpect(status().isOk());
+            userShoppingListItemId, status)
+                .principal(principal))
+            .andExpect(status().isOk());
 
-        verify(shoppingListItemService).updateUserShoppingListItemStatus(userVO.getId(), userShoppingListItemId, locale.getLanguage(), status);
+        verify(shoppingListItemService).updateUserShoppingListItemStatus(userVO.getId(), userShoppingListItemId,
+            locale.getLanguage(), status);
     }
 
     @Test
@@ -146,12 +147,12 @@ public class ShoppingListItemControllerTest {
         List<ShoppingListItemDto> inProgressItems = Collections.singletonList(new ShoppingListItemDto());
 
         when(shoppingListItemService.findInProgressByUserIdAndLanguageCode(userId, languageCode))
-                .thenReturn(inProgressItems);
+            .thenReturn(inProgressItems);
 
         mockMvc.perform(get(shoppingListItemControllerLink + "/{userId}/get-all-inprogress", userId)
-                        .param("lang", languageCode)
-                        .principal(principal))
-                .andExpect(status().isOk());
+            .param("lang", languageCode)
+            .principal(principal))
+            .andExpect(status().isOk());
 
         verify(shoppingListItemService).findInProgressByUserIdAndLanguageCode(userId, languageCode);
     }
@@ -164,9 +165,9 @@ public class ShoppingListItemControllerTest {
         when(shoppingListItemService.deleteUserShoppingListItems(commaSeparatedIds)).thenReturn(deletedIds);
 
         mockMvc.perform(delete(shoppingListItemControllerLink + "/user-shopping-list-items")
-                        .param("ids", commaSeparatedIds)
-                        .principal(principal))
-                .andExpect(status().isOk());
+            .param("ids", commaSeparatedIds)
+            .principal(principal))
+            .andExpect(status().isOk());
 
         verify(shoppingListItemService).deleteUserShoppingListItems(commaSeparatedIds);
     }

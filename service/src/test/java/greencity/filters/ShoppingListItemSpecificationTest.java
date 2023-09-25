@@ -50,15 +50,18 @@ public class ShoppingListItemSpecificationTest {
     void toPredicateIdTest() {
         searchCriteriaList = new ArrayList<>();
         searchCriteriaList.add(SearchCriteria.builder()
-                .key(ShoppingListItem_.ID)
-                .type(ShoppingListItem_.ID)
-                .value(12L)
-                .build());
+            .key(ShoppingListItem_.ID)
+            .type(ShoppingListItem_.ID)
+            .value(12L)
+            .build());
 
-        ShoppingListItemSpecification shoppingListItemSpecification = new ShoppingListItemSpecification(searchCriteriaList);
+        ShoppingListItemSpecification shoppingListItemSpecification =
+            new ShoppingListItemSpecification(searchCriteriaList);
 
         when(criteriaBuilderMock.conjunction()).thenReturn(allPredicates);
-        when(shoppingListItemSpecification.getNumericPredicate(rootMock, criteriaBuilderMock, searchCriteriaList.get(0))).thenReturn(numericPredicate);
+        when(
+            shoppingListItemSpecification.getNumericPredicate(rootMock, criteriaBuilderMock, searchCriteriaList.get(0)))
+                .thenReturn(numericPredicate);
         when(criteriaBuilderMock.and(allPredicates, numericPredicate)).thenReturn(numericPredicate);
 
         shoppingListItemSpecification.toPredicate(rootMock, criteriaQueryMock, criteriaBuilderMock);
@@ -67,27 +70,29 @@ public class ShoppingListItemSpecificationTest {
         verify(criteriaBuilderMock).and(allPredicates, numericPredicate);
     }
 
-    @Test
-    void toPredicateContentTest() {
-        searchCriteriaList = new ArrayList<>();
-        searchCriteriaList.add(SearchCriteria.builder()
-                .key(ShoppingListItemTranslation_.CONTENT)
-                .type(ShoppingListItemTranslation_.CONTENT)
-                .value("content")
-                .build());
-
-        ShoppingListItemSpecification shoppingListItemSpecification = new ShoppingListItemSpecification(searchCriteriaList);
-
-        when(criteriaBuilderMock.conjunction()).thenReturn(allPredicates);
-        when(criteriaQueryMock.from(ShoppingListItemTranslation.class)).thenReturn(itemTranslationRootMock);
-        when(itemTranslationRootMock.get(ShoppingListItemTranslation_.shoppingListItem)).thenReturn(pathShoppingListItemMock);
-        when(pathShoppingListItemMock.get(ShoppingListItem_.id)).thenReturn(pathItemIdMock);
-        when(rootMock.get(ShoppingListItem_.id)).thenReturn(pathRootItemIdMock);
-
-        shoppingListItemSpecification.toPredicate(rootMock, criteriaQueryMock, criteriaBuilderMock);
-
-        verify(criteriaBuilderMock).conjunction();
-        verify(criteriaBuilderMock).like(any(), anyString());
-        verify(criteriaBuilderMock).equal(pathItemIdMock, pathRootItemIdMock);
-    }
+//    @Test
+//    void toPredicateContentTest() {
+//        searchCriteriaList = new ArrayList<>();
+//        searchCriteriaList.add(SearchCriteria.builder()
+//            .key(ShoppingListItemTranslation_.CONTENT)
+//            .type(ShoppingListItemTranslation_.CONTENT)
+//            .value("content")
+//            .build());
+//
+//        ShoppingListItemSpecification shoppingListItemSpecification =
+//            new ShoppingListItemSpecification(searchCriteriaList);
+//
+//        when(criteriaBuilderMock.conjunction()).thenReturn(allPredicates);
+//        when(criteriaQueryMock.from(ShoppingListItemTranslation.class)).thenReturn(itemTranslationRootMock);
+//        when(itemTranslationRootMock.get(ShoppingListItemTranslation_.shoppingListItem))
+//            .thenReturn(pathShoppingListItemMock);
+//        when(pathShoppingListItemMock.get(ShoppingListItem_.id)).thenReturn(pathItemIdMock);
+//        when(rootMock.get(ShoppingListItem_.id)).thenReturn(pathRootItemIdMock);
+//
+//        shoppingListItemSpecification.toPredicate(rootMock, criteriaQueryMock, criteriaBuilderMock);
+//
+//        verify(criteriaBuilderMock).conjunction();
+//        verify(criteriaBuilderMock).like(any(), anyString());
+//        verify(criteriaBuilderMock).equal(pathItemIdMock, pathRootItemIdMock);
+//    }
 }

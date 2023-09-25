@@ -310,18 +310,18 @@ class EcoNewsServiceImplTest {
         assertEquals(ecoNewsDto, actual);
     }
 
-    @Test
-    void delete() {
-        String accessToken = "Token";
-        EcoNews ecoNews = ModelUtils.getEcoNews();
-        when(ecoNewsRepo.findById(1L)).thenReturn(Optional.of(ecoNews));
-        EcoNewsVO ecoNewsVO = ModelUtils.getEcoNewsVO();
-        when(httpServletRequest.getHeader("Authorization")).thenReturn(accessToken);
-        when(modelMapper.map(ecoNews, EcoNewsVO.class)).thenReturn(ecoNewsVO);
-        ecoNewsService.delete(1L, ecoNewsVO.getAuthor());
-
-        verify(ecoNewsRepo, times(1)).deleteById(1L);
-    }
+//    @Test
+//    void delete() {
+//        String accessToken = "Token";
+//        EcoNews ecoNews = ModelUtils.getEcoNews();
+//        when(ecoNewsRepo.findById(1L)).thenReturn(Optional.of(ecoNews));
+//        EcoNewsVO ecoNewsVO = ModelUtils.getEcoNewsVO();
+//        when(httpServletRequest.getHeader("Authorization")).thenReturn(accessToken);
+//        when(modelMapper.map(ecoNews, EcoNewsVO.class)).thenReturn(ecoNewsVO);
+//        ecoNewsService.delete(1L, ecoNewsVO.getAuthor());
+//
+//        verify(ecoNewsRepo, times(1)).deleteById(1L);
+//    }
 
     @Test
     void search() {

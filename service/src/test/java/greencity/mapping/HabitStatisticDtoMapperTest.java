@@ -19,20 +19,20 @@ class HabitStatisticDtoMapperTest {
     @Test
     void testConvert() {
         HabitStatistic habitStatistic = HabitStatistic.builder()
-                .id(1L)
-                .habitRate(ModelUtils.getHabitStatistic().getHabitRate())
-                .createDate(ModelUtils.zonedDateTime)
-                .amountOfItems(0)
-                .habitAssign(ModelUtils.getHabitAssign())
-                .build();
+            .id(1L)
+            .habitRate(ModelUtils.getHabitStatistic().getHabitRate())
+            .createDate(ModelUtils.zonedDateTime)
+            .amountOfItems(0)
+            .habitAssign(ModelUtils.getHabitAssign())
+            .build();
 
         HabitStatisticDto expected = HabitStatisticDto.builder()
-                .id(habitStatistic.getId())
-                .amountOfItems(habitStatistic.getAmountOfItems())
-                .createDate(habitStatistic.getCreateDate())
-                .habitRate(habitStatistic.getHabitRate())
-                .habitAssignId(habitStatistic.getHabitAssign().getId())
-                .build();
+            .id(habitStatistic.getId())
+            .amountOfItems(habitStatistic.getAmountOfItems())
+            .createDate(habitStatistic.getCreateDate())
+            .habitRate(habitStatistic.getHabitRate())
+            .habitAssignId(habitStatistic.getHabitAssign().getId())
+            .build();
 
         assertEquals(expected, habitStatisticDtoMapper.convert(habitStatistic));
     }

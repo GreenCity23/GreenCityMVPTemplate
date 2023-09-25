@@ -26,14 +26,14 @@ public class LanguageControllerTest {
     @BeforeEach
     void setup() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(languageController)
-                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-                .build();
+            .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+            .build();
     }
 
     @Test
     public void getAllLanguageCodesTest() throws Exception {
         mockMvc.perform(get("/language"))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
 
         verify(languageService).findAllLanguageCodes();
     }

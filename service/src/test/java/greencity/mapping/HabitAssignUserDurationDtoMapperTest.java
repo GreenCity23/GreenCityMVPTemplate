@@ -20,13 +20,13 @@ class HabitAssignUserDurationDtoMapperTest {
         HabitAssign habitAssign = ModelUtils.getHabitAssign();
 
         HabitAssignUserDurationDto expected = HabitAssignUserDurationDto.builder()
-                .habitAssignId(habitAssign.getId())
-                .userId(habitAssign.getUser().getId())
-                .habitId(habitAssign.getHabit().getId())
-                .status(habitAssign.getStatus())
-                .workingDays(habitAssign.getWorkingDays())
-                .duration(habitAssign.getDuration())
-                .build();
+            .habitAssignId(habitAssign.getId())
+            .userId(habitAssign.getUser().getId())
+            .habitId(habitAssign.getHabit().getId())
+            .status(habitAssign.getStatus())
+            .workingDays(habitAssign.getWorkingDays())
+            .duration(habitAssign.getDuration())
+            .build();
 
         assertEquals(expected, habitAssignUserDurationDtoMapper.convert(habitAssign));
     }
