@@ -64,16 +64,20 @@ public class EcoNewsController {
      */
     @ApiOperation(value = "Add new eco news.")
     @ResponseStatus(value = HttpStatus.CREATED)
-    @ApiResponses(
-        value = {@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = EcoNewsGenericDto.class),})
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = HttpStatuses.CREATED,
+            response = EcoNewsGenericDto.class),
+        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+    })
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<EcoNewsGenericDto> save(
         @ApiParam(value = SwaggerExampleModel.ADD_ECO_NEWS_REQUEST,
             required = true) @RequestPart @ValidEcoNewsDtoRequest AddEcoNewsDtoRequest addEcoNewsDtoRequest,
         @ApiParam(value = "Image of eco news") @ImageValidation @RequestPart(required = false) MultipartFile image,
         @ApiIgnore Principal principal) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(ecoNewsService.saveEcoNews(addEcoNewsDtoRequest, image, principal.getName()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            ecoNewsService.saveEcoNews(addEcoNewsDtoRequest, image, principal.getName()));
     }
 
     /**
@@ -113,11 +117,13 @@ public class EcoNewsController {
      * {@inheritDoc}
      */
     @ApiOperation(value = "Delete image")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = HttpStatuses.OK),
         @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
         @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
     @DeleteMapping("/deleteImage")
     public void deleteImage(@RequestParam String imagePath) {
         fileService.delete(imagePath);
