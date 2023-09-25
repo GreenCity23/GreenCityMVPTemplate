@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class SearchControllerTest {
+class SearchControllerTest {
     private static final String searchLink = "/search";
     private static final String searchEcoNewsLink = "/search/econews";
     private MockMvc mockMvc;

@@ -33,7 +33,7 @@ import java.security.Principal;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class ShoppingListItemControllerTest {
+class ShoppingListItemControllerTest {
     @InjectMocks
     private ShoppingListItemController shoppingListItemController;
     @Mock
@@ -61,7 +61,7 @@ public class ShoppingListItemControllerTest {
     }
 
     @Test
-    public void saveUserShoppingListItemsTest() throws Exception {
+    void saveUserShoppingListItemsTest() throws Exception {
         long habitId = 1L;
         List<ShoppingListItemRequestDto> requestDtoList = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -82,7 +82,7 @@ public class ShoppingListItemControllerTest {
     }
 
     @Test
-    public void getShoppingListItemsAssignedToUserTest() throws Exception {
+    void getShoppingListItemsAssignedToUserTest() throws Exception {
         Long habitId = 1L;
         List<UserShoppingListItemResponseDto> shoppingListItems = Collections.singletonList(
             new UserShoppingListItemResponseDto(1L, "Item 1", ShoppingListItemStatus.ACTIVE));
@@ -98,7 +98,7 @@ public class ShoppingListItemControllerTest {
     }
 
     @Test
-    public void deleteShoppingListItemTest() throws Exception {
+    void deleteShoppingListItemTest() throws Exception {
         Long habitId = 1L;
         Long shoppingListItemId = 2L;
 
@@ -113,7 +113,7 @@ public class ShoppingListItemControllerTest {
     }
 
     @Test
-    public void updateUserShoppingListItemStatusTest() throws Exception {
+    void updateUserShoppingListItemStatusTest() throws Exception {
         Long userShoppingListItemId = 1L;
         locale = Locale.US;
 
@@ -126,7 +126,7 @@ public class ShoppingListItemControllerTest {
     }
 
     @Test
-    public void updateUserShoppingListItemStatusWithStatusTest() throws Exception {
+    void updateUserShoppingListItemStatusWithStatusTest() throws Exception {
         Long userShoppingListItemId = 1L;
         String status = "DONE";
         locale = Locale.US;
@@ -141,7 +141,7 @@ public class ShoppingListItemControllerTest {
     }
 
     @Test
-    public void findInProgressByUserIdTest() throws Exception {
+    void findInProgressByUserIdTest() throws Exception {
         Long userId = 1L;
         String languageCode = "en";
         List<ShoppingListItemDto> inProgressItems = Collections.singletonList(new ShoppingListItemDto());
@@ -158,7 +158,7 @@ public class ShoppingListItemControllerTest {
     }
 
     @Test
-    public void bulkDeleteUserShoppingListItemsTest1() throws Exception {
+    void bulkDeleteUserShoppingListItemsTest1() throws Exception {
         String commaSeparatedIds = "1,2,3";
         List<Long> deletedIds = Arrays.asList(1L, 2L, 3L);
 

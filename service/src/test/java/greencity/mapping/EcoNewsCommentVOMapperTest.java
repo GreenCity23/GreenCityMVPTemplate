@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class EcoNewsCommentVOMapperTest {
+class EcoNewsCommentVOMapperTest {
 
     private final EcoNewsCommentVOMapper mapper = new EcoNewsCommentVOMapper();
 

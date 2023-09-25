@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class LanguageControllerTest {
+class LanguageControllerTest {
     private MockMvc mockMvc;
     @Mock
     private LanguageService languageService;
@@ -31,7 +31,7 @@ public class LanguageControllerTest {
     }
 
     @Test
-    public void getAllLanguageCodesTest() throws Exception {
+    void getAllLanguageCodesTest() throws Exception {
         mockMvc.perform(get("/language"))
             .andExpect(status().isOk());
 

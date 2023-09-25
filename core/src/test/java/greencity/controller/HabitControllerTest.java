@@ -82,7 +82,7 @@ class HabitControllerTest {
     }
 
     @Test
-    public void testGetHabitById() throws Exception {
+    void testGetHabitById() throws Exception {
         Long habitId = 1L;
         String languageCode = "en";
         HabitDto habitDto = new HabitDto().setId(1L).setImage("image");

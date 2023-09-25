@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MultipartBase64ImageMapperTest {
+class MultipartBase64ImageMapperTest {
     @InjectMocks
     private MultipartBase64ImageMapper multipartBase64ImageMapper;
 
