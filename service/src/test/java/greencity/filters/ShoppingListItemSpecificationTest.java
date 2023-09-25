@@ -70,7 +70,6 @@ public class ShoppingListItemSpecificationTest {
         verify(criteriaBuilderMock).and(allPredicates, numericPredicate);
     }
 
-
 //    @Test
 //    void toPredicateContentTest() {
 //        searchCriteriaList = new ArrayList<>();
