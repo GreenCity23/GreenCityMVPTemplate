@@ -22,11 +22,11 @@ class HabitTranslationDtoMapperTest {
     @Test
     void convertTest() {
         HabitTranslation habitTranslation = HabitTranslation.builder()
-                .name("Test Habit")
-                .description("This is a test habit.")
-                .habitItem("Test Item")
-                .language(getLanguage())
-                .build();
+            .name("Test Habit")
+            .description("This is a test habit.")
+            .habitItem("Test Item")
+            .language(getLanguage())
+            .build();
 
         HabitTranslationDto habitTranslationDto = mapper.convert(habitTranslation);
 
@@ -39,18 +39,18 @@ class HabitTranslationDtoMapperTest {
     @Test
     void mapAllToListTest() {
         HabitTranslation habitTranslation1 = HabitTranslation.builder()
-                .name("Test Habit 1")
-                .description("This is a test habit 1.")
-                .language(getLanguage())
-                .habitItem("Test Item 1")
+            .name("Test Habit 1")
+            .description("This is a test habit 1.")
+            .language(getLanguage())
+            .habitItem("Test Item 1")
 
-                .build();
+            .build();
         HabitTranslation habitTranslation2 = HabitTranslation.builder()
-                .name("Test Habit 2")
-                .description("This is a test habit 2.")
-                .habitItem("Test Item 2")
-                .language(getLanguage())
-                .build();
+            .name("Test Habit 2")
+            .description("This is a test habit 2.")
+            .habitItem("Test Item 2")
+            .language(getLanguage())
+            .build();
         List<HabitTranslation> habitTranslationList = Arrays.asList(habitTranslation1, habitTranslation2);
 
         List<HabitTranslationDto> habitTranslationDtoList = mapper.mapAllToList(habitTranslationList);
@@ -59,6 +59,7 @@ class HabitTranslationDtoMapperTest {
         assertEquals(habitTranslationList.get(0).getName(), habitTranslationDtoList.get(0).getName());
         assertEquals(habitTranslationList.get(1).getDescription(), habitTranslationDtoList.get(1).getDescription());
         assertEquals(habitTranslationList.get(0).getHabitItem(), habitTranslationDtoList.get(0).getHabitItem());
-        assertEquals(habitTranslationList.get(0).getLanguage().getCode(), habitTranslationDtoList.get(0).getLanguageCode());
+        assertEquals(habitTranslationList.get(0).getLanguage().getCode(),
+            habitTranslationDtoList.get(0).getLanguageCode());
     }
 }

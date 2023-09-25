@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class SearchControllerTest {
+class SearchControllerTest {
     private static final String searchLink = "/search";
     private static final String searchEcoNewsLink = "/search/econews";
     private MockMvc mockMvc;
@@ -32,16 +32,16 @@ public class SearchControllerTest {
     @BeforeEach
     void setup() {
         this.mockMvc = MockMvcBuilders
-                .standaloneSetup(searchController)
-                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-                .build();
+            .standaloneSetup(searchController)
+            .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+            .build();
     }
 
     @Test
     void searchTest() throws Exception {
         mockMvc.perform(get(searchLink)
-                        .param("searchQuery", "test"))
-                .andExpect(status().isOk());
+            .param("searchQuery", "test"))
+            .andExpect(status().isOk());
 
         verify(searchService).search(anyString(), anyString());
     }
@@ -49,8 +49,8 @@ public class SearchControllerTest {
     @Test
     void searchEcoNewsTest() throws Exception {
         mockMvc.perform(get(searchEcoNewsLink)
-                        .param("searchQuery", "test"))
-                .andExpect(status().isOk());
+            .param("searchQuery", "test"))
+            .andExpect(status().isOk());
 
         verify(searchService).searchAllNews(any(), anyString(), any());
     }

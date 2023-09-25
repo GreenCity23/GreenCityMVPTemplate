@@ -70,25 +70,24 @@ class RatingStatisticsSpecificationTest {
     @Test
     void toPredicateForUserIdAndUserEmailAndPointsChangedTest() {
         RatingStatisticsViewDto ratingStatisticsViewDto = new RatingStatisticsViewDto(
-                "", "", "23", "anyEmail",
-                "", "", "15", ""
-        );
+            "", "", "23", "anyEmail",
+            "", "", "15", "");
         criteriaList = new ArrayList<>();
         criteriaList.add(SearchCriteria.builder()
-                .key(RatingStatistics_.USER)
-                .type("userId")
-                .value(ratingStatisticsViewDto.getUserId())
-                .build());
+            .key(RatingStatistics_.USER)
+            .type("userId")
+            .value(ratingStatisticsViewDto.getUserId())
+            .build());
         criteriaList.add(SearchCriteria.builder()
-                .key(RatingStatistics_.USER)
-                .type("userMail")
-                .value(ratingStatisticsViewDto.getUserEmail())
-                .build());
+            .key(RatingStatistics_.USER)
+            .type("userMail")
+            .value(ratingStatisticsViewDto.getUserEmail())
+            .build());
         criteriaList.add(SearchCriteria.builder()
-                .key(RatingStatistics_.POINTS_CHANGED)
-                .type("pointsChanged")
-                .value(ratingStatisticsViewDto.getPointsChanged())
-                .build());
+            .key(RatingStatistics_.POINTS_CHANGED)
+            .type("pointsChanged")
+            .value(ratingStatisticsViewDto.getPointsChanged())
+            .build());
         RatingStatisticsSpecification ratingStatisticsSpecification = new RatingStatisticsSpecification(criteriaList);
 
         when(criteriaBuilderMock.conjunction()).thenReturn(predicateMock);
@@ -96,24 +95,23 @@ class RatingStatisticsSpecificationTest {
         when(ratingStatisticsRootMock.join(RatingStatistics_.user)).thenReturn(userJoinMock);
         when(userJoinMock.get(User_.ID)).thenReturn(pathUserIdMock);
         when(criteriaBuilderMock.equal(userJoinMock.get(User_.ID).as(String.class),
-                criteriaList.get(0).getValue())).thenReturn(andUserIdPredicate);
+            criteriaList.get(0).getValue())).thenReturn(andUserIdPredicate);
 
         when(criteriaBuilderMock.and(predicateMock, andUserIdPredicate)).thenReturn(andUserIdPredicate);
 
         when(userJoinMock.get(User_.EMAIL)).thenReturn(pathUserMailMock);
         when(criteriaBuilderMock.like(userJoinMock.get(User_.EMAIL).as(String.class),
-                "%" + criteriaList.get(1).getValue() + "%")).thenReturn(andUserMailPredicate);
+            "%" + criteriaList.get(1).getValue() + "%")).thenReturn(andUserMailPredicate);
 
         when(criteriaBuilderMock.and(andUserIdPredicate, andUserMailPredicate)).thenReturn(andUserMailPredicate);
 
         when(ratingStatisticsRootMock.get(RatingStatistics_.POINTS_CHANGED)).thenReturn(pathPointChangedMock);
         when(criteriaBuilderMock.equal(
-                ratingStatisticsRootMock.get(RatingStatistics_.POINTS_CHANGED),
-                criteriaList.get(2).getValue())
-        ).thenReturn(andPointsChangedPredicate);
+            ratingStatisticsRootMock.get(RatingStatistics_.POINTS_CHANGED),
+            criteriaList.get(2).getValue())).thenReturn(andPointsChangedPredicate);
 
         when(criteriaBuilderMock.and(andUserMailPredicate, andPointsChangedPredicate))
-                .thenReturn(andPointsChangedPredicate);
+            .thenReturn(andPointsChangedPredicate);
 
         ratingStatisticsSpecification.toPredicate(ratingStatisticsRootMock, criteriaQueryMock, criteriaBuilderMock);
 
@@ -129,45 +127,44 @@ class RatingStatisticsSpecificationTest {
     @Test
     void toPredicateForIdAndEventNameAndDateRangeAndRatingTest() {
         RatingStatisticsViewDto ratingStatisticsViewDto = new RatingStatisticsViewDto(
-                "12", "add_comment", "", "", LocalDate.now().toString(),
-                LocalDate.now().plusDays(3).toString(), "", "1"
-        );
+            "12", "add_comment", "", "", LocalDate.now().toString(),
+            LocalDate.now().plusDays(3).toString(), "", "1");
         criteriaList = new ArrayList<>();
         criteriaList.add(SearchCriteria.builder()
-                .key(RatingStatistics_.ID)
-                .type(RatingStatistics_.ID)
-                .value(ratingStatisticsViewDto.getId())
-                .build());
+            .key(RatingStatistics_.ID)
+            .type(RatingStatistics_.ID)
+            .value(ratingStatisticsViewDto.getId())
+            .build());
         criteriaList.add(SearchCriteria.builder()
-                .key(RatingStatistics_.RATING_CALCULATION_ENUM)
-                .type("enum")
-                .value(ratingStatisticsViewDto.getEventName())
-                .build());
+            .key(RatingStatistics_.RATING_CALCULATION_ENUM)
+            .type("enum")
+            .value(ratingStatisticsViewDto.getEventName())
+            .build());
         criteriaList.add(SearchCriteria.builder()
-                .key(RatingStatistics_.CREATE_DATE)
-                .type("dateRange")
-                .value(new String[]{ratingStatisticsViewDto.getStartDate(), ratingStatisticsViewDto.getEndDate()})
-                .build());
+            .key(RatingStatistics_.CREATE_DATE)
+            .type("dateRange")
+            .value(new String[] {ratingStatisticsViewDto.getStartDate(), ratingStatisticsViewDto.getEndDate()})
+            .build());
         criteriaList.add(SearchCriteria.builder()
-                .key(RatingStatistics_.RATING)
-                .type("currentRating")
-                .value(ratingStatisticsViewDto.getPointsChanged())
-                .build());
+            .key(RatingStatistics_.RATING)
+            .type("currentRating")
+            .value(ratingStatisticsViewDto.getPointsChanged())
+            .build());
         RatingStatisticsSpecification ratingStatisticsSpecification = new RatingStatisticsSpecification(criteriaList);
 
         when(criteriaBuilderMock.conjunction()).thenReturn(predicateMock);
 
         when(ratingStatisticsRootMock.get(RatingStatistics_.ID)).thenReturn(pathIdMock);
         when(criteriaBuilderMock.equal(ratingStatisticsRootMock.get(RatingStatistics_.ID),
-                criteriaList.get(0).getValue()))
+            criteriaList.get(0).getValue()))
                 .thenReturn(andIdPredicate);
 
         when(criteriaBuilderMock.and(predicateMock, andIdPredicate)).thenReturn(andIdPredicate);
 
         when(ratingStatisticsRootMock.get(RatingStatistics_.RATING_CALCULATION_ENUM))
-                .thenReturn(pathEventNameMock);
+            .thenReturn(pathEventNameMock);
         when(criteriaBuilderMock.equal(ratingStatisticsRootMock.get(RatingStatistics_.RATING_CALCULATION_ENUM),
-                RatingCalculationEnum.valueOf(criteriaList.get(1).getValue().toString().toUpperCase())))
+            RatingCalculationEnum.valueOf(criteriaList.get(1).getValue().toString().toUpperCase())))
                 .thenReturn(andEventNamePredicate);
         when(criteriaBuilderMock.or(null, andEventNamePredicate)).thenReturn(andEventNamePredicate);
 
@@ -177,13 +174,13 @@ class RatingStatisticsSpecificationTest {
         ZonedDateTime zdt1 = LocalDate.parse(ratingStatisticsViewDto.getStartDate()).atStartOfDay(ZoneOffset.UTC);
         ZonedDateTime zdt2 = LocalDate.parse(ratingStatisticsViewDto.getEndDate()).atStartOfDay(ZoneOffset.UTC);
         when(criteriaBuilderMock.between(ratingStatisticsRootMock.get(RatingStatistics_.CREATE_DATE), zdt1, zdt2))
-                .thenReturn(andCreateDatePredicate);
+            .thenReturn(andCreateDatePredicate);
 
         when(criteriaBuilderMock.and(andEventNamePredicate, andCreateDatePredicate)).thenReturn(andCreateDatePredicate);
 
         when(ratingStatisticsRootMock.get(RatingStatistics_.RATING)).thenReturn(pathRatingMock);
         when(criteriaBuilderMock.equal(ratingStatisticsRootMock.get(RatingStatistics_.RATING),
-                criteriaList.get(3).getValue()))
+            criteriaList.get(3).getValue()))
                 .thenReturn(andRatingPredicate);
 
         ratingStatisticsSpecification.toPredicate(ratingStatisticsRootMock, criteriaQueryMock, criteriaBuilderMock);
@@ -199,15 +196,14 @@ class RatingStatisticsSpecificationTest {
     @Test
     void toPredicateThrowNumberFormatExceptionWhenUserIdIsWrongTest() {
         RatingStatisticsViewDto ratingStatisticsViewDto = new RatingStatisticsViewDto(
-                "", "", "WRONG_FORMAT", "", "",
-                "", "", ""
-        );
+            "", "", "WRONG_FORMAT", "", "",
+            "", "", "");
         criteriaList = new ArrayList<>();
         criteriaList.add(SearchCriteria.builder()
-                .key(RatingStatistics_.USER)
-                .type("userId")
-                .value(ratingStatisticsViewDto.getUserId())
-                .build());
+            .key(RatingStatistics_.USER)
+            .type("userId")
+            .value(ratingStatisticsViewDto.getUserId())
+            .build());
         RatingStatisticsSpecification ratingStatisticsSpecification = new RatingStatisticsSpecification(criteriaList);
 
         when(criteriaBuilderMock.conjunction()).thenReturn(predicateMock);
@@ -216,7 +212,7 @@ class RatingStatisticsSpecificationTest {
         when(userJoinMock.get(User_.ID)).thenReturn(pathUserIdMock);
 
         when(criteriaBuilderMock.equal(userJoinMock.get(User_.ID).as(String.class),
-                criteriaList.get(0).getValue())).thenThrow(NumberFormatException.class);
+            criteriaList.get(0).getValue())).thenThrow(NumberFormatException.class);
         ratingStatisticsSpecification.toPredicate(ratingStatisticsRootMock, criteriaQueryMock, criteriaBuilderMock);
 
         assertNotNull(predicateMock);
@@ -226,9 +222,7 @@ class RatingStatisticsSpecificationTest {
     void toPredicateNullPointerExceptionTest() {
         RatingStatisticsSpecification ratingStatisticsSpecification = new RatingStatisticsSpecification();
         when(criteriaBuilderMock.conjunction()).thenReturn(predicateMock);
-        assertThrows(NullPointerException.class, () ->
-                ratingStatisticsSpecification
-                        .toPredicate(ratingStatisticsRootMock, criteriaQueryMock, criteriaBuilderMock));
+        assertThrows(NullPointerException.class, () -> ratingStatisticsSpecification
+            .toPredicate(ratingStatisticsRootMock, criteriaQueryMock, criteriaBuilderMock));
     }
 }
-

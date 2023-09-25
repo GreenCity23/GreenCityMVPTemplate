@@ -28,8 +28,8 @@ class TagMapperTest {
     @DisplayName("Convert TagVO to Tag test")
     void convert() {
         TagVO tagVO = getTagVO()
-                .setEcoNews(Collections.emptyList())
-                .setHabits(Collections.emptySet());
+            .setEcoNews(Collections.emptyList())
+            .setHabits(Collections.emptySet());
 
         Tag expected = getTag();
 

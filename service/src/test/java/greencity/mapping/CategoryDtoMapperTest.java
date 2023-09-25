@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 class CategoryDtoMapperTest {
     private CategoryDtoMapper categoryDtoMapper;
 
@@ -19,7 +18,7 @@ class CategoryDtoMapperTest {
 
     @Test
     @DisplayName("CategoryDto convert to Category test")
-    public void testConvert() {
+    void testConvert() {
         CategoryDto categoryDto = new CategoryDto();
         categoryDto.setName("Test Name");
 

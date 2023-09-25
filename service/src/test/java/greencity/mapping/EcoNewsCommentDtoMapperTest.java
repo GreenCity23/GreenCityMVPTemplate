@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 
-public class EcoNewsCommentDtoMapperTest {
+class EcoNewsCommentDtoMapperTest {
 
     private final EcoNewsCommentDtoMapper mapper = new EcoNewsCommentDtoMapper();
 
@@ -23,17 +23,17 @@ public class EcoNewsCommentDtoMapperTest {
 
         EcoNewsCommentDto dtoOriginalComment = mapper.convert(originalComment);
         EcoNewsCommentDto expected = EcoNewsCommentDto.builder()
-                .id(originalComment.getId())
-                .modifiedDate(originalComment.getModifiedDate())
-                .text(originalComment.getText())
-                .status(CommentStatus.ORIGINAL)
-                .likes(originalComment.getUsersLiked().size())
-                .currentUserLiked(originalComment.isCurrentUserLiked()).build();
+            .id(originalComment.getId())
+            .modifiedDate(originalComment.getModifiedDate())
+            .text(originalComment.getText())
+            .status(CommentStatus.ORIGINAL)
+            .likes(originalComment.getUsersLiked().size())
+            .currentUserLiked(originalComment.isCurrentUserLiked()).build();
         expected.setAuthor(EcoNewsCommentAuthorDto.builder()
-                .id(originalComment.getUser().getId())
-                .name(originalComment.getUser().getName())
-                .userProfilePicturePath(originalComment.getUser().getProfilePicturePath())
-                .build());
+            .id(originalComment.getUser().getId())
+            .name(originalComment.getUser().getName())
+            .userProfilePicturePath(originalComment.getUser().getProfilePicturePath())
+            .build());
 
         Assertions.assertEquals(dtoOriginalComment, expected);
     }
