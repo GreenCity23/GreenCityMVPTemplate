@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class EcoNewsVOMapperTest {
+class EcoNewsVOMapperTest {
     private final EcoNewsVOMapper mapper = new EcoNewsVOMapper();
 
     @Test

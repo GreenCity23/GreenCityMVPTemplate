@@ -1,7 +1,6 @@
 package greencity.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import greencity.controller.CustomShoppingListItemController;
 import greencity.dto.shoppinglistitem.BulkSaveCustomShoppingListItemDto;
 import greencity.dto.shoppinglistitem.CustomShoppingListItemResponseDto;
 import greencity.service.CustomShoppingListItemService;
@@ -13,16 +12,16 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class CustomShoppingListItemControllerTest {
+class CustomShoppingListItemControllerTest {
     private MockMvc mockMvc;
 
     @InjectMocks
@@ -38,7 +37,7 @@ public class CustomShoppingListItemControllerTest {
     }
 
     @Test
-    public void testGetAllAvailableCustomShoppingListItems() throws Exception {
+    void testGetAllAvailableCustomShoppingListItems() throws Exception {
         Long userId = 1L;
         Long habitId = 2L;
 
@@ -57,7 +56,7 @@ public class CustomShoppingListItemControllerTest {
     }
 
     @Test
-    public void testSaveUserCustomShoppingListItems() throws Exception {
+    void testSaveUserCustomShoppingListItems() throws Exception {
         Long userId = 1L;
         Long habitAssignId = 2L;
         BulkSaveCustomShoppingListItemDto dto = new BulkSaveCustomShoppingListItemDto();
@@ -83,7 +82,7 @@ public class CustomShoppingListItemControllerTest {
     }
 
     @Test
-    public void testUpdateItemStatus() throws Exception {
+    void testUpdateItemStatus() throws Exception {
         Long userId = 1L;
         Long itemId = 3L;
         String itemStatus = "DONE";
@@ -104,7 +103,7 @@ public class CustomShoppingListItemControllerTest {
     }
 
     @Test
-    public void testUpdateItemStatusToDone() throws Exception {
+    void testUpdateItemStatusToDone() throws Exception {
         Long userId = 1L;
         Long itemId = 3L;
 
@@ -116,7 +115,7 @@ public class CustomShoppingListItemControllerTest {
     }
 
     @Test
-    public void testBulkDeleteCustomShoppingListItems() throws Exception {
+    void testBulkDeleteCustomShoppingListItems() throws Exception {
         Long userId = 1L;
         String ids = "1,2,3";
 
@@ -134,7 +133,7 @@ public class CustomShoppingListItemControllerTest {
     }
 
     @Test
-    public void testGetAllCustomShoppingItemsByStatus() throws Exception {
+    void testGetAllCustomShoppingItemsByStatus() throws Exception {
         Long userId = 1L;
         String status = "ACTIVE";
 

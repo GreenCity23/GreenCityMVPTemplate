@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class HabitFactControllerTest {
+class HabitFactControllerTest {
 
     private static final String factsLink = "/facts";
     private MockMvc mockMvc;

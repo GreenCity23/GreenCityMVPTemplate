@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 
-public class EcoNewsCommentDtoMapperTest {
+class EcoNewsCommentDtoMapperTest {
 
     private final EcoNewsCommentDtoMapper mapper = new EcoNewsCommentDtoMapper();
 

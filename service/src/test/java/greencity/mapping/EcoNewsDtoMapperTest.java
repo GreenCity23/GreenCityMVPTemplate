@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.stream.Collectors;
 
-public class EcoNewsDtoMapperTest {
+class EcoNewsDtoMapperTest {
     private final EcoNewsDtoMapper mapper = new EcoNewsDtoMapper();
 
     @Test

@@ -168,7 +168,7 @@ public class EcoNewsController {
     }
 
     /**
-     * Method for getting eco news by authorised user.
+     * Method for getting eco news by authorized user.
      *
      * @return list of {@link EcoNewsDto} instances.
      * @author Vira Maksymets
@@ -178,7 +178,11 @@ public class EcoNewsController {
         @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)})
     @GetMapping("/byUser")
     public ResponseEntity<List<EcoNewsDto>> getEcoNewsByUser(@ApiIgnore @CurrentUser UserVO user) {
-        return ResponseEntity.status(HttpStatus.OK).body(ecoNewsService.getAllPublishedNewsByUser(user));
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(ecoNewsService.getAllPublishedNewsByUser(user));
     }
 
     /**
@@ -337,9 +341,11 @@ public class EcoNewsController {
      * @return user liked news or not.
      */
     @ApiOperation(value = "Check if user liked news")
-    @ApiResponses(value = {@ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+    @ApiResponses(value = {
+        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
         @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
     @GetMapping("/isLikedByUser")
     public ResponseEntity<Boolean> checkNewsIsLikedByUser(@RequestParam("econewsId") Long econewsId,
         @ApiIgnore @CurrentUser UserVO user) {
