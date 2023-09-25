@@ -48,10 +48,8 @@ public class EcoNewsController {
      * @author Yuriy Olkhovskyi.
      */
     @ApiOperation(value = "Get three last eco news.")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
-    })
+    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @GetMapping("/newest")
     public ResponseEntity<List<EcoNewsDto>> getThreeLastEcoNews() {
         return ResponseEntity.status(HttpStatus.OK).body(ecoNewsService.getThreeLastEcoNews());
@@ -66,18 +64,16 @@ public class EcoNewsController {
      */
     @ApiOperation(value = "Add new eco news.")
     @ResponseStatus(value = HttpStatus.CREATED)
-    @ApiResponses(value = {
-        @ApiResponse(code = 201, message = HttpStatuses.CREATED,
-            response = EcoNewsGenericDto.class),
-    })
+    @ApiResponses(
+        value = {@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = EcoNewsGenericDto.class),})
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<EcoNewsGenericDto> save(
         @ApiParam(value = SwaggerExampleModel.ADD_ECO_NEWS_REQUEST,
             required = true) @RequestPart @ValidEcoNewsDtoRequest AddEcoNewsDtoRequest addEcoNewsDtoRequest,
         @ApiParam(value = "Image of eco news") @ImageValidation @RequestPart(required = false) MultipartFile image,
         @ApiIgnore Principal principal) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-            ecoNewsService.saveEcoNews(addEcoNewsDtoRequest, image, principal.getName()));
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(ecoNewsService.saveEcoNews(addEcoNewsDtoRequest, image, principal.getName()));
     }
 
     /**
@@ -88,17 +84,13 @@ public class EcoNewsController {
      */
     @ApiOperation(value = "Upload image for eco news.")
     @ResponseStatus(value = HttpStatus.CREATED)
-    @ApiResponses(value = {
-        @ApiResponse(code = 201, message = HttpStatuses.CREATED,
-            response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = String.class),
         @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
-        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-    })
+        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),})
     @PostMapping(path = "/uploadImage", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<String> uploadImage(
         @ApiParam(value = "Image of eco news") @ImageValidation MultipartFile image) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-            ecoNewsService.uploadImage(image));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ecoNewsService.uploadImage(image));
     }
 
     /**
@@ -109,30 +101,23 @@ public class EcoNewsController {
      */
     @ApiOperation(value = "Upload array of images for eco news.")
     @ResponseStatus(value = HttpStatus.CREATED)
-    @ApiResponses(value = {
-        @ApiResponse(code = 201, message = HttpStatuses.CREATED,
-            response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 201, message = HttpStatuses.CREATED, response = String.class),
         @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
-        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-    })
+        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),})
     @PostMapping(path = "/uploadImages", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<String[]> uploadImages(
-        @ApiParam(value = "Array of eco news images") MultipartFile[] images) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-            ecoNewsService.uploadImages(images));
+    public ResponseEntity<String[]> uploadImages(@ApiParam(value = "Array of eco news images") MultipartFile[] images) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(ecoNewsService.uploadImages(images));
     }
 
     /**
      * {@inheritDoc}
      */
     @ApiOperation(value = "Delete image")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = HttpStatuses.OK),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
         @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
         @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
         @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
-    })
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @DeleteMapping("/deleteImage")
     public void deleteImage(@RequestParam String imagePath) {
         fileService.delete(imagePath);
@@ -145,22 +130,18 @@ public class EcoNewsController {
      * @return dto {@link EcoNewsDto} instance.
      */
     @ApiOperation(value = "Update eco news")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = HttpStatuses.OK, response = EcoNewsGenericDto.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK, response = EcoNewsGenericDto.class),
         @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
-        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)
-    })
+        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)})
 
-    @PutMapping(path = "/update", consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE,
-        MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PutMapping(path = "/update",
+        consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<EcoNewsGenericDto> update(
         @ApiParam(value = SwaggerExampleModel.UPDATE_ECO_NEWS,
             required = true) @Valid @RequestPart UpdateEcoNewsDto updateEcoNewsDto,
-        @ApiParam(value = "Image of eco news") @ImageValidation @RequestPart(
-            required = false) MultipartFile image,
+        @ApiParam(value = "Image of eco news") @ImageValidation @RequestPart(required = false) MultipartFile image,
         @ApiIgnore @CurrentUser UserVO user) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-            ecoNewsService.update(updateEcoNewsDto, image, user));
+        return ResponseEntity.status(HttpStatus.OK).body(ecoNewsService.update(updateEcoNewsDto, image, user));
     }
 
     /**
@@ -170,15 +151,12 @@ public class EcoNewsController {
      * @author Kovaliv Taras
      */
     @ApiOperation(value = "Get eco news by id.")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = HttpStatuses.OK),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
         @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
-    })
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @ApiLocale
     @GetMapping("/{id}")
-    public ResponseEntity<EcoNewsDto> getEcoNewsById(@PathVariable Long id,
-        @ApiIgnore @ValidLanguage Locale locale) {
+    public ResponseEntity<EcoNewsDto> getEcoNewsById(@PathVariable Long id, @ApiIgnore @ValidLanguage Locale locale) {
         return ResponseEntity.status(HttpStatus.OK)
             .body(ecoNewsService.findDtoByIdAndLanguage(id, locale.getLanguage()));
     }
@@ -190,10 +168,8 @@ public class EcoNewsController {
      * @author Vira Maksymets
      */
     @ApiOperation(value = "Get eco news by authorised user.")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)
-    })
+    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)})
     @GetMapping("/byUser")
     public ResponseEntity<List<EcoNewsDto>> getEcoNewsByUser(@ApiIgnore @CurrentUser UserVO user) {
         if (user == null) {
@@ -210,10 +186,8 @@ public class EcoNewsController {
      * @author Yuriy Olkhovskyi & Kovaliv Taras.
      */
     @ApiOperation(value = "Find all eco news by page.")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
-    })
+    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)})
     @GetMapping("")
     @ApiPageable
     public ResponseEntity<PageableAdvancedDto<EcoNewsGenericDto>> findAll(@ApiIgnore Pageable page) {
@@ -227,15 +201,12 @@ public class EcoNewsController {
      * @author Danylo Hlynskyi.
      */
     @ApiOperation(value = "Find all eco news by page.")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
-    })
+    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)})
     @GetMapping("/byUserPage")
     @ApiPageable
     public ResponseEntity<PageableAdvancedDto<EcoNewsGenericDto>> getEcoNewsByUserByPage(
-        @ApiIgnore @CurrentUser UserVO user,
-        @ApiIgnore Pageable page) {
+        @ApiIgnore @CurrentUser UserVO user, @ApiIgnore Pageable page) {
         return ResponseEntity.status(HttpStatus.OK).body(ecoNewsService.findAllByUser(user, page));
     }
 
@@ -247,13 +218,11 @@ public class EcoNewsController {
      * @author Yuriy Olkhovskyi.
      */
     @ApiOperation(value = "Delete eco news.")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = HttpStatuses.OK),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
         @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
         @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
         @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
-    })
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @DeleteMapping("/{econewsId}")
     public ResponseEntity<Object> delete(@PathVariable Long econewsId, @ApiIgnore @CurrentUser UserVO user) {
         ecoNewsService.delete(econewsId, user);
@@ -267,19 +236,14 @@ public class EcoNewsController {
      * @author Kovaliv Taras.
      */
     @ApiOperation(value = "Get eco news by tags")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-    })
+    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),})
     @GetMapping("/tags")
     @ApiPageable
-    public ResponseEntity<PageableAdvancedDto<EcoNewsGenericDto>> getEcoNews(
-        @ApiIgnore Pageable page,
-        @ApiParam(value = "Tags to filter (if do not input tags get all)") @RequestParam(
-            required = false) List<String> tags) {
+    public ResponseEntity<PageableAdvancedDto<EcoNewsGenericDto>> getEcoNews(@ApiIgnore Pageable page, @ApiParam(
+        value = "Tags to filter (if do not input tags get all)") @RequestParam(required = false) List<String> tags) {
         if (tags == null || tags.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                ecoNewsService.findGenericAll(page));
+            return ResponseEntity.status(HttpStatus.OK).body(ecoNewsService.findGenericAll(page));
         }
         return ResponseEntity.status(HttpStatus.OK).body(ecoNewsService.find(page, tags));
     }
@@ -291,9 +255,7 @@ public class EcoNewsController {
      * @author Yurii Zhurakovskyi.
      */
     @ApiOperation(value = "Get three recommended eco news.")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = HttpStatuses.OK)
-    })
+    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK)})
     @GetMapping("/recommended")
     public ResponseEntity<List<EcoNewsDto>> getThreeRecommendedEcoNews(@RequestParam() Long openedEcoNewsId) {
         List<EcoNewsDto> threeRecommendedEcoNews = ecoNewsService.getThreeRecommendedEcoNews(openedEcoNewsId);
@@ -320,10 +282,8 @@ public class EcoNewsController {
      * @author Mamchuk Orest
      */
     @ApiOperation(value = "Find count of published eco news")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)
-    })
+    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)})
     @GetMapping("/count")
     public ResponseEntity<Long> findAmountOfPublishedNews(@RequestParam @NotNull Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(ecoNewsService.getAmountOfPublishedNewsByUserId(userId));
@@ -333,12 +293,10 @@ public class EcoNewsController {
      * Method to like EcoNews.
      */
     @ApiOperation(value = "Like eco news")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = HttpStatuses.OK),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
         @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
         @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
-    })
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @PostMapping("/like")
     public void like(@RequestParam("id") Long id, @ApiIgnore @CurrentUser UserVO user) {
         ecoNewsService.like(user, id);
@@ -348,11 +306,10 @@ public class EcoNewsController {
      * Method to dislike EcoNews.
      */
     @ApiOperation(value = "Dislike eco news")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = HttpStatuses.OK),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
         @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)
-    })
+        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @PostMapping("/dislike")
     public void dislike(@RequestParam("id") Long id, @ApiIgnore @CurrentUser UserVO user) {
         ecoNewsService.dislike(user, id);
@@ -364,11 +321,9 @@ public class EcoNewsController {
      * @return count of likes for eco news;
      */
     @ApiOperation(value = "Count likes by id")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = HttpStatuses.OK),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
         @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
-    })
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @GetMapping("/countLikes/{econewsId}")
     public ResponseEntity<Integer> countLikesForEcoNews(@PathVariable Long econewsId) {
         return ResponseEntity.status(HttpStatus.OK).body(ecoNewsService.countLikesForEcoNews(econewsId));
@@ -399,16 +354,13 @@ public class EcoNewsController {
      *
      * @return dto {@link EcoNewContentSourceDto}.
      */
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = HttpStatuses.OK),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
         @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
         @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
         @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND, response = NotFoundException.class)
-    })
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND, response = NotFoundException.class)})
     @GetMapping("/contentAndSourceForEcoNews/{id}")
     public ResponseEntity<EcoNewContentSourceDto> getContentAndSourceForEcoNewsById(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(ecoNewsService.getContentAndSourceForEcoNewsById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(ecoNewsService.getContentAndSourceForEcoNewsById(id));
     }
 }
