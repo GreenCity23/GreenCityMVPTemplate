@@ -120,6 +120,9 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<CustomShoppingListItem> customShoppingListItems = new ArrayList<>();
 
+    @OneToMany(mappedBy = "organizer", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Event> events;
+
     @Column(name = "profile_picture")
     private String profilePicturePath;
 
