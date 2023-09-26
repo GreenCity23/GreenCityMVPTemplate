@@ -59,6 +59,6 @@ class UserVOMapperTest {
             .build();
         expected.setUserFriends(null);
 
-        // assertEquals(expected, mapper.convert(userToBeConverted));
+         assertEquals(expected, mapper.convert(userToBeConverted));
     }
 }
