@@ -3,6 +3,7 @@ package greencity.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
@@ -35,10 +36,8 @@ public class Event {
     @ManyToOne
     private User organizer;
 
-    @Column
+    @Column(name = "title_image")
     private String titleImage;
-
-//    private List<String> additionalImages; TODO
 
     @Column(name = "is_closed")
     private boolean eventClosed;
@@ -48,6 +47,11 @@ public class Event {
 
     @Column(name = "is_favorite")
     private boolean isFavorite;
+
+    @ElementCollection
+    @CollectionTable(name = "events_additional_images", joinColumns = @JoinColumn(name = "event_id"))
+    @Column(name = "additional_title_image")
+    private List<String> additionalImages;
 
     @ManyToMany
     @JoinTable(
