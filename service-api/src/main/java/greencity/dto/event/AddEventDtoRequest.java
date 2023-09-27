@@ -23,6 +23,9 @@ public class AddEventDtoRequest {
     private List<String> tags;
 
     @NotEmpty
+    private String open;
+
+    @NotEmpty
     @Size(min = 1, max = 70)
-    private String tittle;
+    private String title;
 }
