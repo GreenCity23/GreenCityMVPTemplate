@@ -1,9 +1,9 @@
 package greencity.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +28,7 @@ public class Event {
     private String description;
 
     @Column(name = "creation_date")
+    @CreationTimestamp
     private ZonedDateTime creationDate;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)

@@ -22,5 +22,4 @@ public class DateLocation {
     @OneToOne
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
-    // other fields
 }
