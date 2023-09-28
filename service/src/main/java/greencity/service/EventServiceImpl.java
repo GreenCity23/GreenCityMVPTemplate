@@ -64,16 +64,13 @@ public class EventServiceImpl implements EventService {
             throw new NotSavedException(ErrorMessage.EVENT_NOT_SAVED);
         }
 
-        List<TagVO> tagVOS = tagService.findTagsByNamesAndType(
+        List<TagVO> tagVOS = tagService.findTagsWithAllTranslationsByNamesAndType(
                 addEventDtoRequest.getTags(), TagType.EVENT);
         List<Tag> tags = modelMapper.map(tagVOS,
                 new TypeToken<List<Tag>>() {
                 }.getType());
-        tags = tags.stream()
-                .map(tag ->
-                        tag.setTagTranslations(tagTranslationRepo.findAllByTagId(tag.getId()))).collect(Collectors.toList());
         eventToSave.setTags(tags);
-        System.out.println(eventToSave.getTags().get(0).getTagTranslations());
+
         eventToSave.setDateLocations(addEventDtoRequest.getDatesLocations().stream()
                 .map(eventDateLocationDto -> modelMapper.map(eventDateLocationDto, DateLocation.class)
                         .setEvent(eventToSave))
