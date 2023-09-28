@@ -33,5 +33,5 @@ public class EventDto implements Serializable {
     boolean isSubscribed;
     boolean isFavorite;
     Set<TagUaEnDto> tags;
-    ArrayList<String> additionalImages;
+    List<String> additionalImages;
 }

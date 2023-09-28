@@ -1,10 +1,7 @@
 package greencity.mapping;
 
-import greencity.dto.event.EventAuthorDto;
-import greencity.dto.event.EventDto;
-import greencity.dto.event.TagUaEnDto;
+import greencity.dto.event.*;
 import greencity.entity.Event;
-import greencity.repository.TagTranslationRepo;
 import lombok.AllArgsConstructor;
 import org.modelmapper.AbstractConverter;
 import org.modelmapper.ModelMapper;
@@ -19,8 +16,6 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 public class EventDtoMapper extends AbstractConverter<Event, EventDto> {
-
-    private final TagTranslationRepo tagTranslationRepo;
     /**
      * Method for converting {@link Event} into {@link EventDto}.
      *
@@ -35,6 +30,31 @@ public class EventDtoMapper extends AbstractConverter<Event, EventDto> {
                 .titleImage(event.getTitleImage())
                 .creationDate(event.getCreationDate())
                 .description(event.getDescription())
+                .dateLocations(event.getDateLocations()
+                        .stream()
+                        .map(dateLocation -> EventDateLocationDto.builder()
+                                .id(dateLocation.getId())
+                                .coordinates(AddressDto.builder()
+                                        .cityEn(dateLocation.getAddress().getCityEn())
+                                        .cityUa(dateLocation.getAddress().getCityUa())
+                                        .countryEn(dateLocation.getAddress().getCountryEn())
+                                        .countryUa(dateLocation.getAddress().getCountryUa())
+                                        .formattedAddressEn(dateLocation.getAddress().getFormattedAddressEn())
+                                        .formattedAddressUa(dateLocation.getAddress().getFormattedAddressUa())
+                                        .houseNumber(dateLocation.getAddress().getHouseNumber())
+                                        .latitude(dateLocation.getAddress().getLatitude())
+                                        .longitude(dateLocation.getAddress().getLongitude())
+                                        .regionUa(dateLocation.getAddress().getRegionUa())
+                                        .regionEn(dateLocation.getAddress().getRegionEn())
+                                        .streetEn(dateLocation.getAddress().getStreetEn())
+                                        .streetUa(dateLocation.getAddress().getStreetUa())
+                                        .build())
+                                .startDate(dateLocation.getStartDate())
+                                .finishDate(dateLocation.getFinishDate())
+                                .onlineLink(dateLocation.getOnlineLink() == null ? ""
+                                        : dateLocation.getOnlineLink())
+                                .build()
+                        ).collect(Collectors.toList()))
                 .isFavorite(event.isFavorite())
                 .isSubscribed(event.isSubscribed())
                 .open(!event.isEventClosed())
@@ -44,13 +64,23 @@ public class EventDtoMapper extends AbstractConverter<Event, EventDto> {
                         .organizerRating(event.getOrganizer().getEventOrganizerRating() == null ? 0.00 :
                                 event.getOrganizer().getEventOrganizerRating())
                         .build())
+                .additionalImages(event.getAdditionalImages())
                 .tags(event.getTags()
                         .stream()
                         .map(tag -> {
                             TagUaEnDto tagUaEnDto = new TagUaEnDto();
+                            tagUaEnDto.setType(tag.getType());
                             tagUaEnDto.setId(tag.getId());
-                            tagUaEnDto.setNameUa(tag.getTagTranslations().get(0).getName());
-                            tagUaEnDto.setNameEn(tag.getTagTranslations().get(1).getName());
+                            tagUaEnDto.setNameUa(tag.getTagTranslations().stream()
+                                    .filter(tagTranslation -> tagTranslation.getLanguage().getCode().equals("ua"))
+                                    .findFirst()
+                                    .get()
+                                    .getName());
+                            tagUaEnDto.setNameEn(tag.getTagTranslations().stream()
+                                    .filter(tagTranslation -> tagTranslation.getLanguage().getCode().equals("en"))
+                                    .findFirst()
+                                    .get()
+                                    .getName());
                             return tagUaEnDto;
                         })
                         .collect(Collectors.toSet()))
