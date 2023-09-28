@@ -1,10 +1,17 @@
 package greencity.entity;
 
 
+import lombok.*;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "addresses")
+@Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Address {
 
     @Id

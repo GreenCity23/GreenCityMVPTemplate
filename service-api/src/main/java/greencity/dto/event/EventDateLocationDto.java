@@ -16,13 +16,11 @@ public class EventDateLocationDto {
     @NotNull
     Long id;
     @NotNull
-    ZonedDateTime Date;
+    ZonedDateTime startDate;
     @NotNull
     ZonedDateTime finishDate;
     @NotNull
     String onlineLink;
     @NotNull
     AddressDto coordinates;
-    @NotNull
-    EventDto event;
 }
