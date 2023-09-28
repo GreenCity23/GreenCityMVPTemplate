@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 @EqualsAndHashCode
 public class AddEventDtoRequest {
 

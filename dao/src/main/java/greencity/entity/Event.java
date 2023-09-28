@@ -6,7 +6,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "events")
@@ -15,6 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
+@ToString(exclude = "organizer")
 public class Event {
 
     @Id
@@ -60,7 +60,7 @@ public class Event {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private Set<Tag> tags;
+    private List<Tag> tags;
 
     @ManyToMany
     @JoinTable(

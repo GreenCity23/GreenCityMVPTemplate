@@ -1,17 +1,23 @@
 package greencity.entity;
 
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 
 @Entity
 @Table(name = "dates_locations")
+@Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class DateLocation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn
+    @ManyToOne(cascade = CascadeType.ALL)
     private Event event;
     @Column
     private ZonedDateTime startDate;
@@ -19,7 +25,8 @@ public class DateLocation {
     private ZonedDateTime finishDate;
     @Column(name = "online_link")
     private String onlineLink;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 }
+

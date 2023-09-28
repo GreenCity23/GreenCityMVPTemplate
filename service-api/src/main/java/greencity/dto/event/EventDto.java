@@ -29,7 +29,7 @@ public class EventDto implements Serializable {
     List<EventDateLocationDto> dateLocations;
     EventAuthorDto organizer;
     String titleImage;
-    boolean eventClosed;
+    boolean open;
     boolean isSubscribed;
     boolean isFavorite;
     Set<TagUaEnDto> tags;
