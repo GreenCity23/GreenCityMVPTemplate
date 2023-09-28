@@ -4,16 +4,15 @@ import greencity.constant.ErrorMessage;
 import greencity.dto.PageableAdvancedDto;
 import greencity.dto.event.AddEventDtoRequest;
 import greencity.dto.event.EventDto;
+import greencity.dto.event.EventVO;
 import greencity.dto.tag.TagVO;
 import greencity.dto.user.UserVO;
-import greencity.entity.DateLocation;
-import greencity.entity.Event;
-import greencity.entity.Tag;
-import greencity.entity.User;
+import greencity.entity.*;
 import greencity.enums.Role;
 import greencity.enums.TagType;
 import greencity.exception.exceptions.NotFoundException;
 import greencity.exception.exceptions.NotSavedException;
+import greencity.exception.exceptions.UnsupportedSortException;
 import greencity.exception.exceptions.UserHasNoPermissionToAccessException;
 import greencity.repository.EventRepo;
 import greencity.repository.TagTranslationRepo;
@@ -21,16 +20,15 @@ import greencity.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.ZonedDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
-
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +40,23 @@ public class EventServiceImpl implements EventService {
     private final TagTranslationRepo tagTranslationRepo;
     private final FileService fileService;
 
+    private PageableAdvancedDto<EventDto> buildPageableAdvancedDto(Page<Event> eventPage) {
+        List<EventDto> eventDtos = eventPage.stream()
+            .map(event -> modelMapper.map(event, EventDto.class))
+            .collect(Collectors.toList());
+
+        return new PageableAdvancedDto<>(
+            eventDtos,
+            eventPage.getTotalElements(),
+            eventPage.getPageable().getPageNumber(),
+            eventPage.getTotalPages(),
+            eventPage.getNumber(),
+            eventPage.hasPrevious(),
+            eventPage.hasNext(),
+            eventPage.isFirst(),
+            eventPage.isLast());
+    }
+
     @Override
     public EventDto save(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId) {
         Event savedEvent = genericSave(addEventDtoRequest, images, organizerId);
@@ -50,7 +65,7 @@ public class EventServiceImpl implements EventService {
 
     private Event genericSave(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId) {
         User organizer = userRepo.findById(organizerId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + organizerId));
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + organizerId));
 
         Event eventToSave = modelMapper.map(addEventDtoRequest, Event.class);
         eventToSave.setOrganizer(organizer);
@@ -65,16 +80,16 @@ public class EventServiceImpl implements EventService {
         }
 
         List<TagVO> tagVOS = tagService.findTagsWithAllTranslationsByNamesAndType(
-                addEventDtoRequest.getTags(), TagType.EVENT);
+            addEventDtoRequest.getTags(), TagType.EVENT);
         List<Tag> tags = modelMapper.map(tagVOS,
-                new TypeToken<List<Tag>>() {
-                }.getType());
+            new TypeToken<List<Tag>>() {
+            }.getType());
         eventToSave.setTags(tags);
 
         eventToSave.setDateLocations(addEventDtoRequest.getDatesLocations().stream()
-                .map(eventDateLocationDto -> modelMapper.map(eventDateLocationDto, DateLocation.class)
-                        .setEvent(eventToSave))
-                .collect(Collectors.toList()));
+            .map(eventDateLocationDto -> modelMapper.map(eventDateLocationDto, DateLocation.class)
+                .setEvent(eventToSave))
+            .collect(Collectors.toList()));
 
         return eventRepo.save(eventToSave);
     }
@@ -88,19 +103,74 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDto findById(Long eventId) {
         Event event = eventRepo
-                .findById(eventId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventId));
+            .findById(eventId)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventId));
         return modelMapper.map(event, EventDto.class);
     }
 
+    /**
+     * Method for getting all events by page.
+     *
+     * @return PageableDto of {@link EventDto} instances.
+     */
     @Override
     public PageableAdvancedDto<EventDto> findAll(Pageable page) {
-        return null;
+        Page<Event> pages;
+        if (page.getSort().isEmpty()) {
+            pages = eventRepo.findAllByOrderByCreationDateDesc(page);
+        } else {
+            if (page.getSort().isUnsorted()) {
+                pages = eventRepo.findAll(page);
+            } else {
+                throw new UnsupportedSortException(ErrorMessage.INVALID_SORTING_VALUE);
+            }
+        }
+        return buildPageableAdvancedDto(pages);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     */
     @Override
-    public EventDto update(EventDto eventDto) {
-        return null;
+    public PageableAdvancedDto<EventDto> findAllByUser(UserVO user, Pageable page) {
+        Page<Event> pages;
+        if (page.getSort().isEmpty()) {
+            pages = eventRepo.findAllByOrganizerOrderByCreationDateDesc(modelMapper.map(user, User.class), page);
+        } else {
+            throw new UnsupportedSortException(ErrorMessage.INVALID_SORTING_VALUE);
+        }
+        return buildPageableAdvancedDto(pages);
+    }
+
+    private boolean userIsOrganizerOrAdmin(UserVO user, Event existingEvent) {
+        return Objects.equals(user.getId(), existingEvent.getOrganizer().getId())
+            || user.getRole().equals(Role.ROLE_ADMIN);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     */
+    @Override
+    public EventDto update(EventVO eventVO, MultipartFile[] images, UserVO user) {
+        Event existingEvent = eventRepo.findById(eventVO.getId())
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventVO.getId()));
+        if (!userIsOrganizerOrAdmin(user, existingEvent)) {
+            throw new AccessDeniedException("You don't have permission to edit this event");
+        }
+        if (existingEvent.getDateLocations().stream()
+            .noneMatch(dateLocation -> dateLocation.getFinishDate().isBefore(ZonedDateTime.now()))) {
+            throw new AccessDeniedException(ErrorMessage.EVENT_PAST_CANNOT_BE_EDITED);
+        }
+
+        existingEvent.setTitle(eventVO.getTitle());
+        existingEvent.setDescription(eventVO.getDescription());
+        // existingEvent.setDateLocations(eventVO.getDateLocations);
+
+        Event updatedEvent = eventRepo.save(existingEvent);
+
+        return modelMapper.map(updatedEvent, EventDto.class);
     }
 
     /**
@@ -117,7 +187,6 @@ public class EventServiceImpl implements EventService {
         }
         eventRepo.deleteById(id);
     }
-
 
     /**
      * Method to upload events images.
@@ -147,8 +216,8 @@ public class EventServiceImpl implements EventService {
         eventToSave.setTitleImage(paths[0]);
         if (images.length > 1) {
             List<String> additionalImages = Arrays.stream(paths)
-                    .skip(1)
-                    .collect(Collectors.toList());
+                .skip(1)
+                .collect(Collectors.toList());
             eventToSave.setAdditionalImages(additionalImages);
         }
     }

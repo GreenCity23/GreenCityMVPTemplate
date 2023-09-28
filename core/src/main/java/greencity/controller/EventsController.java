@@ -1,9 +1,7 @@
 package greencity.controller;
 
-
 import greencity.annotations.ApiPageable;
 import greencity.annotations.CurrentUser;
-import greencity.annotations.ImageValidation;
 import greencity.constant.HttpStatuses;
 import greencity.constant.SwaggerExampleModel;
 import greencity.dto.PageableAdvancedDto;
@@ -30,7 +28,6 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.validation.Valid;
 import java.util.List;
 
-
 @Validated
 @RestController
 @RequestMapping("/events")
@@ -38,20 +35,18 @@ import java.util.List;
 public class EventsController {
     private final EventService eventService;
 
-
     @PostMapping(value = "/create", consumes = {
-            MediaType.APPLICATION_JSON_UTF8_VALUE,
-            MediaType.MULTIPART_FORM_DATA_VALUE
+        MediaType.APPLICATION_JSON_UTF8_VALUE,
+        MediaType.MULTIPART_FORM_DATA_VALUE
     })
     public ResponseEntity<EventDto> createEvent(
-            @ApiParam(value = SwaggerExampleModel.ADD_EVENT) @RequestPart AddEventDtoRequest addEventDtoRequest,
-            @ApiParam(value = "Images of event") MultipartFile[] images,
-            @ApiIgnore @CurrentUser UserVO user) {
+        @ApiParam(value = SwaggerExampleModel.ADD_EVENT) @RequestPart AddEventDtoRequest addEventDtoRequest,
+        @ApiParam(value = "Images of event") MultipartFile[] images,
+        @ApiIgnore @CurrentUser UserVO user) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(eventService.save(addEventDtoRequest, images, user.getId()));
+            .body(eventService.save(addEventDtoRequest, images, user.getId()));
     }
 
- 
     /**
      * Method for adding an attender to the event.
      */
@@ -134,8 +129,7 @@ public class EventsController {
     @GetMapping("")
     @ApiPageable
     public ResponseEntity<PageableAdvancedDto<EventDto>> getEvent(@ApiIgnore Pageable page) {
-        // ResponseEntity.status(HttpStatus.OK).body(eventService.findGenericAll(page));
-        return null;
+        return ResponseEntity.status(HttpStatus.OK).body(eventService.findAll(page));
     }
 
     /**
@@ -149,8 +143,13 @@ public class EventsController {
         @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)})
     @GetMapping("/myEvents/createdEvents")
     @ApiPageable
-    public ResponseEntity<PageableAdvancedDto<EventDto>> getEventsCreatedByUser(@ApiIgnore Pageable page) {
-        return null;
+    public ResponseEntity<PageableAdvancedDto<EventDto>> getEventsCreatedByUser(@ApiIgnore Pageable page,
+        @CurrentUser UserVO user) {
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(eventService.findAllByUser(user, page));
     }
 
     /**
@@ -213,7 +212,6 @@ public class EventsController {
 
     /**
      * Method for removing an event from favorites.
-     *
      */
     @ApiOperation(value = "Remove an event from favorites")
     @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
@@ -243,11 +241,10 @@ public class EventsController {
     public ResponseEntity<EventDto> update(
         @ApiParam(value = SwaggerExampleModel.UPDATE_EVENT,
             required = true) @Valid @RequestPart EventVO eventVO,
-        @ApiParam(value = "Image of event") @ImageValidation @RequestPart(required = false) MultipartFile image,
+        @ApiParam(value = "Image of event") @RequestPart(required = false) MultipartFile[] images,
         @ApiIgnore @CurrentUser UserVO user) {
-        // ResponseEntity.status(HttpStatus.OK).body(eventService.update(eventVO,
-        // image, user));
-        return null;
+        return ResponseEntity.status(HttpStatus.OK).body(eventService.update(eventVO, images, user));
+
     }
 
 }

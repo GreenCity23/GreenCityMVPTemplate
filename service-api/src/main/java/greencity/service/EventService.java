@@ -20,9 +20,29 @@ public interface EventService {
      */
     EventDto findById(Long eventId);
 
+    /**
+     * Method for getting all events by page.
+     *
+     * @return PageableDto of {@link EventDto} instances.
+     */
     PageableAdvancedDto<EventDto> findAll(Pageable page);
 
-    EventDto update(EventDto eventDto);
+    /**
+     * Method for getting all events created by user by page.
+     *
+     * @param user organizer of events.
+     * @param page parameters of to search.
+     * @return PageableDto of {@link EventDto} instances.
+     */
+    PageableAdvancedDto<EventDto> findAllByUser(UserVO user, Pageable page);
+
+    /**
+     * Method for updating {@link EventVO} instance.
+     *
+     * @param eventVO - instance of {@link EventVO}.
+     * @return instance of {@link EventDto};
+     */
+    EventDto update(EventVO eventVO, MultipartFile[] image, UserVO userId);
 
     /**
      * Method for deleting the {@link EventDto} instance by its id.
