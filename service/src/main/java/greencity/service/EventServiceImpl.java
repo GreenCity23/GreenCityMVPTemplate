@@ -10,9 +10,11 @@ import greencity.entity.DateLocation;
 import greencity.entity.Event;
 import greencity.entity.Tag;
 import greencity.entity.User;
+import greencity.enums.Role;
 import greencity.enums.TagType;
 import greencity.exception.exceptions.NotFoundException;
 import greencity.exception.exceptions.NotSavedException;
+import greencity.exception.exceptions.UserHasNoPermissionToAccessException;
 import greencity.repository.EventRepo;
 import greencity.repository.TagTranslationRepo;
 import greencity.repository.UserRepo;
@@ -80,9 +82,18 @@ public class EventServiceImpl implements EventService {
         return eventRepo.save(eventToSave);
     }
 
+    /**
+     * Method for getting the {@link EventDto} instance by its id.
+     *
+     * @param eventId {@link EventDto} instance id.
+     * @return {@link EventDto} instance.
+     */
     @Override
     public EventDto findById(Long eventId) {
-        return null;
+        Event event = eventRepo
+                .findById(eventId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventId));
+        return modelMapper.map(event, EventDto.class);
     }
 
     @Override
@@ -95,9 +106,19 @@ public class EventServiceImpl implements EventService {
         return null;
     }
 
+    /**
+     * Method for deleting the {@link EventDto} instance by its id.
+     *
+     * @param id   - {@link EventDto} instance id which will be deleted.
+     * @param user - current {@link UserVO} that wants to delete.
+     */
     @Override
     public void delete(Long id, UserVO user) {
-
+        EventDto eventDto = findById(id);
+        if (user.getRole() != Role.ROLE_ADMIN && !user.getId().equals(eventDto.getOrganizer().getId())) {
+            throw new UserHasNoPermissionToAccessException(ErrorMessage.USER_HAS_NO_PERMISSION);
+        }
+        eventRepo.deleteById(id);
     }
 
 
