@@ -4,8 +4,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,9 +23,17 @@ public class Event {
     private Long id;
 
     @Column
+    @Pattern(
+            message = "The title should be at least 5 and not more than 70 characters long.",
+            regexp = "^.{5,69}$"
+    )
     private String title;
 
     @Column
+    @Pattern(
+            message = "The description should be at least 20 and not more than 63 206 characters long.",
+            regexp = "^.{20,63206}$"
+    )
     private String description;
 
     @Column(name = "creation_date")

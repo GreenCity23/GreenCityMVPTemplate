@@ -17,12 +17,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class EventDto implements Serializable {
-    @NotNull
     Long id;
-    @NotNull
-    @Pattern(message = "The title should be at least 5 and not more than 70 characters long.", regexp = "^.{5,69}$")
     String title;
-    @NotNull
     String description;
     ZonedDateTime creationDate;
     List<EventDateLocationDto> dateLocations;

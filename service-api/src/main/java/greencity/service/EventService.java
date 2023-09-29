@@ -10,6 +10,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface EventService {
 
+    /**
+     * Method for creating the Event instance.
+     *
+     * @param addEventDtoRequest dto for creating Event instance.
+     * @param images event images
+     * @param organizerId ID of event creator
+     * @return {@link EventDto} instance.
+     */
     EventDto save(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId);
 
     /**

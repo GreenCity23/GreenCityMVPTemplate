@@ -7,7 +7,10 @@ import greencity.dto.event.EventDto;
 import greencity.dto.event.EventVO;
 import greencity.dto.tag.TagVO;
 import greencity.dto.user.UserVO;
-import greencity.entity.*;
+import greencity.entity.DateLocation;
+import greencity.entity.Event;
+import greencity.entity.Tag;
+import greencity.entity.User;
 import greencity.enums.Role;
 import greencity.enums.TagType;
 import greencity.exception.exceptions.NotFoundException;
@@ -57,6 +60,9 @@ public class EventServiceImpl implements EventService {
             eventPage.isLast());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public EventDto save(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId) {
         Event savedEvent = genericSave(addEventDtoRequest, images, organizerId);
@@ -70,6 +76,10 @@ public class EventServiceImpl implements EventService {
         Event eventToSave = modelMapper.map(addEventDtoRequest, Event.class);
         eventToSave.setOrganizer(organizer);
 
+        if (addEventDtoRequest.getDatesLocations().size() > 7) {
+            throw new NotSavedException(ErrorMessage.EVENT_INVALID_DURATION);
+        }
+
         if (images.length != 0) {
             processEventImages(eventToSave, images);
         }
@@ -80,16 +90,20 @@ public class EventServiceImpl implements EventService {
         }
 
         List<TagVO> tagVOS = tagService.findTagsWithAllTranslationsByNamesAndType(
-            addEventDtoRequest.getTags(), TagType.EVENT);
+                addEventDtoRequest.getTags(), TagType.EVENT);
         List<Tag> tags = modelMapper.map(tagVOS,
-            new TypeToken<List<Tag>>() {
-            }.getType());
+                new TypeToken<List<Tag>>() {
+                }.getType());
         eventToSave.setTags(tags);
 
         eventToSave.setDateLocations(addEventDtoRequest.getDatesLocations().stream()
-            .map(eventDateLocationDto -> modelMapper.map(eventDateLocationDto, DateLocation.class)
-                .setEvent(eventToSave))
-            .collect(Collectors.toList()));
+                .map(eventDateLocationDto -> {
+                    if (eventDateLocationDto.getStartDate().isBefore(ZonedDateTime.now())) {
+                        throw new NotSavedException(ErrorMessage.EVENT_PAST_CANNOT_BE_SAVED);
+                    }
+                    return modelMapper.map(eventDateLocationDto, DateLocation.class).setEvent(eventToSave);
+                })
+                .collect(Collectors.toList()));
 
         return eventRepo.save(eventToSave);
     }
@@ -130,7 +144,6 @@ public class EventServiceImpl implements EventService {
 
     /**
      * {@inheritDoc}
-     *
      */
     @Override
     public PageableAdvancedDto<EventDto> findAllByUser(UserVO user, Pageable page) {
@@ -150,7 +163,6 @@ public class EventServiceImpl implements EventService {
 
     /**
      * {@inheritDoc}
-     *
      */
     @Override
     public EventDto update(EventVO eventVO, MultipartFile[] images, UserVO user) {
