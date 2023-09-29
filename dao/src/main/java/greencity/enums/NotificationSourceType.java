@@ -1,0 +1,17 @@
+package greencity.enums;
+
+public enum NotificationSourceType {
+    NEWS_COMMENTED,
+    NEWS_LIKED,
+    COMMENT_REPLY,
+    COMMENT_LIKED,
+    EVENT_COMMENTED,
+    EVENT_LIKED,
+    EVENT_CANCELED,
+    EVENT_UPDATED,
+    FRIENDSHIP_REQUEST,
+    FRIENDSHIP_ACCEPTED,
+    HABIT_COMMENTED,
+    HABIT_LIKED,
+    HABIT_INVITATION
+}

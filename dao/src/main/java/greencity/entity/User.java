@@ -120,6 +120,12 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<CustomShoppingListItem> customShoppingListItems = new ArrayList<>();
 
+    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Notification> sentNotifications = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<NotifiedUsers> receivedNotifications = new ArrayList<>();
+
     @Column(name = "profile_picture")
     private String profilePicturePath;
 

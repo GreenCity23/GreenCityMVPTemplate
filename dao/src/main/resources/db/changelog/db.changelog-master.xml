@@ -5,6 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     <include file="db/changelog/logs/liquibase-outputChangeLog.xml"/>
+    <include file="db/changelog/logs/ch-add-table-notification-Tulush.xml"/>
     <include file="db/changelog/logs/ch-change-tables-names-1.xml"/>
     <include file="db/changelog/logs/ch-add-column-Koval-1.xml"/>
     <include file="db/changelog/logs/ch-habit-dictionary-kuzenko-1.xml"/>
@@ -176,5 +177,6 @@
     <include file="db/changelog/logs/ch-drop-places-table-Bokalo.xml"/>
     <include file="db/changelog/logs/ch-drop-news-subscribers-table-Bokalo.xml"/>
     <include file="db/changelog/logs/ch-drop-user-friends-table-Bokalo.xml"/>
+    <include file="/db/changelog/logs/ch-add-foreign-key-Tulush.xml"/>
 </databaseChangeLog>
 
