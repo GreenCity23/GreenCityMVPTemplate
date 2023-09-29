@@ -1,11 +1,14 @@
 package greencity.service;
 
+import greencity.client.RestClient;
 import greencity.constant.ErrorMessage;
 import greencity.dto.PageableAdvancedDto;
 import greencity.dto.event.AddEventDtoRequest;
 import greencity.dto.event.EventDto;
+import greencity.dto.event.EventForSendEmailDto;
 import greencity.dto.event.EventVO;
 import greencity.dto.tag.TagVO;
+import greencity.dto.user.PlaceAuthorDto;
 import greencity.dto.user.UserVO;
 import greencity.entity.DateLocation;
 import greencity.entity.Event;
@@ -29,9 +32,12 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static greencity.constant.AppConstant.AUTHORIZATION;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +48,8 @@ public class EventServiceImpl implements EventService {
     private final TagsService tagService;
     private final TagTranslationRepo tagTranslationRepo;
     private final FileService fileService;
+    private final HttpServletRequest httpServletRequest;
+    private final RestClient restClient;
 
     private PageableAdvancedDto<EventDto> buildPageableAdvancedDto(Page<Event> eventPage) {
         List<EventDto> eventDtos = eventPage.stream()
@@ -66,7 +74,10 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDto save(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId) {
         Event savedEvent = genericSave(addEventDtoRequest, images, organizerId);
-        return modelMapper.map(savedEvent, EventDto.class);
+
+        EventDto eventDto = modelMapper.map(savedEvent, EventDto.class);
+        sendEmailDto(eventDto, savedEvent.getOrganizer());
+        return eventDto;
     }
 
     private Event genericSave(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId) {
@@ -106,6 +117,25 @@ public class EventServiceImpl implements EventService {
                 .collect(Collectors.toList()));
 
         return eventRepo.save(eventToSave);
+    }
+
+    /**
+     * Method for sending an email to user, when event was created
+     *
+     * @author Vladyslav Siverskyi.
+     */
+    public void sendEmailDto(EventDto eventDto, User user) {
+        String accessToken = httpServletRequest.getHeader(AUTHORIZATION);
+        PlaceAuthorDto placeAuthorDto = modelMapper.map(user, PlaceAuthorDto.class);
+        EventForSendEmailDto eventForSendEmailDto = EventForSendEmailDto.builder()
+                .title(eventDto.getTitle())
+                .titleImage(eventDto.getTitleImage())
+                .description(eventDto.getDescription())
+                .creationDate(eventDto.getCreationDate())
+                .open(eventDto.isOpen())
+                .author(placeAuthorDto)
+                .build();
+        restClient.addEvent(eventForSendEmailDto, accessToken.substring(7));
     }
 
     /**
