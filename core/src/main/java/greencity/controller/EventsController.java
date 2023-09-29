@@ -5,10 +5,7 @@ import greencity.annotations.CurrentUser;
 import greencity.constant.HttpStatuses;
 import greencity.constant.SwaggerExampleModel;
 import greencity.dto.PageableAdvancedDto;
-import greencity.dto.event.AddEventDtoRequest;
-import greencity.dto.event.EventAttenderDto;
-import greencity.dto.event.EventDto;
-import greencity.dto.event.EventVO;
+import greencity.dto.event.*;
 import greencity.dto.user.UserVO;
 import greencity.service.EventService;
 import io.swagger.annotations.ApiOperation;
@@ -43,15 +40,15 @@ public class EventsController {
      * @author Vladyslav Siverskyi.
      */
     @PostMapping(value = "/create", consumes = {
-        MediaType.APPLICATION_JSON_UTF8_VALUE,
-        MediaType.MULTIPART_FORM_DATA_VALUE
+            MediaType.APPLICATION_JSON_UTF8_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE
     })
     public ResponseEntity<EventDto> createEvent(
-        @ApiParam(value = SwaggerExampleModel.ADD_EVENT) @RequestPart AddEventDtoRequest addEventDtoRequest,
-        @ApiParam(value = "Images of event") MultipartFile[] images,
-        @ApiIgnore @CurrentUser UserVO user) {
+            @ApiParam(value = SwaggerExampleModel.ADD_EVENT) @RequestPart AddEventDtoRequest addEventDtoRequest,
+            @ApiParam(value = "Images of event") MultipartFile[] images,
+            @ApiIgnore @CurrentUser UserVO user) {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(eventService.save(addEventDtoRequest, images, user.getId()));
+                .body(eventService.save(addEventDtoRequest, images, user.getId()));
     }
 
     /**
@@ -59,11 +56,11 @@ public class EventsController {
      */
     @ApiOperation(value = "Add an attender to the event")
     @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @PostMapping(path = "/addAttender/{eventId}",
-        consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+            consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public ResponseEntity<String> addAttender(@PathVariable Long eventId) {
         return null;
     }
@@ -73,11 +70,11 @@ public class EventsController {
      */
     @ApiOperation(value = "Add an event to favorites")
     @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @PostMapping(path = "/addToFavorites/{eventId}",
-        consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+            consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public ResponseEntity<Object> addToFavorites(@PathVariable Long eventId) {
         return null;
     }
@@ -87,10 +84,10 @@ public class EventsController {
      */
     @ApiOperation(value = "Delete event")
     @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @DeleteMapping(path = "/delete/{eventId}")
     public ResponseEntity<Object> delete(@PathVariable Long eventId, @ApiIgnore @CurrentUser UserVO user) {
         eventService.delete(eventId, user);
@@ -104,8 +101,8 @@ public class EventsController {
      */
     @ApiOperation(value = "Get all event attenders")
     @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @GetMapping(path = "/getAllSubscribers/{eventId}")
     public ResponseEntity<List<EventAttenderDto>> getAllEventSubscribers(@PathVariable Long eventId) {
         return null;
@@ -118,8 +115,8 @@ public class EventsController {
      */
     @ApiOperation(value = "Get the event")
     @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @GetMapping(path = "/event/{eventId}")
     public ResponseEntity<EventDto> getEvent(@PathVariable Long eventId) {
         return ResponseEntity.status(HttpStatus.OK).body(eventService.findById(eventId));
@@ -132,7 +129,7 @@ public class EventsController {
      */
     @ApiOperation(value = "Get all events")
     @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)})
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST)})
     @GetMapping("")
     @ApiPageable
     public ResponseEntity<PageableAdvancedDto<EventDto>> getEvent(@ApiIgnore Pageable page) {
@@ -146,17 +143,14 @@ public class EventsController {
      */
     @ApiOperation(value = "Get events created by user")
     @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)})
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)})
     @GetMapping("/myEvents/createdEvents")
     @ApiPageable
     public ResponseEntity<PageableAdvancedDto<EventDto>> getEventsCreatedByUser(@ApiIgnore Pageable page,
-        @CurrentUser UserVO user) {
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+                                                                                @CurrentUser UserVO user) {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(eventService.findAllByUser(user, page));
+                .body(eventService.findAllByUser(user, page));
     }
 
     /**
@@ -167,8 +161,8 @@ public class EventsController {
      */
     @ApiOperation(value = "Get all users events and events which were created by this user")
     @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)})
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)})
     @GetMapping("/myEvents/relatedEvents")
     @ApiPageable
     public ResponseEntity<PageableAdvancedDto<EventDto>> getRelatedToUserEvents(@ApiIgnore Pageable page) {
@@ -182,8 +176,8 @@ public class EventsController {
      */
     @ApiOperation(value = "Get all users events")
     @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)})
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)})
     @GetMapping("/myEvents")
     @ApiPageable
     public ResponseEntity<PageableAdvancedDto<EventDto>> getUserEvents(@ApiIgnore Pageable page) {
@@ -195,11 +189,11 @@ public class EventsController {
      */
     @ApiOperation(value = "Rate event")
     @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @PostMapping(path = "/rateEvent/{eventId}/{grade}",
-        consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+            consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public ResponseEntity<Object> rateEvent(@PathVariable Long eventId, @PathVariable int grade) {
         return null;
     }
@@ -209,9 +203,9 @@ public class EventsController {
      */
     @ApiOperation(value = "Remove an attender from the event")
     @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @DeleteMapping(path = "/removeAttender/{eventId}")
     public ResponseEntity<Object> removeAttender(@PathVariable Long eventId) {
         return null;
@@ -222,9 +216,9 @@ public class EventsController {
      */
     @ApiOperation(value = "Remove an event from favorites")
     @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @DeleteMapping(path = "/removeFromFavorites/{eventId}")
     public ResponseEntity<Object> removeFromFavorites(@PathVariable Long eventId) {
         return null;
@@ -238,19 +232,20 @@ public class EventsController {
 
     @ApiOperation(value = "Update event")
     @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK, response = EventDto.class),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
 
     @PutMapping(path = "/update",
-        consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+            consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE,
+                    MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<EventDto> update(
-        @ApiParam(value = SwaggerExampleModel.UPDATE_EVENT,
-            required = true) @Valid @RequestPart EventVO eventVO,
-        @ApiParam(value = "Image of event") @RequestPart(required = false) MultipartFile[] images,
-        @ApiIgnore @CurrentUser UserVO user) {
-        return ResponseEntity.status(HttpStatus.OK).body(eventService.update(eventVO, images, user));
+            @ApiParam(value = SwaggerExampleModel.UPDATE_EVENT,
+                    required = true) @Valid @RequestPart EditEventDtoRequest editEventDtoRequest,
+            @ApiParam(value = "Image of event") @RequestPart(required = false) MultipartFile[] images,
+            @ApiIgnore @CurrentUser UserVO user) {
+        return ResponseEntity.status(HttpStatus.OK).body(eventService.update(editEventDtoRequest, images, user.getId()));
 
     }
 

@@ -2,8 +2,8 @@ package greencity.service;
 
 import greencity.dto.PageableAdvancedDto;
 import greencity.dto.event.AddEventDtoRequest;
+import greencity.dto.event.EditEventDtoRequest;
 import greencity.dto.event.EventDto;
-import greencity.dto.event.EventVO;
 import greencity.dto.user.UserVO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,12 +45,14 @@ public interface EventService {
     PageableAdvancedDto<EventDto> findAllByUser(UserVO user, Pageable page);
 
     /**
-     * Method for updating {@link EventVO} instance.
+     * Method for updating Event instance.
      *
-     * @param eventVO - instance of {@link EventVO}.
-     * @return instance of {@link EventDto};
+     * @param editEventDtoRequest - instance of {@link EditEventDtoRequest}.
+     * @param images event images.
+     * @param organizerId ID of event author.
+     * @return {@link EventDto} instance.
      */
-    EventDto update(EventVO eventVO, MultipartFile[] image, UserVO userId);
+     EventDto update(EditEventDtoRequest editEventDtoRequest, MultipartFile[] images, Long organizerId);
 
     /**
      * Method for deleting the {@link EventDto} instance by its id.

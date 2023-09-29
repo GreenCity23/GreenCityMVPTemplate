@@ -3,10 +3,7 @@ package greencity.service;
 import greencity.client.RestClient;
 import greencity.constant.ErrorMessage;
 import greencity.dto.PageableAdvancedDto;
-import greencity.dto.event.AddEventDtoRequest;
-import greencity.dto.event.EventDto;
-import greencity.dto.event.EventForSendEmailDto;
-import greencity.dto.event.EventVO;
+import greencity.dto.event.*;
 import greencity.dto.tag.TagVO;
 import greencity.dto.user.PlaceAuthorDto;
 import greencity.dto.user.UserVO;
@@ -53,19 +50,19 @@ public class EventServiceImpl implements EventService {
 
     private PageableAdvancedDto<EventDto> buildPageableAdvancedDto(Page<Event> eventPage) {
         List<EventDto> eventDtos = eventPage.stream()
-            .map(event -> modelMapper.map(event, EventDto.class))
-            .collect(Collectors.toList());
+                .map(event -> modelMapper.map(event, EventDto.class))
+                .collect(Collectors.toList());
 
         return new PageableAdvancedDto<>(
-            eventDtos,
-            eventPage.getTotalElements(),
-            eventPage.getPageable().getPageNumber(),
-            eventPage.getTotalPages(),
-            eventPage.getNumber(),
-            eventPage.hasPrevious(),
-            eventPage.hasNext(),
-            eventPage.isFirst(),
-            eventPage.isLast());
+                eventDtos,
+                eventPage.getTotalElements(),
+                eventPage.getPageable().getPageNumber(),
+                eventPage.getTotalPages(),
+                eventPage.getNumber(),
+                eventPage.hasPrevious(),
+                eventPage.hasNext(),
+                eventPage.isFirst(),
+                eventPage.isLast());
     }
 
     /**
@@ -82,7 +79,7 @@ public class EventServiceImpl implements EventService {
 
     private Event genericSave(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId) {
         User organizer = userRepo.findById(organizerId)
-            .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + organizerId));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + organizerId));
 
         Event eventToSave = modelMapper.map(addEventDtoRequest, Event.class);
         eventToSave.setOrganizer(organizer);
@@ -147,8 +144,8 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDto findById(Long eventId) {
         Event event = eventRepo
-            .findById(eventId)
-            .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventId));
+                .findById(eventId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventId));
         return modelMapper.map(event, EventDto.class);
     }
 
@@ -177,43 +174,65 @@ public class EventServiceImpl implements EventService {
      */
     @Override
     public PageableAdvancedDto<EventDto> findAllByUser(UserVO user, Pageable page) {
-        Page<Event> pages;
+        User existingUser = userRepo.findById(user.getId())
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + user.getId()));
         if (page.getSort().isEmpty()) {
-            pages = eventRepo.findAllByOrganizerOrderByCreationDateDesc(modelMapper.map(user, User.class), page);
+            Page<Event> pages = eventRepo.findAllByOrganizerOrderByCreationDateDesc(existingUser, page);
+            return buildPageableAdvancedDto(pages);
         } else {
             throw new UnsupportedSortException(ErrorMessage.INVALID_SORTING_VALUE);
         }
-        return buildPageableAdvancedDto(pages);
     }
 
-    private boolean userIsOrganizerOrAdmin(UserVO user, Event existingEvent) {
+    private boolean userIsOrganizerOrAdmin(User user, Event existingEvent) {
         return Objects.equals(user.getId(), existingEvent.getOrganizer().getId())
-            || user.getRole().equals(Role.ROLE_ADMIN);
+                || user.getRole().equals(Role.ROLE_ADMIN);
     }
 
     /**
      * {@inheritDoc}
      */
+
     @Override
-    public EventDto update(EventVO eventVO, MultipartFile[] images, UserVO user) {
-        Event existingEvent = eventRepo.findById(eventVO.getId())
-            .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventVO.getId()));
-        if (!userIsOrganizerOrAdmin(user, existingEvent)) {
-            throw new AccessDeniedException("You don't have permission to edit this event");
-        }
-        if (existingEvent.getDateLocations().stream()
-            .noneMatch(dateLocation -> dateLocation.getFinishDate().isBefore(ZonedDateTime.now()))) {
-            throw new AccessDeniedException(ErrorMessage.EVENT_PAST_CANNOT_BE_EDITED);
-        }
-
-        existingEvent.setTitle(eventVO.getTitle());
-        existingEvent.setDescription(eventVO.getDescription());
-        // existingEvent.setDateLocations(eventVO.getDateLocations);
-
-        Event updatedEvent = eventRepo.save(existingEvent);
-
+    public EventDto update(EditEventDtoRequest editEventDtoRequest, MultipartFile[] images, Long organizerId) {
+        Event updatedEvent = genericUpdate(editEventDtoRequest, images, organizerId);
         return modelMapper.map(updatedEvent, EventDto.class);
     }
+
+    private Event genericUpdate(EditEventDtoRequest editEventDtoRequest, MultipartFile[] images, Long organizerId) {
+        Event updatedEvent = eventRepo.findById(editEventDtoRequest.getId())
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + editEventDtoRequest.getId()));
+
+        User organizer = userRepo.findById(organizerId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + organizerId));
+
+        if (!userIsOrganizerOrAdmin(organizer, updatedEvent)) {
+            throw new AccessDeniedException(ErrorMessage.IMPOSSIBLE_UPDATE_EVENT);
+        }
+
+        updatedEvent.setTitle(editEventDtoRequest.getTitle());
+        updatedEvent.setDescription(editEventDtoRequest.getDescription());
+        List<DateLocation> dateLocations = editEventDtoRequest.getDatesLocations().stream()
+                .map(dto -> modelMapper.map(dto, DateLocation.class))
+                .collect(Collectors.toList());
+
+        updatedEvent.setDateLocations(dateLocations);
+        List<TagVO> tagVOS = tagService.findTagsWithAllTranslationsByNamesAndType(
+                editEventDtoRequest.getTags(), TagType.EVENT);
+        List<Tag> tags = modelMapper.map(tagVOS,
+                new TypeToken<List<Tag>>() {
+                }.getType());
+        updatedEvent.setTags(tags);
+
+        if (images != null && images.length > 0) {
+            processEventImages(updatedEvent, images);
+        }
+
+        updatedEvent.setEventClosed(Boolean.parseBoolean(editEventDtoRequest.getOpen()));
+
+        return eventRepo.save(updatedEvent);
+    }
+
 
     /**
      * Method for deleting the {@link EventDto} instance by its id.
@@ -258,8 +277,8 @@ public class EventServiceImpl implements EventService {
         eventToSave.setTitleImage(paths[0]);
         if (images.length > 1) {
             List<String> additionalImages = Arrays.stream(paths)
-                .skip(1)
-                .collect(Collectors.toList());
+                    .skip(1)
+                    .collect(Collectors.toList());
             eventToSave.setAdditionalImages(additionalImages);
         }
     }

@@ -78,6 +78,7 @@ public final class ErrorMessage {
     public static final String DUPLICATED_USER_SHOPPING_LIST_ITEM = "UserShoppingListItems should be unique";
     public static final String USER_CANT_UPDATE_HIMSELF = "User can't update yourself";
     public static final String IMPOSSIBLE_UPDATE_USER_STATUS = "Impossible to update status of admin or moderator";
+    public static final String IMPOSSIBLE_UPDATE_EVENT = "You don't have permission to edit this event";
     public static final String PROFILE_PICTURE_NOT_FOUND_BY_ID = "Profile picture not found by id : ";
     public static final String IMAGE_EXISTS = "Image should be download, PNG or JPEG ";
     public static final String OWN_USER_ID = "You can not perform actions with your own id : ";
