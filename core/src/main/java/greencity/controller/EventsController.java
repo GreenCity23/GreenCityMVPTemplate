@@ -35,6 +35,13 @@ import java.util.List;
 public class EventsController {
     private final EventService eventService;
 
+    /**
+     * Method for creating Event.
+     *
+     * @param addEventDtoRequest - dto for creating Event entity.
+     * @return dto {@link EventDto} instance.
+     * @author Vladyslav Siverskyi.
+     */
     @PostMapping(value = "/create", consumes = {
         MediaType.APPLICATION_JSON_UTF8_VALUE,
         MediaType.MULTIPART_FORM_DATA_VALUE
