@@ -15,18 +15,20 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Builder
 public class EventDto implements Serializable {
-    Long id;
-    String title;
-    String description;
-    ZonedDateTime creationDate;
-    List<EventDateLocationDto> dateLocations;
-    EventAuthorDto organizer;
-    String titleImage;
-    boolean open;
-    boolean isSubscribed;
-    boolean isFavorite;
-    Set<TagUaEnDto> tags;
-    List<String> additionalImages;
+    private Long id;
+    private String title;
+    private String description;
+    private ZonedDateTime creationDate;
+    private List<EventDateLocationDto> dateLocations;
+    private EventAuthorDto organizer;
+    private String titleImage;
+    private boolean open;
+    private boolean isSubscribed;
+    private boolean isFavorite;
+    private Set<TagUaEnDto> tags;
+    private List<String> additionalImages;
 }
