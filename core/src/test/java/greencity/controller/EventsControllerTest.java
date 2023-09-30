@@ -69,6 +69,7 @@ class EventsControllerTest {
     void createEvent() throws Exception {
         UserVO userVO = mock(UserVO.class);
         when(userVO.getId()).thenReturn(3L);
+
         String json = "{\"title\":\"test events\",\n" +
                       "\"description\":\"test test test test test test test test test\",\n" +
                       "\"open\":\"true\",\n" +
