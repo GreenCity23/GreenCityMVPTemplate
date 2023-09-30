@@ -210,13 +210,23 @@ public class EventServiceImpl implements EventService {
             throw new AccessDeniedException(ErrorMessage.IMPOSSIBLE_UPDATE_EVENT);
         }
 
+        if (updatedEvent.getDateLocations().stream()
+                .anyMatch(dateLocation -> dateLocation.getStartDate().isBefore(ZonedDateTime.now()))) {
+            throw new AccessDeniedException(ErrorMessage.EVENT_PAST_CANNOT_BE_EDITED);
+        }
+
         updatedEvent.setTitle(editEventDtoRequest.getTitle());
         updatedEvent.setDescription(editEventDtoRequest.getDescription());
-        List<DateLocation> dateLocations = editEventDtoRequest.getDatesLocations().stream()
-                .map(dto -> modelMapper.map(dto, DateLocation.class))
-                .collect(Collectors.toList());
 
-        updatedEvent.setDateLocations(dateLocations);
+        updatedEvent.setDateLocations(editEventDtoRequest.getDatesLocations().stream()
+                .map(eventDateLocationDto -> {
+                    if (eventDateLocationDto.getStartDate().isBefore(ZonedDateTime.now())) {
+                        throw new NotSavedException(ErrorMessage.EVENT_PAST_CANNOT_BE_SAVED);
+                    }
+                    return modelMapper.map(eventDateLocationDto, DateLocation.class).setEvent(updatedEvent);
+                })
+                .collect(Collectors.toList()));
+
         List<TagVO> tagVOS = tagService.findTagsWithAllTranslationsByNamesAndType(
                 editEventDtoRequest.getTags(), TagType.EVENT);
         List<Tag> tags = modelMapper.map(tagVOS,
