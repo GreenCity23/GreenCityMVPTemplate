@@ -110,8 +110,7 @@ class EventsControllerTest {
                         .file(image2)
                         .file(jsonFile)
                         .principal(principal)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)) // Set the user ID as needed
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andExpect(status().isCreated());
 
         verify(eventService, times(1))
