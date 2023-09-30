@@ -4,10 +4,10 @@ import greencity.constant.AppConstant;
 import greencity.dto.PageableAdvancedDto;
 import greencity.dto.econews.*;
 import greencity.dto.econewscomment.*;
+import greencity.dto.event.TagUaEnDto;
+import greencity.dto.event.*;
 import greencity.dto.habit.HabitAssignPropertiesDto;
 import greencity.dto.habit.HabitAssignVO;
-import greencity.dto.habit.HabitDto;
-import greencity.dto.habitfact.HabitFactDto;
 import greencity.dto.habitfact.HabitFactTranslationVO;
 import greencity.dto.habitfact.HabitFactViewDto;
 import greencity.dto.language.LanguageDTO;
@@ -191,6 +191,18 @@ public class ModelUtils {
         return new EcoNews(1L, zonedDateTime, TestConst.SITE, "source", "shortInfo", getUser(),
             "title", "text", List.of(EcoNewsComment.builder().id(1L).text("test").build()),
             Collections.singletonList(tag), Collections.emptySet(), Collections.emptySet());
+    }
+
+    public static Event getEvent() {
+        Tag tag = new Tag();
+        tag.setTagTranslations(
+                List.of(TagTranslation.builder().name("Соціальний").language(Language.builder().code("ua").build()).build(),
+                        TagTranslation.builder().name("Social").language(Language.builder().code("en").build()).build()));
+        return new Event(1L, "event title", "event description event description ", zonedDateTime,
+                List.of(DateLocation.builder()
+                        .id(1L).startDate(zonedDateTime.plusDays(2)).finishDate(zonedDateTime.plusDays(3)).build()),
+                getUser(), "https://google.com/", true, false, false,
+                null, List.of(tag), null);
     }
 
     public static EcoNews getEcoNewsForFindDtoByIdAndLanguage() {
@@ -482,6 +494,48 @@ public class ModelUtils {
     public static EcoNewsDto getEcoNewsDto() {
         return new EcoNewsDto(ZonedDateTime.now(), "imagePath", 1L, "title", "content", "text",
             getEcoNewsAuthorDto(), Collections.singletonList("tag"), Collections.singletonList("тег"), 1, 0, 0);
+    }
+
+    public static TagUaEnDto getTagUaEnDto() {
+        return TagUaEnDto.builder()
+                .id(1L)
+                .type(TagType.EVENT)
+                .nameUa("Соціальний")
+                .nameEn("Social")
+                .build();
+    }
+
+    public static EventDateLocationDto getEventDateLocation() {
+        return EventDateLocationDto.builder()
+                .id(1L)
+                .onlineLink("https://google.com/")
+                .startDate(zonedDateTime.plusHours(3))
+                .finishDate(zonedDateTime.plusHours(7))
+                .coordinates(AddressDto.builder()
+                        .latitude(1.0)
+                        .longitude(1.0)
+                        .build())
+                .build();
+    }
+
+    public static EventDto getEventDto() {
+        return EventDto.builder()
+                .id(1L)
+                .title("event title")
+                .description("event description event description")
+                .creationDate(zonedDateTime)
+                .dateLocations(List.of(getEventDateLocation()))
+                .organizer(EventAuthorDto.builder()
+                        .id(getUser().getId())
+                        .name(getUser().getName())
+                        .organizerRating(0.0)
+                        .build())
+                .titleImage("https://google.com/")
+                .open(true)
+                .isSubscribed(false)
+                .isFavorite(false)
+                .tags(Set.of(getTagUaEnDto()))
+                .build();
     }
 
     public static EcoNewsGenericDto getEcoNewsGenericDto() {
