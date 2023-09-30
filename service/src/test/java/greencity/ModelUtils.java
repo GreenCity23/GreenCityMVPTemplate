@@ -201,7 +201,7 @@ public class ModelUtils {
         return new Event(1L, "event title", "event description event description ", zonedDateTime,
                 List.of(DateLocation.builder()
                         .id(1L).startDate(zonedDateTime.plusDays(2)).finishDate(zonedDateTime.plusDays(3)).build()),
-                getUser(), "https://picture.jpg", true, false, false,
+                getUser(), "https://google.com/", true, false, false,
                 null, List.of(tag), null);
     }
 
