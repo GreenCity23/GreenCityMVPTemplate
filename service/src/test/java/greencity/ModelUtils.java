@@ -560,6 +560,21 @@ public class ModelUtils {
                 .build();
     }
 
+    public static EventVO getEventVO() {
+        return EventVO.builder()
+                .id(1L)
+                .title("event title")
+                .description("event description event description")
+                .organizer(UserVO.builder()
+                        .id(getUser().getId())
+                        .name(getUser().getName())
+                        .userStatus(getUser().getUserStatus())
+                        .role(getUser().getRole())
+                        .build())
+                .titleImage("https://google.com/")
+                .build();
+    }
+
     public static EcoNewsGenericDto getEcoNewsGenericDto() {
         String[] tagsEn = {"News"};
         String[] tagsUa = {"Новини"};
