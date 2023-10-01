@@ -9,10 +9,7 @@ import lombok.*;
 @Builder
 public class NotifiedUserDto {
     private Long id;
-
     private Long notificationId;
-
     private Boolean isRead;
-
     private Long userId;
 }

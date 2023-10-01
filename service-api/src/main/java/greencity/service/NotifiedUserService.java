@@ -14,5 +14,13 @@ public interface NotifiedUserService {
 
     NotifiedUserDto saveNotifiedUsers(NotifiedUserDto notifiedUserDto);
 
+    List<NotifiedUserDto> getAllUsersNotifications(Long userId);
+
+    Long countUnreadNotificationsForUser(Long userId);
+
+    void setNotificationAsRead(Long notificationId, Long userId);
+
+    void setNotificationAsUnread(Long notificationId, Long userId);
+
     void deleteNotifiedUser(Long id);
 }
