@@ -16,11 +16,11 @@ class EventDtoMapperTest {
 
     @InjectMocks
     private EventDtoMapper eventDtoMapper;
+    private EventDto expected = getEventDto();
 
     @Test
     void convert() {
         Event event = getEvent();
-        EventDto expected = getEventDto();
         EventDto actual = eventDtoMapper.convert(event);
 
         assertEquals(expected.getId(), actual.getId());
@@ -33,6 +33,5 @@ class EventDtoMapperTest {
         assertEquals(expected.isOpen(), actual.isOpen());
         assertEquals(expected.isFavorite(), actual.isFavorite());
         assertEquals(expected.isSubscribed(), actual.isSubscribed());
-
     }
 }

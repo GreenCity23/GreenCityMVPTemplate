@@ -13,6 +13,8 @@ import java.time.ZonedDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class DateLocation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

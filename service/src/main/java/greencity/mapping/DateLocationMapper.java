@@ -31,6 +31,7 @@ public class DateLocationMapper extends AbstractConverter<EventDateLocationDto, 
     protected DateLocation convert(EventDateLocationDto eventDateLocationDto) {
         Map<String, String> addresses = geocodingService.getAddress(eventDateLocationDto.getCoordinates().getLatitude(), eventDateLocationDto.getCoordinates().getLongitude());
         return DateLocation.builder()
+                .id(eventDateLocationDto.getId())
                 .startDate(eventDateLocationDto.getStartDate())
                 .finishDate(eventDateLocationDto.getFinishDate())
                 .address(Address.builder()

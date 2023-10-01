@@ -17,11 +17,11 @@ class AddEventDtoRequestMapperTest {
 
     @Test
     void convert() {
-        AddEventDtoRequest addEventDtoRequest = ModelUtils.getAddEventDtoRequest();
-        Event expected = mapper.convert(addEventDtoRequest);
+        AddEventDtoRequest expected = ModelUtils.getAddEventDtoRequest();
+        Event actual = mapper.convert(expected);
 
-        assertEquals(expected.getTitle(), addEventDtoRequest.getTitle());
-        assertEquals(expected.getDescription(), addEventDtoRequest.getDescription());
-        assertEquals(!expected.isEventClosed(), Boolean.parseBoolean(addEventDtoRequest.getOpen()));
+        assertEquals(expected.getTitle(), actual.getTitle());
+        assertEquals(expected.getDescription(), actual.getDescription());
+        assertEquals(Boolean.parseBoolean(expected.getOpen()), !actual.isEventClosed());
     }
 }
