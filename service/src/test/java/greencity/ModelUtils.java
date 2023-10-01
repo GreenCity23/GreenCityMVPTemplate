@@ -53,7 +53,7 @@ public class ModelUtils {
     public static LocalDateTime localDateTime = LocalDateTime.now();
 
     public static Tag getTag() {
-        return new Tag(1L, TagType.HABIT, getHabitTagTranslations(), Collections.emptyList(),
+        return new Tag(1L, TagType.ECO_NEWS, getTagTranslations(), Collections.emptyList(),
                 Collections.emptySet(), Collections.emptySet());
     }
 
@@ -190,7 +190,7 @@ public class ModelUtils {
 
     public static EcoNews getEcoNews() {
         Tag tag = new Tag();
-        tag.setTagTranslations(getEventTagTranslations());
+        tag.setTagTranslations(getTagTranslations());
         return new EcoNews(1L, zonedDateTime, TestConst.SITE, "source", "shortInfo", getUser(),
             "title", "text", List.of(EcoNewsComment.builder().id(1L).text("test").build()),
             Collections.singletonList(tag), Collections.emptySet(), Collections.emptySet());
@@ -198,17 +198,16 @@ public class ModelUtils {
 
     public static Event getEvent() {
         Tag tag = new Tag();
-        tag.setTagTranslations(
-                List.of(TagTranslation.builder().name("Соціальний").language(Language.builder().code("ua").build()).build(),
-                        TagTranslation.builder().name("Social").language(Language.builder().code("en").build()).build()));
-        return new Event(1L, "event title", "event description event description ", zonedDateTime,
+        tag.setTagTranslations(getEventTagTranslations());
+        return new Event(1L, "event title", "event description event description", zonedDateTime,
                 List.of(getDateLocation()),
-                getUser(), "https://google.com/", true, false, false,
+                getUser(), "https://google.com/", false, false, false,
                 null, List.of(tag), null);
     }
 
     public static DateLocation getDateLocation() {
         return DateLocation.builder()
+                .id(1L)
                 .onlineLink("https://google.com/")
                 .startDate(zonedDateTime.plusHours(3))
                 .finishDate(zonedDateTime.plusHours(7))

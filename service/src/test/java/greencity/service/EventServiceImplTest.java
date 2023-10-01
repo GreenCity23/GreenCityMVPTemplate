@@ -63,6 +63,7 @@ public class EventServiceImplTest {
         AddEventDtoRequest addEventDtoRequest = getAddEventDtoRequest();
         List<TagVO> tagVOS = Collections.singletonList(ModelUtils.getEventTagVO());
         List<Tag> tags = Collections.singletonList(getEventTag());
+
         when(modelMapper.map(addEventDtoRequest, Event.class)).thenReturn(event);
         when(modelMapper.map(event, EventDto.class)).thenReturn(getEventDto());
         when(userRepo.findById(anyLong())).thenReturn(Optional.of(getUser()));
@@ -75,7 +76,9 @@ public class EventServiceImplTest {
         when(httpServletRequest.getHeader(AUTHORIZATION)).thenReturn("Bearer token");
         when(fileService.upload(any())).thenReturn(ModelUtils.getUrl().toString());
         doNothing().when(restClient).addEvent(any(), anyString());
+
         EventDto res = eventService.save(addEventDtoRequest, images, 1L);
+
         assertEquals(res, getEventDto());
     }
 }
