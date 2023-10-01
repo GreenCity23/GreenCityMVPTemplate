@@ -18,6 +18,6 @@ public class TagUaEnDto implements Serializable {
 
     Long id;
     TagType type;
-    String nameUa; // TODO
+    String nameUa;
     String nameEn;
 }

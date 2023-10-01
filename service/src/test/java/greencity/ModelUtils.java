@@ -57,6 +57,11 @@ public class ModelUtils {
                 Collections.emptySet(), Collections.emptySet());
     }
 
+    public static Tag getEventTag() {
+        return new Tag(1L, TagType.EVENT, getEventTagTranslations(), Collections.emptyList(),
+                Collections.emptySet(), Collections.emptySet());
+    }
+
     public static Tag getHabitTag() {
         return new Tag(1L, TagType.HABIT, getHabitTagTranslations(), Collections.emptyList(),
             Collections.emptySet(), Collections.emptySet());
@@ -185,9 +190,7 @@ public class ModelUtils {
 
     public static EcoNews getEcoNews() {
         Tag tag = new Tag();
-        tag.setTagTranslations(
-            List.of(TagTranslation.builder().name("Новини").language(Language.builder().code("ua").build()).build(),
-                TagTranslation.builder().name("News").language(Language.builder().code("en").build()).build()));
+        tag.setTagTranslations(getEventTagTranslations());
         return new EcoNews(1L, zonedDateTime, TestConst.SITE, "source", "shortInfo", getUser(),
             "title", "text", List.of(EcoNewsComment.builder().id(1L).text("test").build()),
             Collections.singletonList(tag), Collections.emptySet(), Collections.emptySet());
@@ -199,10 +202,21 @@ public class ModelUtils {
                 List.of(TagTranslation.builder().name("Соціальний").language(Language.builder().code("ua").build()).build(),
                         TagTranslation.builder().name("Social").language(Language.builder().code("en").build()).build()));
         return new Event(1L, "event title", "event description event description ", zonedDateTime,
-                List.of(DateLocation.builder()
-                        .id(1L).startDate(zonedDateTime.plusDays(2)).finishDate(zonedDateTime.plusDays(3)).build()),
+                List.of(getDateLocation()),
                 getUser(), "https://google.com/", true, false, false,
                 null, List.of(tag), null);
+    }
+
+    public static DateLocation getDateLocation() {
+        return DateLocation.builder()
+                .onlineLink("https://google.com/")
+                .startDate(zonedDateTime.plusHours(3))
+                .finishDate(zonedDateTime.plusHours(7))
+                .address(Address.builder()
+                        .latitude(1.0)
+                        .longitude(1.0)
+                        .build())
+                .build();
     }
 
     public static EcoNews getEcoNewsForFindDtoByIdAndLanguage() {
@@ -417,6 +431,10 @@ public class ModelUtils {
         return new TagVO(1L, TagType.ECO_NEWS, getTagTranslationsVO(), null, null);
     }
 
+    public static TagVO getEventTagVO() {
+        return new TagVO(1L, TagType.EVENT, getTagTranslationsVO(), null, null);
+    }
+
     public static TagPostDto getTagPostDto() {
         return new TagPostDto(TagType.ECO_NEWS, getTagTranslationDtos());
     }
@@ -505,7 +523,12 @@ public class ModelUtils {
                 .build();
     }
 
-    public static EventDateLocationDto getEventDateLocation() {
+    public static AddEventDtoRequest getAddEventDtoRequest() {
+        return new AddEventDtoRequest(List.of(getEventDateLocationDto()), "event description event description",
+                List.of("Social"), "true", "event title");
+    }
+
+    public static EventDateLocationDto getEventDateLocationDto() {
         return EventDateLocationDto.builder()
                 .id(1L)
                 .onlineLink("https://google.com/")
@@ -524,7 +547,7 @@ public class ModelUtils {
                 .title("event title")
                 .description("event description event description")
                 .creationDate(zonedDateTime)
-                .dateLocations(List.of(getEventDateLocation()))
+                .dateLocations(List.of(getEventDateLocationDto()))
                 .organizer(EventAuthorDto.builder()
                         .id(getUser().getId())
                         .name(getUser().getName())
