@@ -1,7 +1,5 @@
 package greencity.entity;
 
-import greencity.enums.NotificationSourceType;
-import greencity.enums.NotificationSourceType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,7 +10,7 @@ import java.util.ArrayList;
 
 
 @Entity
-@Table(name = "notification")
+@Table(name = "notifications")
 @ToString(exclude = {"sender"})
 @EqualsAndHashCode(exclude = {"sender"})
 @AllArgsConstructor
@@ -33,16 +31,15 @@ public class Notification {
 
     @ManyToOne
     @JoinColumn(name = "source_id", referencedColumnName = "id")
-    private NotificationSources source;
-
-    @Column(nullable = false)
-    private Long source_object_id;
+    private NotificationSource source;
 
     @ManyToOne
     @JoinColumn(name = "sender_id", referencedColumnName = "id")
     private User sender;
 
     @OneToMany(mappedBy = "notification", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<NotifiedUsers> notifiedUsers = new ArrayList<>();
+    private List<NotifiedUser> notifiedUsers = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "notifications")
+    private List<EcoNewsComment> ecoNewsComments = new ArrayList<>();
 }

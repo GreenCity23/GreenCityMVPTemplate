@@ -5,8 +5,8 @@
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="create-notification-table" author="Tulush">
-        <createTable tableName="notification">
-            <column name="id" type="BIGINT">
+        <createTable tableName="notifications">
+            <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="creation_date" type="TIMESTAMP WITH TIME ZONE">
@@ -21,15 +21,12 @@
             <column name="source_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="source_object_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
     </changeSet>
 
     <changeSet id="add-foreign-key-sender" author="Tulush">
         <addForeignKeyConstraint
-                baseTableName="notification"
+                baseTableName="notifications"
                 baseColumnNames="sender_id"
                 constraintName="fk_notification_sender"
                 referencedTableName="user"
@@ -40,7 +37,7 @@
 
     <changeSet id="create-notified-users-table" author="Tulush">
         <createTable tableName="notified_users">
-            <column name="id" type="BIGINT">
+            <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="notification_id" type="BIGINT">
@@ -73,7 +70,7 @@
                 baseTableName="notified_users"
                 baseColumnNames="notification_id"
                 constraintName="fk_notified_users_notification_id"
-                referencedTableName="notification"
+                referencedTableName="notifications"
                 referencedColumnNames="id"
                 onDelete="CASCADE"
         />
@@ -81,11 +78,17 @@
 
     <changeSet id="create-notification-sources-table" author="Tulush">
         <createTable tableName="notification_sources">
-            <column name="id" type="BIGINT">
+            <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="source" type="VARCHAR(255)">
 <!--            <column name="source" type="notification_source_type">-->
+                <constraints nullable="false"/>
+            </column>
+            <column name="en_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ua_name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -93,7 +96,7 @@
 
     <changeSet id="add-foreign-key-notification-source" author="Tulush">
         <addForeignKeyConstraint
-                baseTableName="notification"
+                baseTableName="notifications"
                 baseColumnNames="source_id"
                 constraintName="fk_notification_source"
                 referencedTableName="notification_sources"
@@ -101,66 +104,4 @@
                 onDelete="CASCADE"
         />
     </changeSet>
-
-    <changeSet id="create-notification-source-translations-table" author="Tulush">
-        <createTable tableName="notification_source_translations">
-            <column name="id" type="BIGINT">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="name" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="language_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="notification_source_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="add-foreign-key-source-id" author="Tulush">
-        <addForeignKeyConstraint
-                baseTableName="notification_source_translations"
-                baseColumnNames="notification_source_id"
-                constraintName="fk_notification_source_translations_source"
-                referencedTableName="notification_sources"
-                referencedColumnNames="id"
-                onDelete="CASCADE"
-        />
-    </changeSet>
-
-<!--    <changeSet id="add-foreign-key-language-id" author="Tulush">-->
-<!--        <addForeignKeyConstraint-->
-<!--                baseTableName="notification_source_translations"-->
-<!--                baseColumnNames="language_id"-->
-<!--                constraintName="fk_notification_source_translations_language"-->
-<!--                referencedTableName="languages"-->
-<!--                referencedColumnNames="id"-->
-<!--                onDelete="CASCADE"-->
-<!--        />-->
-<!--    </changeSet>-->
-
-
-    <!--    <changeSet id="create-notification-source-type-enum" author="Tulush">-->
-<!--        <sql>-->
-<!--            CREATE TYPE notification_source_type AS ENUM (-->
-<!--                'NEWS_COMMENTED',-->
-<!--                'NEWS_LIKED',-->
-<!--                'COMMENT_REPLY',-->
-<!--                'COMMENT_LIKED',-->
-<!--                'EVENT_COMMENTED',-->
-<!--                'EVENT_LIKED',-->
-<!--                'EVENT_CANCELED',-->
-<!--                'EVENT_UPDATED',-->
-<!--                'FRIENDSHIP_REQUEST',-->
-<!--                'FRIENDSHIP_ACCEPTED',-->
-<!--                'HABIT_COMMENTED',-->
-<!--                'HABIT_LIKED',-->
-<!--                'HABIT_INVITATION'-->
-<!--            );-->
-<!--        </sql>-->
-<!--    </changeSet>-->
-
-
 </databaseChangeLog>

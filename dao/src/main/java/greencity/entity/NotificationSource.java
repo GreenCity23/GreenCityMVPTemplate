@@ -1,6 +1,5 @@
 package greencity.entity;
 
-import greencity.entity.localization.NotificationSourceTranslation;
 import greencity.enums.NotificationSourceType;
 import lombok.*;
 
@@ -17,7 +16,7 @@ import java.util.List;
 @Table(name = "notification_sources")
 @ToString(exclude = {"source"})
 @EqualsAndHashCode(exclude = {"source"})
-public class NotificationSources {
+public class NotificationSource {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,9 +25,12 @@ public class NotificationSources {
     @Column(nullable = false)
     private NotificationSourceType source;
 
-    @OneToMany(mappedBy = "source", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Notification> sentNotifications = new ArrayList<>();
+    @Column(name = "en_name", nullable = false)
+    private String enName;
+
+    @Column(name = "ua_name", nullable = false)
+    private String uaName;
 
     @OneToMany(mappedBy = "source", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<NotificationSourceTranslation> notificationSourceTranslations = new ArrayList<>();
+    private List<Notification> sentNotifications = new ArrayList<>();
 }

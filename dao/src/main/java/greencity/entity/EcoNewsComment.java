@@ -62,4 +62,13 @@ public class EcoNewsComment {
         joinColumns = @JoinColumn(name = "econews_comment_id"),
         inverseJoinColumns = @JoinColumn(name = "users_liked_id"))
     private Set<User> usersLiked;
+
+    @ManyToMany
+    @JoinTable(
+            name = "notification_econews_comment",
+            joinColumns = @JoinColumn(name = "econews_comment_id"),
+            inverseJoinColumns = @JoinColumn(name = "notification_id")
+    )
+    private List<Notification> notifications = new ArrayList<>();
+
 }

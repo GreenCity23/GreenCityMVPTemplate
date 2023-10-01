@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Builder
-public class NotifiedUsers {
+public class NotifiedUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

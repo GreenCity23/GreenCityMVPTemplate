@@ -124,7 +124,7 @@ public class User {
     private List<Notification> sentNotifications = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<NotifiedUsers> receivedNotifications = new ArrayList<>();
+    private List<NotifiedUser> receivedNotifications = new ArrayList<>();
 
     @Column(name = "profile_picture")
     private String profilePicturePath;
