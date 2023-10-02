@@ -7,6 +7,7 @@ import com.google.maps.model.AddressComponent;
 import com.google.maps.model.AddressComponentType;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
+import greencity.exception.exceptions.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class GeocodingService {
                     .language(language)
                     .await();
         } catch (ApiException | InterruptedException | IOException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new BadRequestException("An error occurred while calling the Google Geocoding API, reason: " + e.getMessage());
         }
 
         for (int i = results.length - 1; i >= 0; i--) {
