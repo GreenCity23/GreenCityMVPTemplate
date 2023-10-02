@@ -5,6 +5,9 @@ import greencity.annotations.CurrentUser;
 import greencity.constant.HttpStatuses;
 import greencity.dto.PageableDto;
 import greencity.dto.friends.UserFriendDto;
+import greencity.dto.habit.HabitVO;
+import greencity.dto.habitfact.HabitFactDto;
+import greencity.dto.habitfact.HabitFactVO;
 import greencity.dto.user.UserManagementDto;
 import greencity.dto.user.UserVO;
 import greencity.service.FriendService;
@@ -26,11 +29,25 @@ import java.util.List;
 public class FriendController {
     private final FriendService friendService;
 
+    /**
+     * The controller which returns {@link FriendController}
+     *
+     * @param friendService {@link FriendService}.
+     * @return {@link FriendController}.
+     * @author Anisimov Eugene
+     */
     @Autowired
     public FriendController(FriendService friendService) {
         this.friendService = friendService;
     }
 
+    /**
+     * Method which finds all friends.
+     *
+     * @param name   filter name.
+     * @param userVO {@link UserVO} instance.
+     * @return {@link ResponseEntity}.
+     */
     @ApiOperation(value = "Find all friends")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = HttpStatuses.OK),
@@ -48,6 +65,12 @@ public class FriendController {
             .body(friendService.findAllFriendsOfUser(userVO.getId(), name, page));
     }
 
+    /**
+     * Method which finds user all friends.
+     *
+     * @param userId user id.
+     * @return {@link ResponseEntity}.
+     */
     @ApiOperation(value = "Get all user's friends")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = HttpStatuses.OK),
@@ -59,6 +82,13 @@ public class FriendController {
         return ResponseEntity.status(HttpStatus.OK).body(friendService.findUserFriendsByUserId(userId));
     }
 
+    /**
+     * Method which deletes user friend.
+     *
+     * @param friendId friend id.
+     * @param userVO   {@link UserVO} instance.
+     * @return {@link ResponseEntity}.
+     */
     @ApiOperation(value = "Delete user's friend")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = HttpStatuses.OK),
