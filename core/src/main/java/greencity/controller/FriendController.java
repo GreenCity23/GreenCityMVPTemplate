@@ -30,10 +30,9 @@ public class FriendController {
     private final FriendService friendService;
 
     /**
-     * The controller which returns {@link FriendController}
+     * The controller which returns {@link FriendController}.
      *
      * @param friendService {@link FriendService}.
-     * @return {@link FriendController}.
      * @author Anisimov Eugene
      */
     @Autowired
