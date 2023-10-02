@@ -17,6 +17,8 @@ public interface NotifiedUserRepo extends JpaRepository<NotifiedUser, Long>, Jpa
 
     Long countByUserIdAndIsReadIsFalse(Long userId);
 
+    @Query("SELECT COUNT(nu) FROM NotifiedUser nu WHERE nu.user.id = :userId AND nu.notification.id = :notificationId")
+    Long countByUserIdAndNotificationId(Long userId, Long notificationId);
 
     @Transactional
     @Modifying
