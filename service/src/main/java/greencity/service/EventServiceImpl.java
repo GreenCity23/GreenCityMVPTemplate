@@ -52,11 +52,13 @@ public class EventServiceImpl implements EventService {
     public EventDto save(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId) {
         User organizer = userRepo.findById(organizerId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + organizerId));
-
         Event eventToSave = modelMapper.map(addEventDtoRequest, Event.class);
         eventToSave.setOrganizer(organizer);
 
-        return modelMapper.map(genericSaveOrUpdate(eventToSave, addEventDtoRequest, images, organizer), EventDto.class);
+        EventDto eventDto =
+                modelMapper.map(genericSaveOrUpdate(eventToSave, addEventDtoRequest, images, organizer), EventDto.class);
+        sendEmailDto(eventDto, organizer);
+        return eventDto;
     }
 
     /**
@@ -84,7 +86,7 @@ public class EventServiceImpl implements EventService {
     }
 
     private void validateDateLocations(Event event, List<EventDateLocationDto> dateLocations) {
-        if (dateLocations.size() > 7) {
+        if (dateLocations.size() > 7 || dateLocations.isEmpty()) {
             throw new NotSavedException(ErrorMessage.EVENT_INVALID_DURATION);
         }
 
@@ -177,14 +179,14 @@ public class EventServiceImpl implements EventService {
     @Override
     public PageableAdvancedDto<EventDto> findAllByUser(UserVO user, Pageable page) {
         Page<Event> pages;
-       userRepo.findById(user.getId())
+        userRepo.findById(user.getId())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + user.getId()));
         if (page.getSort().isEmpty()) {
             pages = eventRepo.findAllByOrganizerOrderByCreationDateDesc(modelMapper.map(user, User.class), page);
         } else {
             throw new UnsupportedSortException(ErrorMessage.INVALID_SORTING_VALUE);
         }
-            return buildPageableAdvancedDto(pages);
+        return buildPageableAdvancedDto(pages);
     }
 
     private boolean userIsOrganizerOrAdmin(User user, Event existingEvent) {

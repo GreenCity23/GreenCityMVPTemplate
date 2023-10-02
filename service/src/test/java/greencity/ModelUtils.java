@@ -207,6 +207,16 @@ public class ModelUtils {
                 null, List.of(tag), null);
     }
 
+    public static Event getNotValidEvent() {
+        Tag tag = new Tag();
+        tag.setId(1L);
+        tag.setType(TagType.EVENT);
+        tag.setTagTranslations(getEventTagTranslations());
+        return new Event(1L, "event title", "event description event description", zonedDateTime,
+                List.of(getDateLocation()),
+                getUser(), "https://google.com/", false, false, false,
+                null, List.of(tag), null);
+    }
     public static DateLocation getDateLocation() {
         return DateLocation.builder()
                 .id(1L)
@@ -219,6 +229,20 @@ public class ModelUtils {
                         .build())
                 .build();
     }
+
+    public static DateLocation getInvalidDateLocation() {
+        return DateLocation.builder()
+                .id(1L)
+                .onlineLink("https://google.com/")
+                .startDate(zonedDateTime.minusHours(3))
+                .finishDate(zonedDateTime.minusHours(7))
+                .address(Address.builder()
+                        .latitude(1.0)
+                        .longitude(1.0)
+                        .build())
+                .build();
+    }
+
 
     public static EcoNews getEcoNewsForFindDtoByIdAndLanguage() {
         return new EcoNews(1L, null, TestConst.SITE, null, "shortInfo", getUser(),
@@ -534,6 +558,19 @@ public class ModelUtils {
                 .onlineLink("https://google.com/")
                 .startDate(zonedDateTime.plusHours(3))
                 .finishDate(zonedDateTime.plusHours(7))
+                .coordinates(AddressDto.builder()
+                        .latitude(1.0)
+                        .longitude(1.0)
+                        .build())
+                .build();
+    }
+
+    public static EventDateLocationDto getInvalidEventDateLocationDto() {
+        return EventDateLocationDto.builder()
+                .id(1L)
+                .onlineLink("https://google.com/")
+                .startDate(zonedDateTime.minusHours(3))
+                .finishDate(zonedDateTime.minusHours(7))
                 .coordinates(AddressDto.builder()
                         .latitude(1.0)
                         .longitude(1.0)

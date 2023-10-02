@@ -13,6 +13,8 @@ import greencity.dto.user.UserVO;
 import greencity.entity.*;
 import greencity.entity.localization.TagTranslation;
 import greencity.enums.TagType;
+import greencity.exception.exceptions.NotFoundException;
+import greencity.exception.exceptions.NotSavedException;
 import greencity.exception.exceptions.UnsupportedSortException;
 import greencity.repository.EventRepo;
 import greencity.repository.UserRepo;
@@ -22,6 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -33,10 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.net.MalformedURLException;
 import java.time.ZonedDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static greencity.ModelUtils.*;
 import static greencity.constant.AppConstant.AUTHORIZATION;
@@ -61,11 +61,10 @@ public class EventServiceImplTest {
     private EventRepo eventRepo;
     @Mock
     private UserRepo userRepo;
-
     @InjectMocks
     private EventServiceImpl eventService;
-
     private Event event = getEvent();
+    private Event notValidEvent = getNotValidEvent();
 
     @Test
     void save() throws MalformedURLException {
@@ -90,6 +89,34 @@ public class EventServiceImplTest {
         EventDto res = eventService.save(addEventDtoRequest, images, 1L);
 
         assertEquals(res, getEventDto());
+    }
+
+    @Test()
+    void saveThrowsNotFoundException() {
+        MultipartFile[] images = new MultipartFile[]{getFile()};
+
+        when(userRepo.findById(4L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> eventService.save(getAddEventDtoRequest(), images, 4L));
+    }
+
+    @Test()
+    void saveThrowsNotSavedException() throws MalformedURLException {
+        MultipartFile[] images = new MultipartFile[]{getFile()};
+        AddEventDtoRequest addEventDtoRequest = getAddEventDtoRequest();
+        addEventDtoRequest.setDatesLocations(List.of(getInvalidEventDateLocationDto()));
+        List<TagVO> tagVOS = Collections.singletonList(ModelUtils.getEventTagVO());
+        List<Tag> tags = Collections.singletonList(getEventTag());
+
+        when(modelMapper.map(addEventDtoRequest, Event.class)).thenReturn(getNotValidEvent());
+        when(userRepo.findById(anyLong())).thenReturn(Optional.of(getUser()));
+        when(tagsService.findTagsWithAllTranslationsByNamesAndType(
+                addEventDtoRequest.getTags(), TagType.EVENT)).thenReturn(tagVOS);
+        when(modelMapper.map(tagVOS, new TypeToken<List<Tag>>() {
+        }.getType())).thenReturn(tags);
+        when(fileService.upload(any())).thenReturn(ModelUtils.getUrl().toString());
+
+        assertThrows(NotSavedException.class, () -> eventService.save(addEventDtoRequest, images, 1L));
     }
 
     @Test
