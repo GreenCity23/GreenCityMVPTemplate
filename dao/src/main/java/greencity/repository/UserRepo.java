@@ -142,6 +142,15 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
         + "UNION (SELECT friend_id FROM users_friends WHERE user_id = :userId and status = 'FRIEND'));")
     List<User> getAllUserFriends(Long userId);
 
+    /**
+     * Get all user friends for pageable.
+     *
+     * @param userId The ID of the user
+     * @param filteringName Name of user
+     * @param pageable pageable
+     *
+     * @return page of {@link User}.
+     */
     @Query(nativeQuery = true, value = "SELECT * FROM users u "
         + "WHERE u.id IN ("
         + "      SELECT user_id AS id FROM users_friends WHERE friend_id = :userId AND status = 'FRIEND' "
@@ -150,6 +159,12 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
         + ") AND LOWER(u.name) LIKE LOWER(CONCAT('%', :filteringName, '%'))")
     Page<User> findAllFriendsOfUser(Long userId, String filteringName, Pageable pageable);
 
+    /**
+     * Delete user friend.
+     *
+     * @param userId The ID of the user, @param friendId.
+     * @param friendId The ID of the user friend.
+     */
     @Modifying
     @Query(nativeQuery = true,
         value = "DELETE FROM users_friends WHERE (user_id = :userId AND friend_id = :friendId)"
