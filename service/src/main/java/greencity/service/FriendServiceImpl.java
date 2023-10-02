@@ -21,6 +21,12 @@ import java.util.stream.Collectors;
 
 import static greencity.constant.ErrorMessage.USER_NOT_FOUND_BY_ID;
 
+/**
+ * Implementation of {@link HabitFactService}.
+ *
+ * @author Yevhen Anisimov
+ */
+
 @Service
 @RequiredArgsConstructor
 @Transactional
