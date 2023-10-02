@@ -69,7 +69,6 @@ public class EventDtoMapper extends AbstractConverter<Event, EventDto> {
                         .stream()
                         .map(tag -> {
                             TagUaEnDto tagUaEnDto = new TagUaEnDto();
-                            tagUaEnDto.setType(tag.getType());
                             tagUaEnDto.setId(tag.getId());
                             tagUaEnDto.setNameUa(tag.getTagTranslations().stream()
                                     .filter(tagTranslation -> tagTranslation.getLanguage().getCode().equals("ua"))

@@ -2,7 +2,6 @@ package greencity.service;
 
 import greencity.dto.PageableAdvancedDto;
 import greencity.dto.event.AddEventDtoRequest;
-import greencity.dto.event.EditEventDtoRequest;
 import greencity.dto.event.EventDto;
 import greencity.dto.user.UserVO;
 import org.springframework.data.domain.Pageable;
@@ -47,12 +46,12 @@ public interface EventService {
     /**
      * Method for updating Event instance.
      *
-     * @param editEventDtoRequest - instance of {@link EditEventDtoRequest}.
+     * @param addEventDtoRequest - instance of {@link AddEventDtoRequest}.
      * @param images event images.
      * @param organizerId ID of event author.
      * @return {@link EventDto} instance.
      */
-     EventDto update(EditEventDtoRequest editEventDtoRequest, MultipartFile[] images, Long organizerId);
+     EventDto update(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId);
 
     /**
      * Method for deleting the {@link EventDto} instance by its id.

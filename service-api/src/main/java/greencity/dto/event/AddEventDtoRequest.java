@@ -12,8 +12,10 @@ import java.util.List;
 @Setter
 @ToString
 @EqualsAndHashCode
+@Builder
 public class AddEventDtoRequest {
 
+    private Long id;
     private List<EventDateLocationDto> datesLocations;
 
     @NotEmpty
