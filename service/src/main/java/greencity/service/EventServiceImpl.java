@@ -7,10 +7,7 @@ import greencity.dto.event.*;
 import greencity.dto.tag.TagVO;
 import greencity.dto.user.PlaceAuthorDto;
 import greencity.dto.user.UserVO;
-import greencity.entity.DateLocation;
-import greencity.entity.Event;
-import greencity.entity.Tag;
-import greencity.entity.User;
+import greencity.entity.*;
 import greencity.enums.Role;
 import greencity.enums.TagType;
 import greencity.exception.exceptions.NotFoundException;
@@ -48,72 +45,77 @@ public class EventServiceImpl implements EventService {
     private final HttpServletRequest httpServletRequest;
     private final RestClient restClient;
 
-    private PageableAdvancedDto<EventDto> buildPageableAdvancedDto(Page<Event> eventPage) {
-        List<EventDto> eventDtos = eventPage.stream()
-                .map(event -> modelMapper.map(event, EventDto.class))
-                .collect(Collectors.toList());
-
-        return new PageableAdvancedDto<>(
-                eventDtos,
-                eventPage.getTotalElements(),
-                eventPage.getPageable().getPageNumber(),
-                eventPage.getTotalPages(),
-                eventPage.getNumber(),
-                eventPage.hasPrevious(),
-                eventPage.hasNext(),
-                eventPage.isFirst(),
-                eventPage.isLast());
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
     public EventDto save(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId) {
-        Event savedEvent = genericSave(addEventDtoRequest, images, organizerId);
-
-        EventDto eventDto = modelMapper.map(savedEvent, EventDto.class);
-        sendEmailDto(eventDto, savedEvent.getOrganizer());
-        return eventDto;
-    }
-
-    private Event genericSave(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId) {
         User organizer = userRepo.findById(organizerId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + organizerId));
 
         Event eventToSave = modelMapper.map(addEventDtoRequest, Event.class);
         eventToSave.setOrganizer(organizer);
 
-        if (addEventDtoRequest.getDatesLocations().size() > 7) {
+        return modelMapper.map(genericSaveOrUpdate(eventToSave, addEventDtoRequest, images, organizer), EventDto.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public EventDto update(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId) {
+        Event updatedEvent = eventRepo.findById(addEventDtoRequest.getId())
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + addEventDtoRequest.getId()));
+
+        User organizer = userRepo.findById(organizerId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + organizerId));
+
+        if (!userIsOrganizerOrAdmin(organizer, updatedEvent)) {
+            throw new AccessDeniedException(ErrorMessage.IMPOSSIBLE_UPDATE_EVENT);
+        }
+
+        return modelMapper.map(genericSaveOrUpdate(updatedEvent, addEventDtoRequest, images, organizer), EventDto.class);
+    }
+
+    private Event genericSaveOrUpdate(Event event, AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, User organizer) {
+        validateDateLocations(event, addEventDtoRequest.getDatesLocations());
+        validateTags(event, addEventDtoRequest.getTags());
+
+        return eventRepo.save(event);
+    }
+
+    private void validateDateLocations(Event event, List<EventDateLocationDto> dateLocations) {
+        if (dateLocations.size() > 7) {
             throw new NotSavedException(ErrorMessage.EVENT_INVALID_DURATION);
         }
 
-        if (images.length != 0) {
-            processEventImages(eventToSave, images);
-        }
+        event.setDateLocations(dateLocations.stream()
+                .map(eventDateLocationDto -> {
+                    ZonedDateTime startDate = eventDateLocationDto.getStartDate();
+                    ZonedDateTime finishDate = eventDateLocationDto.getFinishDate();
 
-        Set<String> tagsSet = new HashSet<>(addEventDtoRequest.getTags());
-        if (tagsSet.size() < addEventDtoRequest.getTags().size()) {
+                    if (startDate.isBefore(ZonedDateTime.now())) {
+                        throw new NotSavedException(ErrorMessage.EVENT_PAST_CANNOT_BE_SAVED);
+                    }
+
+                    if (finishDate.isBefore(startDate)) {
+                        throw new NotSavedException(ErrorMessage.INVALID_DATE_RANGE);
+                    }
+
+                    return modelMapper.map(eventDateLocationDto, DateLocation.class).setEvent(event);
+                })
+                .collect(Collectors.toList()));
+    }
+
+    private void validateTags(Event event, List<String> tags) {
+        Set<String> tagsSet = new HashSet<>(tags);
+        if (tagsSet.size() < tags.size()) {
             throw new NotSavedException(ErrorMessage.EVENT_NOT_SAVED);
         }
 
-        List<TagVO> tagVOS = tagService.findTagsWithAllTranslationsByNamesAndType(
-                addEventDtoRequest.getTags(), TagType.EVENT);
-        List<Tag> tags = modelMapper.map(tagVOS,
-                new TypeToken<List<Tag>>() {
-                }.getType());
-        eventToSave.setTags(tags);
-
-        eventToSave.setDateLocations(addEventDtoRequest.getDatesLocations().stream()
-                .map(eventDateLocationDto -> {
-                    if (eventDateLocationDto.getStartDate().isBefore(ZonedDateTime.now())) {
-                        throw new NotSavedException(ErrorMessage.EVENT_PAST_CANNOT_BE_SAVED);
-                    }
-                    return modelMapper.map(eventDateLocationDto, DateLocation.class).setEvent(eventToSave);
-                })
-                .collect(Collectors.toList()));
-
-        return eventRepo.save(eventToSave);
+        List<TagVO> tagVOS = tagService.findTagsWithAllTranslationsByNamesAndType(tags, TagType.EVENT);
+        List<Tag> eventTags = modelMapper.map(tagVOS, new TypeToken<List<Tag>>() {
+        }.getType());
+        event.setTags(eventTags);
     }
 
     /**
@@ -174,14 +176,15 @@ public class EventServiceImpl implements EventService {
      */
     @Override
     public PageableAdvancedDto<EventDto> findAllByUser(UserVO user, Pageable page) {
-        User existingUser = userRepo.findById(user.getId())
+        Page<Event> pages;
+       userRepo.findById(user.getId())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + user.getId()));
         if (page.getSort().isEmpty()) {
-            Page<Event> pages = eventRepo.findAllByOrganizerOrderByCreationDateDesc(existingUser, page);
-            return buildPageableAdvancedDto(pages);
+            pages = eventRepo.findAllByOrganizerOrderByCreationDateDesc(modelMapper.map(user, User.class), page);
         } else {
             throw new UnsupportedSortException(ErrorMessage.INVALID_SORTING_VALUE);
         }
+            return buildPageableAdvancedDto(pages);
     }
 
     private boolean userIsOrganizerOrAdmin(User user, Event existingEvent) {
@@ -189,58 +192,21 @@ public class EventServiceImpl implements EventService {
                 || user.getRole().equals(Role.ROLE_ADMIN);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    private PageableAdvancedDto<EventDto> buildPageableAdvancedDto(Page<Event> eventPage) {
+        List<EventDto> eventDtos = eventPage.stream()
+                .map(event -> modelMapper.map(event, EventDto.class))
+                .collect(Collectors.toList());
 
-    @Override
-    public EventDto update(EditEventDtoRequest editEventDtoRequest, MultipartFile[] images, Long organizerId) {
-        Event updatedEvent = genericUpdate(editEventDtoRequest, images, organizerId);
-        return modelMapper.map(updatedEvent, EventDto.class);
-    }
-
-    private Event genericUpdate(EditEventDtoRequest editEventDtoRequest, MultipartFile[] images, Long organizerId) {
-        Event updatedEvent = eventRepo.findById(editEventDtoRequest.getId())
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + editEventDtoRequest.getId()));
-
-        User organizer = userRepo.findById(organizerId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + organizerId));
-
-        if (!userIsOrganizerOrAdmin(organizer, updatedEvent)) {
-            throw new AccessDeniedException(ErrorMessage.IMPOSSIBLE_UPDATE_EVENT);
-        }
-
-        if (updatedEvent.getDateLocations().stream()
-                .anyMatch(dateLocation -> dateLocation.getStartDate().isBefore(ZonedDateTime.now()))) {
-            throw new AccessDeniedException(ErrorMessage.EVENT_PAST_CANNOT_BE_EDITED);
-        }
-
-        updatedEvent.setTitle(editEventDtoRequest.getTitle());
-        updatedEvent.setDescription(editEventDtoRequest.getDescription());
-
-        updatedEvent.setDateLocations(editEventDtoRequest.getDatesLocations().stream()
-                .map(eventDateLocationDto -> {
-                    if (eventDateLocationDto.getStartDate().isBefore(ZonedDateTime.now())) {
-                        throw new NotSavedException(ErrorMessage.EVENT_PAST_CANNOT_BE_SAVED);
-                    }
-                    return modelMapper.map(eventDateLocationDto, DateLocation.class).setEvent(updatedEvent);
-                })
-                .collect(Collectors.toList()));
-
-        List<TagVO> tagVOS = tagService.findTagsWithAllTranslationsByNamesAndType(
-                editEventDtoRequest.getTags(), TagType.EVENT);
-        List<Tag> tags = modelMapper.map(tagVOS,
-                new TypeToken<List<Tag>>() {
-                }.getType());
-        updatedEvent.setTags(tags);
-
-        if (images != null && images.length > 0) {
-            processEventImages(updatedEvent, images);
-        }
-
-        updatedEvent.setEventClosed(Boolean.parseBoolean(editEventDtoRequest.getOpen()));
-
-        return eventRepo.save(updatedEvent);
+        return new PageableAdvancedDto<>(
+                eventDtos,
+                eventPage.getTotalElements(),
+                eventPage.getPageable().getPageNumber(),
+                eventPage.getTotalPages(),
+                eventPage.getNumber(),
+                eventPage.hasPrevious(),
+                eventPage.hasNext(),
+                eventPage.isFirst(),
+                eventPage.isLast());
     }
 
 

@@ -148,7 +148,7 @@ public class EventsController {
     @GetMapping("/myEvents/createdEvents")
     @ApiPageable
     public ResponseEntity<PageableAdvancedDto<EventDto>> getEventsCreatedByUser(@ApiIgnore Pageable page,
-                                                                                @CurrentUser UserVO user) {
+                                                                                @ApiIgnore @CurrentUser UserVO user) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(eventService.findAllByUser(user, page));
     }
@@ -242,10 +242,10 @@ public class EventsController {
                     MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<EventDto> update(
             @ApiParam(value = SwaggerExampleModel.UPDATE_EVENT,
-                    required = true) @Valid @RequestPart EditEventDtoRequest editEventDtoRequest,
+                    required = true) @Valid @RequestPart AddEventDtoRequest addEventDtoRequest,
             @ApiParam(value = "Image of event") @RequestPart(required = false) MultipartFile[] images,
             @ApiIgnore @CurrentUser UserVO user) {
-        return ResponseEntity.status(HttpStatus.OK).body(eventService.update(editEventDtoRequest, images, user.getId()));
+        return ResponseEntity.status(HttpStatus.OK).body(eventService.update(addEventDtoRequest, images, user.getId()));
 
     }
 

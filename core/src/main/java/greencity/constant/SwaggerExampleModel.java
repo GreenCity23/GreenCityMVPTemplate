@@ -78,28 +78,23 @@ public final class SwaggerExampleModel {
         + "}" + AFTER_EXAMPLE;
 
     public static final String UPDATE_EVENT = BEFORE_EXAMPLE
-        + "{\n"
-        + "\t\"id\": 0,\n"
-        + "\t\"title\":\"string\",\n"
-        + "\t\"description\":\"string\",\n"
-        + "\t\"open\":\"true\",\n"
-        + "\t\"datesLocations\":[\n"
-        + "\t\t{\n"
-        + "\t\t\t\"id\": 0,\n"
-        + "\t\t\t\"startDate\":\"2023-05-27T15:00:00Z\",\n"
-        + "\t\t\t\"finishDate\":\"2023-05-27T17:00:00Z\",\n"
-        + "\t\t\t\"coordinates\":{\n"
-        + "\t\t\t\t\"latitude\":1,\n"
-        + "\t\t\t\t\"longitude\":1\n"
-        + "\t\t\t}\n"
-        + "\t\t}\n"
-        + "],\n"
-        + "\t\"tags\":[\"string\"],\n"
-        + "\t\"titleImage\":\"string\",\n"
-        + "\t\"additionalImages\":[\"string\"],\n"
-        + "\t\"imagesToDelete\":[\"string\"],\n"
-        + "\t\"isOpen\":\"true\"\n"
-        + "}";
+            + "{\n"
+            + "  \"id\": null,\n"
+            + "  \"title\": \"title\",\n"
+            + "  \"description\": \"description\",\n"
+            + "  \"open\": null,\n"
+            + "  \"datesLocations\": [\n"
+            + "    {\n"
+            + "      \"startDate\": null,\n"
+            + "      \"finishDate\": null,\n"
+            + "      \"coordinates\": {\n"
+            + "        \"latitude\": null,\n"
+            + "        \"longitude\": null\n"
+            + "      }\n"
+            + "    }\n"
+            + "  ],\n"
+            + "  \"tags\": [\"null\"]\n"
+            + "}" + AFTER_EXAMPLE;
     private SwaggerExampleModel() {
     }
 }
