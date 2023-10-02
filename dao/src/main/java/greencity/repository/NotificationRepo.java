@@ -47,10 +47,10 @@ public interface NotificationRepo extends JpaRepository<Notification, Long>, Jpa
      * @author Nazar Klimovych
      */
     @Query(nativeQuery = true, value = "SELECT n.* "
-            + "FROM notifications n "
-            + "INNER JOIN notified_users nu ON n.id = nu.notification_id "
-            + "WHERE nu.user_id = :userId "
-            + "ORDER BY n.creation_date")
+        + "FROM notifications n "
+        + "INNER JOIN notified_users nu ON n.id = nu.notification_id "
+        + "WHERE nu.user_id = :userId "
+        + "ORDER BY n.creation_date")
     List<Notification> findAllByNotifiedUserId(@Param("userId") Long userId);
 
     /**
@@ -63,11 +63,11 @@ public interface NotificationRepo extends JpaRepository<Notification, Long>, Jpa
      * @author Nazar Klimovych
      */
     @Query(nativeQuery = true, value = "SELECT n.* "
-            + "FROM notifications n "
-            + "INNER JOIN notified_users nu ON n.id = nu.notification_id "
-            + "WHERE nu.user_id = :userId "
-            + "AND n.source_id = :sourceId "
-            + "ORDER BY n.creation_date")
+        + "FROM notifications n "
+        + "INNER JOIN notified_users nu ON n.id = nu.notification_id "
+        + "WHERE nu.user_id = :userId "
+        + "AND n.source_id = :sourceId "
+        + "ORDER BY n.creation_date")
     List<Notification> findAllByUserIdAndSourceId(@Param("userId") Long userId, @Param("sourceId") Long sourceId);
 
     /**
