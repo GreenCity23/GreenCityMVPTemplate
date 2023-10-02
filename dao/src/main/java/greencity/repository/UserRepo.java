@@ -145,9 +145,9 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
     /**
      * Get all user friends for pageable.
      *
-     * @param userId The ID of the user
+     * @param userId        The ID of the user
      * @param filteringName Name of user
-     * @param pageable pageable
+     * @param pageable      pageable
      *
      * @return page of {@link User}.
      */
@@ -162,7 +162,7 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
     /**
      * Delete user friend.
      *
-     * @param userId The ID of the user, @param friendId.
+     * @param userId   The ID of the user, @param friendId.
      * @param friendId The ID of the user friend.
      */
     @Modifying
