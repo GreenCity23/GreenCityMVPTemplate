@@ -26,6 +26,12 @@ public class UserFriendDto {
     private String profilePicturePath;
     private Double rating;
 
+    /**
+     * Constructor for named query.
+     *
+     * @author Yevhen Anisimov
+     */
+
     public UserFriendDto(Long id, String name, String email, String city, Double rating, Long mutualFriends,
         String profilePicturePath) {
         this.id = id;
