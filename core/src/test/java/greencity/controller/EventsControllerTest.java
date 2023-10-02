@@ -66,7 +66,7 @@ class EventsControllerTest {
 
 
     @Test
-    void createEvent() throws Exception {
+    void createEventTest() throws Exception {
         UserVO userVO = mock(UserVO.class);
         when(userVO.getId()).thenReturn(3L);
 
@@ -116,6 +116,14 @@ class EventsControllerTest {
 
         verify(eventService, times(1))
                 .save(any(AddEventDtoRequest.class), any(MultipartFile[].class), anyLong());
+    }
+
+    @Test
+    void createEventBadRequestTest() throws Exception {
+        mockMvc.perform(multipart(eventsLink + "/create")
+                .content("{}")
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
