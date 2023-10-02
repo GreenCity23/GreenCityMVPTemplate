@@ -14,5 +14,14 @@ public interface NotificationService {
 
     void deleteNotification(Long id);
 
+    List<NotificationDto> getAllBySenderId(Long userId);
+
+    List<NotificationDto> getThreeLastNotificationsByUserId(Long userId);
+
+    List<NotificationDto> getAllByNotifiedUserId(Long userId);
+
+    List<NotificationDto> getAllByUserIdAndSourceId(Long userId, Long sourceId);
+
+    List<NotificationDto> getAllBySourceId(Long sourceId);
 }
 
