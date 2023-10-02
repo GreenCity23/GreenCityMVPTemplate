@@ -1,7 +1,9 @@
 package greencity.service;
 
+import greencity.constant.ErrorMessage;
 import greencity.dto.notifieduser.NotifiedUserDto;
 import greencity.entity.NotifiedUser;
+import greencity.exception.exceptions.NotFoundException;
 import greencity.mapping.NotifiedUserDtoMapper;
 import greencity.repository.NotifiedUserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,11 +60,17 @@ public class NotifiedUserServiceImpl implements NotifiedUserService {
 
     @Override
     public void setNotificationAsRead(Long notificationId, Long userId) {
+        if (notifiedUserRepo.countByUserIdAndNotificationId(userId, notificationId) == 0L){
+            throw new NotFoundException(ErrorMessage.NOTIFICATION_NOT_FOUND_FOR_USER);
+        }
         notifiedUserRepo.setNotificationAsRead(notificationId, userId);
     }
 
     @Override
     public void setNotificationAsUnread(Long notificationId, Long userId) {
+        if (notifiedUserRepo.countByUserIdAndNotificationId(userId, notificationId) == 0L){
+            throw new NotFoundException(ErrorMessage.NOTIFICATION_NOT_FOUND_FOR_USER);
+        }
         notifiedUserRepo.setNotificationAsUnread(notificationId, userId);
     }
 
