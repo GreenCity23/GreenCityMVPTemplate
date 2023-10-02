@@ -73,8 +73,8 @@ public class EcoNewsController {
     })
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<EcoNewsGenericDto> save(
-            @ApiParam(value = SwaggerExampleModel.ADD_ECO_NEWS_REQUEST)
-            @RequestPart @ValidEcoNewsDtoRequest AddEcoNewsDtoRequest addEcoNewsDtoRequest,
+        @ApiParam(
+            value = SwaggerExampleModel.ADD_ECO_NEWS_REQUEST) @RequestPart @ValidEcoNewsDtoRequest AddEcoNewsDtoRequest addEcoNewsDtoRequest,
         @ApiParam(value = "Image of eco news") @ImageValidation @RequestPart(required = false) MultipartFile image,
         @ApiIgnore Principal principal) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
