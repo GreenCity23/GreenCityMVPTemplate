@@ -46,6 +46,10 @@ public class Event {
     @ManyToOne
     private User organizer;
 
+    @Pattern(
+            message = "The link must start with http(s)://",
+            regexp = "^(https://|http://).*"
+    )
     @Column(name = "title_image")
     private String titleImage;
 
@@ -61,7 +65,10 @@ public class Event {
     @ElementCollection
     @CollectionTable(name = "events_additional_images", joinColumns = @JoinColumn(name = "event_id"))
     @Column(name = "additional_title_image")
-    private List<String> additionalImages;
+    private List<@Pattern(
+            message = "The link must start with http(s)://",
+            regexp = "^(https://|http://).*"
+    ) String> additionalImages;
 
     @ManyToMany
     @JoinTable(
