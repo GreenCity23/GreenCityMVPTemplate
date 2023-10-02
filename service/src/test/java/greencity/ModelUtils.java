@@ -198,6 +198,8 @@ public class ModelUtils {
 
     public static Event getEvent() {
         Tag tag = new Tag();
+        tag.setId(1L);
+        tag.setType(TagType.EVENT);
         tag.setTagTranslations(getEventTagTranslations());
         return new Event(1L, "event title", "event description event description", zonedDateTime,
                 List.of(getDateLocation()),
