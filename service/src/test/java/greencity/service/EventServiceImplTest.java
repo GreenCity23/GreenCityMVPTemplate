@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -32,8 +31,7 @@ import static greencity.ModelUtils.*;
 import static greencity.constant.AppConstant.AUTHORIZATION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 public class EventServiceImplTest {
@@ -80,5 +78,26 @@ public class EventServiceImplTest {
         EventDto res = eventService.save(addEventDtoRequest, images, 1L);
 
         assertEquals(res, getEventDto());
+    }
+
+    @Test
+    void delete() {
+        when(eventRepo.findById(anyLong())).thenReturn(Optional.of(event));
+        when(eventService.findById(anyLong())).thenReturn(getEventDto());
+
+        eventService.delete(event.getId(), getUserVO());
+
+        verify(eventRepo, times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    void findById() {
+        EventDto expected = modelMapper.map(event, EventDto.class);
+        when(eventRepo.findById(anyLong())).thenReturn(Optional.ofNullable(event));
+
+        EventDto actual = eventService.findById(event.getId());
+
+        verify(eventRepo, times(1)).findById(anyLong());
+        assertEquals(expected, actual);
     }
 }
