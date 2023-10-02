@@ -1,9 +1,8 @@
 package greencity.dto.event;
 
+import greencity.dto.tag.TagUaEnDto;
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.List;
