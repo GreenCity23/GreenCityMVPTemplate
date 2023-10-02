@@ -4,7 +4,7 @@ import greencity.constant.AppConstant;
 import greencity.dto.PageableAdvancedDto;
 import greencity.dto.econews.*;
 import greencity.dto.econewscomment.*;
-import greencity.dto.event.TagUaEnDto;
+import greencity.dto.tag.TagUaEnDto;
 import greencity.dto.event.*;
 import greencity.dto.habit.HabitAssignPropertiesDto;
 import greencity.dto.habit.HabitAssignVO;
@@ -516,7 +516,6 @@ public class ModelUtils {
     public static TagUaEnDto getTagUaEnDto() {
         return TagUaEnDto.builder()
                 .id(1L)
-                .type(TagType.EVENT)
                 .nameUa("Соціальний")
                 .nameEn("Social")
                 .build();

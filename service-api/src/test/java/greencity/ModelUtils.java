@@ -93,7 +93,7 @@ public class ModelUtils {
             .build();
     }
 
-    public static TagUaEnDto tagUaEnDto = TagUaEnDto.builder().id(1L).nameUa("Сщціальний").nameEn("Social").build();
+    public static TagUaEnDto tagUaEnDto = TagUaEnDto.builder().id(1L).nameUa("Соціальний").nameEn("Social").build();
 
     public static UserShoppingListItemResponseDto getUserShoppingListItemResponseDto() {
         return UserShoppingListItemResponseDto.builder()

@@ -1,6 +1,7 @@
 package greencity.mapping;
 
 import greencity.dto.event.*;
+import greencity.dto.tag.TagUaEnDto;
 import greencity.entity.Event;
 import lombok.AllArgsConstructor;
 import org.modelmapper.AbstractConverter;
