@@ -523,7 +523,7 @@ public class ModelUtils {
     }
 
     public static AddEventDtoRequest getAddEventDtoRequest() {
-        return new AddEventDtoRequest(List.of(getEventDateLocationDto()), "event description event description",
+        return new AddEventDtoRequest(1L, List.of(getEventDateLocationDto()), "event description event description",
                 List.of("Social"), "true", "event title");
     }
 
