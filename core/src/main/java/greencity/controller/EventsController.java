@@ -122,8 +122,9 @@ public class EventsController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
             @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
-    @GetMapping(path = "/event/{eventId}")
+    @GetMapping(path = "/{eventId}")
     public ResponseEntity<EventDto> getEventById(@PathVariable Long eventId) {
+        System.out.println(eventId);
         return ResponseEntity.status(HttpStatus.OK).body(eventService.findById(eventId));
     }
 

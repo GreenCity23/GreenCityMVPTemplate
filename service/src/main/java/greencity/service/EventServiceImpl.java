@@ -54,6 +54,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + organizerId));
         Event eventToSave = modelMapper.map(addEventDtoRequest, Event.class);
         eventToSave.setOrganizer(organizer);
+        processEventImages(eventToSave, images);
 
         EventDto eventDto =
                 modelMapper.map(genericSaveOrUpdate(eventToSave, addEventDtoRequest, images, organizer), EventDto.class);
@@ -67,7 +68,6 @@ public class EventServiceImpl implements EventService {
     public EventDto update(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId) {
         Event updatedEvent = eventRepo.findById(addEventDtoRequest.getId())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + addEventDtoRequest.getId()));
-
         User organizer = userRepo.findById(organizerId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + organizerId));
 
