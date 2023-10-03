@@ -39,6 +39,11 @@ public class EventsController {
      * @return dto {@link EventDto} instance.
      * @author Vladyslav Siverskyi.
      */
+    @ApiOperation(value = "Create event")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @PostMapping(value = "/create", consumes = {
             MediaType.APPLICATION_JSON_UTF8_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE
