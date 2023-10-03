@@ -1,9 +1,6 @@
 package greencity.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -14,8 +11,8 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "subscribers")
-public class Subscriber {
+@Table(name = "news_subscribers")
+public class NewsSubscriber {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

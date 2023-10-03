@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class NewsSubsciberServiceImpl implements NewsSubscriberService {
+public class NewsSubscriberServiceImpl implements NewsSubscriberService {
     @Override
     public List<NewsSubscriberResponseDto> getAllSubscribers() {
         return null; //TODO
@@ -20,8 +20,13 @@ public class NewsSubsciberServiceImpl implements NewsSubscriberService {
         return null; //TODO
     }
 
+//    public void addSubscriber(Subscriber subscriber) throws EmailAlreadyExistsException {
+//        subscriberRepository.save(subscriber);
+//
+//    }
+
     @Override
     public boolean unsubscribe(String unsubscribeToken) {
-       return false; //TODO
+        return false; //TODO
     }
 }

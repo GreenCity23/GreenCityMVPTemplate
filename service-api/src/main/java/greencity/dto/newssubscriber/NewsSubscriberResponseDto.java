@@ -15,9 +15,14 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 public class NewsSubscriberResponseDto implements Serializable {
+
+    @NotBlank
+    Long id;
+
     @NotBlank
     @Email(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     private String email;
+
     @NotBlank
     private String unsubscribeToken;
 }

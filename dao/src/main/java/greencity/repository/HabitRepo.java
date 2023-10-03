@@ -14,7 +14,7 @@ import javax.transaction.Transactional;
  * Provides an interface to manage {@link Habit} entity.
  */
 @Repository
-public interface HabitRepo extends JpaRepository<Habit, Long>, JpaSpecificationExecutor<Habit> {
+                public interface HabitRepo extends JpaRepository<Habit, Long>, JpaSpecificationExecutor<Habit> {
     /**
      * Method add goal to habit by id and status ACTIVE. This method use native SQL
      * query.
