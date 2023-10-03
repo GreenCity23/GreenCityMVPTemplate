@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 @Repository
 public interface NewsSubscriberRepo extends JpaRepository<NewsSubscriber, Long> {
 
+    NewsSubscriber findByEmail(String email);
 
     /**
      * Method to delete subscriber. This method use native SQL query.

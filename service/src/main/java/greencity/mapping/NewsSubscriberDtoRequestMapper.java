@@ -3,7 +3,9 @@ package greencity.mapping;
 
 import greencity.dto.newssubscriber.NewsSubscriberRequestDto;
 import greencity.entity.NewsSubscriber;
+import org.springframework.stereotype.Component;
 
+@Component
 public class NewsSubscriberDtoRequestMapper {
     /**
      * Method for converting {@link NewsSubscriberRequestDto} into {@link NewsSubscriber}.
@@ -13,7 +15,7 @@ public class NewsSubscriberDtoRequestMapper {
      *
      * @author Arthur Mkrtchian
      */
-    protected NewsSubscriber convert(NewsSubscriberRequestDto newsSubscriberRequestDto){
+    public NewsSubscriber convert(NewsSubscriberRequestDto newsSubscriberRequestDto){
         return new NewsSubscriber().setEmail(newsSubscriberRequestDto.getEmail());
     }
 }

@@ -66,9 +66,13 @@ public class NewsSubscriberController {
             @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
     })
     @GetMapping("/unsubscribe")
-    public ResponseEntity<Void> unsubscribe(@RequestParam("unsubscribeToken") String unsubscribeToken) {
+    public ResponseEntity<Void> unsubscribe(
+            @RequestParam("email") String email,
+            @RequestParam("unsubscribeToken") String unsubscribeToken) {
+
         try {
-            boolean result = newsSubscriberService.unsubscribe(unsubscribeToken);
+            boolean result = newsSubscriberService.unsubscribe(email, unsubscribeToken);
+
             if (result) {
                 return ResponseEntity.ok().build();
             } else {

@@ -22,11 +22,10 @@ public interface NewsSubscriberService {
      */
     NewsSubscriberResponseDto saveSubscriber(NewsSubscriberRequestDto newsSubscriberRequestDto);
 
-
     /**
      * Method that add news subscriber.
      *
      * @author Arthur Mkrtchian
      */
-    boolean unsubscribe(String unsubscribeToken);
+    boolean unsubscribe(String email, String unsubscribeToken);
 }

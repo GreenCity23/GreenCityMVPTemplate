@@ -2,7 +2,9 @@ package greencity.mapping;
 
 import greencity.dto.newssubscriber.NewsSubscriberResponseDto;
 import greencity.entity.NewsSubscriber;
+import org.springframework.stereotype.Component;
 
+@Component
 public class NewsSubscriberDtoResponseMapper {
 
     /**
@@ -13,7 +15,7 @@ public class NewsSubscriberDtoResponseMapper {
      *
      * @author Arthur Mkrtchian
      */
-    protected NewsSubscriberResponseDto convert(NewsSubscriber newsSubscriber){
+    public NewsSubscriberResponseDto convert(NewsSubscriber newsSubscriber){
         return new NewsSubscriberResponseDto()
                 .setId(newsSubscriber.getId())
                 .setEmail(newsSubscriber.getEmail())
