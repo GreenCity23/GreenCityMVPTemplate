@@ -72,7 +72,30 @@ public class EventServiceImpl implements EventService {
         if (!userIsOrganizerOrAdmin(organizer, updatedEvent)) {
             throw new AccessDeniedException(ErrorMessage.IMPOSSIBLE_UPDATE_EVENT);
         }
+        updatedEvent.setTitle(addEventDtoRequest.getTitle());
+        updatedEvent.setDescription(addEventDtoRequest.getDescription());
 
+        updatedEvent.setDateLocations(addEventDtoRequest.getDatesLocations().stream()
+                .map(eventDateLocationDto -> {
+                    if (eventDateLocationDto.getStartDate().isBefore(ZonedDateTime.now())) {
+                        throw new NotSavedException(ErrorMessage.EVENT_PAST_CANNOT_BE_SAVED);
+                    }
+                    return modelMapper.map(eventDateLocationDto, DateLocation.class).setEvent(updatedEvent);
+                })
+                .collect(Collectors.toList()));
+
+        List<TagVO> tagVOS = tagService.findTagsWithAllTranslationsByNamesAndType(
+                addEventDtoRequest.getTags(), TagType.EVENT);
+        List<Tag> tags = modelMapper.map(tagVOS,
+                new TypeToken<List<Tag>>() {
+                }.getType());
+        updatedEvent.setTags(tags);
+
+        if (images != null && images.length > 0) {
+            processEventImages(updatedEvent, images);
+        }
+
+        updatedEvent.setEventClosed(Boolean.parseBoolean(addEventDtoRequest.getOpen()));
         return modelMapper.map(genericSaveOrUpdate(updatedEvent, addEventDtoRequest, images, organizer), EventDto.class);
     }
 
