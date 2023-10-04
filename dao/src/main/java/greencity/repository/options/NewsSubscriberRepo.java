@@ -17,12 +17,24 @@ public interface NewsSubscriberRepo extends JpaRepository<NewsSubscriber, Long> 
     /**
      * Method to delete subscriber. This method use native SQL query.
      *
-     * @param unsubscribeToken unsubscribe token of news subscriber
+     * @param email subscriber email
      * @author Arthur Mkrtchian
      */
     @Modifying
     @Transactional
-    @Query(nativeQuery = true, value = "DELETE FROM news_subscribers WHERE unsubscribe_token = :unsubscribeToken")
-    void deleteSubscriberByToken(@Param("unsubscribeToken") String unsubscribeToken);
+    @Query(nativeQuery = true, value = "DELETE FROM news_subscribers WHERE email = :email")
+    void deleteSubscriberByToken(@Param("unsubscribeToken") String email);
+
+    /**
+     * Method to confirm subscribtion. This method use native SQL query.
+     *
+     * @param email subscriber email
+     * @author Arthur Mkrtchian
+     */
+    @Modifying
+    @Transactional
+    @Query(nativeQuery = true, value = "UPDATE news_subscribers SET is_verified = true WHERE email = :email")
+    void confirmSubscriber(@Param("email") String email);
+
 
 }

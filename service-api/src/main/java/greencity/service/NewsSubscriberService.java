@@ -28,4 +28,8 @@ public interface NewsSubscriberService {
      * @author Arthur Mkrtchian
      */
     boolean unsubscribe(String email, String unsubscribeToken);
+
+    boolean confirmSubscription(String email, String confirmationToken);
+
+    void sendConfirmationEmail(String email, String confirmationToken);
 }

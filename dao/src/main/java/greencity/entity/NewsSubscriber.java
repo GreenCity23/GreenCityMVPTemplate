@@ -1,10 +1,12 @@
 package greencity.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -24,7 +26,17 @@ public class NewsSubscriber {
     private String email;
 
     @NotBlank
+    @Column(name = "confirmation_token", unique = true)
+    private String confirmationToken;
+
+    @NotBlank
     @Column(name = "unsubscribe_token", unique = true)
     private String unsubscribeToken;
 
+    @Column(name = "is_confirmed", nullable = false)
+    private boolean isConfirmed = false;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }

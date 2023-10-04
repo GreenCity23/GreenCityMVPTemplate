@@ -29,12 +29,9 @@ public class NewsSubscriberController {
     @GetMapping
     public ResponseEntity<List<NewsSubscriberResponseDto>> getAllSubscribers() {
         try {
-            // TODO get all emails
             List<NewsSubscriberResponseDto> subscribers = newsSubscriberService.getAllSubscribers();
-
             return ResponseEntity.ok(subscribers);
         } catch (Exception e) {
-            // TODO
             return ResponseEntity.status(401).build();
         }
     }
@@ -48,12 +45,9 @@ public class NewsSubscriberController {
     @PostMapping(consumes = "application/json")
     public ResponseEntity<NewsSubscriberRequestDto> saveSubscriber(@RequestBody NewsSubscriberRequestDto dto) {
         try {
-            // TODO
             newsSubscriberService.saveSubscriber(dto);
-
             return new ResponseEntity<>(dto, HttpStatus.OK);
         } catch (Exception e) {
-            //TODO
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -69,10 +63,8 @@ public class NewsSubscriberController {
     public ResponseEntity<Void> unsubscribe(
             @RequestParam("email") String email,
             @RequestParam("unsubscribeToken") String unsubscribeToken) {
-
         try {
             boolean result = newsSubscriberService.unsubscribe(email, unsubscribeToken);
-
             if (result) {
                 return ResponseEntity.ok().build();
             } else {
@@ -83,5 +75,27 @@ public class NewsSubscriberController {
         }
     }
 
+    @ApiOperation(value = "Confirm email subscription")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
+    @GetMapping("/confirm")
+    public ResponseEntity<Void> confirmSubscription(
+            @RequestParam("email") String email,
+            @RequestParam("confirmationToken") String confirmationToken) {
+        try {
+            boolean result = newsSubscriberService.confirmSubscription(email, confirmationToken);
+            if (result) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.status(404).build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(400).build();
+        }
+    }
 
 }

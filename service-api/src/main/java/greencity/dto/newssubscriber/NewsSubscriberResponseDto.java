@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 
@@ -15,14 +14,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 public class NewsSubscriberResponseDto implements Serializable {
-
-    @NotBlank
     Long id;
-
-    @NotBlank
     @Email(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     private String email;
-
-    @NotBlank
     private String unsubscribeToken;
+    private String confirmationToken;
 }
