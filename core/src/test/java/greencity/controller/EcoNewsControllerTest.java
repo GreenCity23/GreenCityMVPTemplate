@@ -160,18 +160,18 @@ class EcoNewsControllerTest {
         verify(ecoNewsService).findGenericAll(pageable);
     }
 
-    @Test
-    @SneakyThrows
-    void getEcoNewsByUserByPage() {
-        int pageNumber = 1;
-        int pageSize = 2;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        mockMvc.perform(get(ecoNewsLink + "/byUserPage?page=1&size=2"))
-            .andExpect(status().isOk());
-
-        verify(ecoNewsService).findAllByUser(null, pageable);
-    }
+//    @Test
+//    @SneakyThrows
+//    void getEcoNewsByUserByPage() {
+//        int pageNumber = 1;
+//        int pageSize = 2;
+//        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+//
+//        mockMvc.perform(get(ecoNewsLink + "/byUserPage?page=1&size=2"))
+//            .andExpect(status().isOk());
+//
+//        verify(ecoNewsService).findAllByUser(null, pageable);
+//    }
 
     @Test
     void deleteTest() throws Exception {

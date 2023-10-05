@@ -1,6 +1,6 @@
 package greencity.entity;
 
-import greencity.dto.filter.UserFilterDto;
+import greencity.dto.friends.UserFriendDto;
 import greencity.dto.user.RegistrationStatisticsDtoResponse;
 import greencity.enums.EmailNotification;
 import greencity.enums.Role;
@@ -29,15 +29,15 @@ import java.util.Set;
         name = "userFriendDtoMapping",
         classes = {
             @ConstructorResult(
-                targetClass = UserFilterDto.class,
+                targetClass = UserFriendDto.class,
                 columns = {
                     @ColumnResult(name = "id", type = Long.class),
                     @ColumnResult(name = "name", type = String.class),
+                    @ColumnResult(name = "email", type = String.class),
                     @ColumnResult(name = "city", type = String.class),
                     @ColumnResult(name = "rating", type = Double.class),
                     @ColumnResult(name = "mutualFriends", type = Long.class),
                     @ColumnResult(name = "profilePicturePath", type = String.class),
-                    @ColumnResult(name = "chatId", type = Long.class),
                 })
         })
 })
@@ -47,25 +47,28 @@ import java.util.Set;
             + "WHERE EXTRACT(YEAR from date_of_registration) = EXTRACT(YEAR FROM CURRENT_DATE) "
             + "GROUP BY month",
         resultSetMapping = "monthsStatisticsMapping"),
-    @NamedNativeQuery(name = "User.getAllUsersExceptMainUserAndFriends",
+    @NamedNativeQuery(name = "User.getAllUsersFriends",
         query = "SELECT *, (SELECT count(*) "
-            + "        FROM users_friends uf1 "
-            + "        WHERE uf1.user_id in :friends "
-            + "          and uf1.friend_id = u.id "
-            + "          and uf1.status = 'FRIEND' "
-            + "           or "
-            + "         uf1.friend_id in :friends "
-            + "          and uf1.user_id = u.id "
-            + "          and uf1.status = 'FRIEND') as mutualFriends, "
-            + "       u.profile_picture           as profilePicturePath, "
-            + "       (SELECT p.room_id "
-            + "       FROM chat_rooms_participants p"
-            + "       WHERE p.participant_id IN (u.id, :userId) "
-            + "       GROUP BY p.room_id "
-            + "       HAVING COUNT(DISTINCT p.participant_id) = 2 LIMIT 1) as chatId "
+            + "       FROM users_friends uf1 "
+            + "       WHERE uf1.user_id in :friends "
+            + "       and uf1.friend_id = u.id "
+            + "       and uf1.status = 'FRIEND' "
+            + "       or "
+            + "       uf1.friend_id in :friends "
+            + "       and uf1.user_id = u.id "
+            + "       and uf1.status = 'FRIEND') as mutualFriends, "
+            + "       u.profile_picture as profilePicturePath, "
+            + "       h.habit_id as habitTracked "
             + "FROM users u "
+            + "LEFT JOIN habit_assign h ON u.id = h.user_id "
             + "WHERE u.id != :userId "
-            + "AND u.id NOT IN :friends AND LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%')) ",
+            + "       AND u.id IN :friends "
+            + "       AND LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%')) "
+            + "       AND h.habit_id in ( SELECT ha.habit_id "
+            + "                          FROM habit_assign ha "
+            + "                          WHERE ha.user_id = :userId) "
+            + "       AND u.city = ( SELECT city from users WHERE id = :userId )"
+            + "ORDER BY rating DESC, mutualFriends DESC",
         resultSetMapping = "userFriendDtoMapping")
 })
 @NoArgsConstructor
@@ -99,7 +102,7 @@ public class User {
     @Enumerated(value = EnumType.ORDINAL)
     private UserStatus userStatus;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "date_of_registration")
     private LocalDateTime dateOfRegistration;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
@@ -158,4 +161,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Filter> filters = new ArrayList<>();
+
+    @OneToMany
+    @JoinTable(name = "users_friends", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "friend_id", referencedColumnName = "id"))
+    private List<User> userFriends = new ArrayList<>();
 }
