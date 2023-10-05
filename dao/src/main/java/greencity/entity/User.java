@@ -77,7 +77,7 @@ import java.util.Set;
                         + "       u.profile_picture           as profilePicturePath "
                         + "FROM users u "
                         + "WHERE u.id != :userId "
-                        + "AND u.id IN :notFriends AND LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%')) ",
+                        + "AND u.id IN :notFriends AND (LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%')) OR LOWER(u.first_name) LIKE LOWER(CONCAT('%', :name, '%')))",
                 resultSetMapping = "userFriendDtoMapping")
 })
 @NoArgsConstructor

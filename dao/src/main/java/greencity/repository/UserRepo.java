@@ -153,6 +153,7 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
      * @param pageable      pageable
      *
      * @return page of {@link User}.
+     * @author Yevhen Anisimov
      */
     @Query(nativeQuery = true, value = "SELECT * FROM users u "
         + "WHERE u.id IN ("
@@ -167,6 +168,7 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
      *
      * @param userId   The ID of the user, @param friendId.
      * @param friendId The ID of the user friend.
+     * @author Yevhen Anisimov
      */
     @Modifying
     @Query(nativeQuery = true,
@@ -181,14 +183,14 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
      * @param filteringName The name to be used for filtering. The users retrieved will have names that contain the filteringName, case-insensitive.
      * @param pageable      The pageable object used for pagination and sorting.
      * @return A Page object containing the list of users who meet the filter criteria.
+     * @author Yevhen Anisimov
      */
     @Query(nativeQuery = true, value = "SELECT * FROM users u "
             + "WHERE u.id != :userId "
             + "AND u.id NOT IN ("
             + "      SELECT user_id AS id FROM users_friends WHERE friend_id = :userId AND status = 'FRIEND' "
             + "      UNION "
-            + "      SELECT friend_id AS id FROM users_friends WHERE user_id = :userId AND status = 'FRIEND' "
-            + ") AND LOWER(u.name) LIKE LOWER(CONCAT('%', :filteringName, '%'))")
+            + "      SELECT friend_id AS id FROM users_friends WHERE user_id = :userId AND status = 'FRIEND' " + ") AND (LOWER(u.name) LIKE LOWER(CONCAT('%', :filteringName, '%')) OR LOWER(u.first_name) LIKE LOWER(CONCAT('%', :filteringName, '%'))) ")
     Page<User> getAllUsersExceptMainUserAndFriends(Long userId, String filteringName, Pageable pageable);
 
     /**
@@ -196,6 +198,7 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
      *
      * @param userId   the ID of the user who wants to add a new friend
      * @param friendId the ID of the user to be added as a friend
+     * @author Yevhen Anisimov
      */
     @Modifying
     @Query(nativeQuery = true,
@@ -208,6 +211,7 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
      *
      * @param userId   the ID of the user who received the friend request
      * @param friendId the ID of the user who sent the friend request
+     * @author Yevhen Anisimov
      */
     @Modifying
     @Query(nativeQuery = true,
@@ -221,6 +225,7 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
      * @param userId    the ID of the user for whom to retrieve friend requests
      * @param pageable  the pagination information
      * @return a Page containing the list of friend requests
+     * @author Yevhen Anisimov
      */
     @Query(nativeQuery = true, value = "SELECT u.* FROM users u "
             + "       INNER JOIN (SELECT DISTINCT uf.user_id FROM users_friends uf"
@@ -233,6 +238,7 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
      *
      * @param userId    the ID of the user who received the friend request
      * @param friendId  the ID of the user who sent the friend request
+     * @author Yevhen Anisimov
      */
     @Modifying
     @Query(nativeQuery = true,

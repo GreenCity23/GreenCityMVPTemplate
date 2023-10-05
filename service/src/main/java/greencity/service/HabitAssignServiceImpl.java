@@ -319,6 +319,7 @@ public class HabitAssignServiceImpl implements HabitAssignService {
                 .user(user)
                 .duration(habit.getDefaultDuration())
                 .habitStreak(0)
+                .progressNotificationHasDisplayed(true)
                 .workingDays(0)
                 .lastEnrollmentDate(ZonedDateTime.now())
                 .build());
