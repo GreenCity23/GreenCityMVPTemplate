@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -173,6 +174,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/user/{userId}/profile/",
                 "/user/isOnline/{userId}/",
                 "/user/{userId}/profileStatistics/",
+                "/friends",
+                "/friends/user/{userId}",
+                "/friends/not-friends-yet",
+                "/friends/friendRequests",
                 "/factoftheday/",
                 "/factoftheday/all",
                 "/user/shopping-list-items/{userId}/get-all-inprogress",
@@ -203,6 +208,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 USER_SHOPPING_LIST,
                 "/user/{userId}/habit",
                 "/habit/custom",
+                "/friends/{friendId}",
                 "/custom/shopping-list-items/{userId}/{habitId}/custom-shopping-list-items")
             .hasAnyRole(USER, ADMIN, MODERATOR, UBS_EMPLOYEE)
             .antMatchers(HttpMethod.PUT,
@@ -226,10 +232,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 USER_SHOPPING_LIST + "/{shoppingListItemId}/status/{status}",
                 USER_SHOPPING_LIST + "/{userShoppingListItemId}",
                 "/user/profilePicture",
+                "/friends/{friendId}/acceptFriend",
                 "/user/deleteProfilePicture")
             .hasAnyRole(USER, ADMIN, MODERATOR, UBS_EMPLOYEE)
             .antMatchers(HttpMethod.DELETE,
                 ECONEWS_COMMENTS,
+                "/friends/{friendId}",
+                "/friends/{friendId}/declineFriend",
                 "/events/comments/{eventCommentId}",
                 "/econews/{econewsId}",
                 CUSTOM_SHOPPING_LIST_ITEMS,

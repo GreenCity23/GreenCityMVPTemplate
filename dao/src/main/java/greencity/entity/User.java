@@ -57,19 +57,28 @@ import java.util.Set;
             + "       uf1.friend_id in :friends "
             + "       and uf1.user_id = u.id "
             + "       and uf1.status = 'FRIEND') as mutualFriends, "
-            + "       u.profile_picture as profilePicturePath, "
-            + "       h.habit_id as habitTracked "
+            + "       u.profile_picture as profilePicturePath "
             + "FROM users u "
-            + "LEFT JOIN habit_assign h ON u.id = h.user_id "
             + "WHERE u.id != :userId "
             + "       AND u.id IN :friends "
             + "       AND LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%')) "
-            + "       AND h.habit_id in ( SELECT ha.habit_id "
-            + "                          FROM habit_assign ha "
-            + "                          WHERE ha.user_id = :userId) "
-            + "       AND u.city = ( SELECT city from users WHERE id = :userId )"
             + "ORDER BY rating DESC, mutualFriends DESC",
-        resultSetMapping = "userFriendDtoMapping")
+            resultSetMapping = "userFriendDtoMapping"),
+        @NamedNativeQuery(name = "User.getAllUsersExceptMainUserAndFriends",
+                query = "SELECT *, (SELECT count(*) "
+                        + "        FROM users_friends uf1 "
+                        + "        WHERE uf1.user_id not in :notFriends "
+                        + "          and uf1.friend_id = u.id "
+                        + "          and uf1.status = 'FRIEND' "
+                        + "           or "
+                        + "         uf1.friend_id not in :notFriends "
+                        + "          and uf1.user_id = u.id "
+                        + "          and uf1.status = 'FRIEND') as mutualFriends, "
+                        + "       u.profile_picture           as profilePicturePath "
+                        + "FROM users u "
+                        + "WHERE u.id != :userId "
+                        + "AND u.id IN :notFriends AND LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%')) ",
+                resultSetMapping = "userFriendDtoMapping")
 })
 @NoArgsConstructor
 @AllArgsConstructor
