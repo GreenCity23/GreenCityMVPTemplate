@@ -29,4 +29,5 @@ public class Language {
 
     @OneToMany(mappedBy = "language", fetch = FetchType.LAZY)
     private List<ShoppingListItemTranslation> shoppingListItemTranslations;
+
 }
