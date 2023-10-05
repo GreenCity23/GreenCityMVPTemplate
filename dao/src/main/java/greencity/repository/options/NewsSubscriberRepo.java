@@ -8,11 +8,25 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Repository
 public interface NewsSubscriberRepo extends JpaRepository<NewsSubscriber, Long> {
 
+    /**
+     * Method to get subscriber by email.
+     *
+     * @author Arthur Mkrtchian
+     */
     NewsSubscriber findByEmail(String email);
+
+    /**
+     * Method to get all subscribers with confirmed emails. This method use native SQL query.
+     *
+     * @author Arthur Mkrtchian
+     */
+    @Query(nativeQuery = true, value = "SELECT * FROM news_subscribers WHERE is_confirmed = true")
+    List<NewsSubscriber> getAllConfirmed();
 
     /**
      * Method to delete subscriber. This method use native SQL query.

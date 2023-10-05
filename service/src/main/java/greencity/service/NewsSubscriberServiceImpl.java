@@ -22,22 +22,22 @@ public class NewsSubscriberServiceImpl implements NewsSubscriberService {
     private final NewsSubscriberRepo newsSubscriberRepo;
     private final NewsSubscriberDtoResponseMapper mapper;
     private final RestTemplate restTemplate;
-    private final String serverLink;
+    private final String userServerLink;
 
     @Autowired
     public NewsSubscriberServiceImpl(NewsSubscriberRepo newsSubscriberRepo,
                                      NewsSubscriberDtoResponseMapper mapper,
                                      RestTemplate restTemplate,
-                                     @Value("${greencityuser.server.address}") String serverLink){
+                                     @Value("${greencityuser.server.address}") String userServerLink){
         this.newsSubscriberRepo = newsSubscriberRepo;
         this.mapper = mapper;
         this.restTemplate = restTemplate;
-        this.serverLink = serverLink;
+        this.userServerLink = userServerLink;
     }
 
     @Override
     public List<NewsSubscriberResponseDto> getAllSubscribers() {
-        return newsSubscriberRepo.findAll().stream()
+        return newsSubscriberRepo.getAllConfirmed().stream()
                 .map(mapper::convert)
                 .collect(Collectors.toList());
     }
@@ -79,7 +79,7 @@ public class NewsSubscriberServiceImpl implements NewsSubscriberService {
 
     @Override
     public void sendConfirmationEmail(String email, String confirmationToken) {
-        String url = serverLink + "/email/send-confirmation";
+        String url = userServerLink + "/email/send-confirmation";
 
         NewsSubscriberResponseDto newsSubscriberResponseDto = new NewsSubscriberResponseDto()
                 .setEmail(email)
