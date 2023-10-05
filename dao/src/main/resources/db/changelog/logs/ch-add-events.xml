@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1695755794470-56" author="vsive (generated)">
+        <createTable tableName="addresses">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_addresses"/>
+            </column>
+            <column name="city_en" type="VARCHAR(255)"/>
+            <column name="city_ua" type="VARCHAR(255)"/>
+            <column name="country_en" type="VARCHAR(255)"/>
+            <column name="country_ua" type="VARCHAR(255)"/>
+            <column name="formatted_address_en" type="VARCHAR(255)"/>
+            <column name="formatted_address_ua" type="VARCHAR(255)"/>
+            <column name="house_number" type="VARCHAR(255)"/>
+            <column name="latitude" type="DOUBLE"/>
+            <column name="longitude" type="DOUBLE"/>
+            <column name="region_en" type="VARCHAR(255)"/>
+            <column name="region_ua" type="VARCHAR(255)"/>
+            <column name="street_en" type="VARCHAR(255)"/>
+            <column name="street_ua" type="VARCHAR(255)"/>
+            <column name="date_location_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1695755794470-57" author="vsive (generated)">
+        <createTable tableName="dates_locations">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_dates_locations"/>
+            </column>
+            <column name="event_id" type="BIGINT"/>
+            <column name="start_date" type="timestamp with time zone"/>
+            <column name="finish_date" type="timestamp with time zone"/>
+            <column name="online_link" type="VARCHAR(255)"/>
+            <column name="address_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1695755794470-58" author="vsive (generated)">
+        <createTable tableName="events">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_events"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="creation_date" type="timestamp with time zone"/>
+            <column name="organizer_id" type="BIGINT"/>
+            <column name="title_image" type="VARCHAR(255)"/>
+            <column name="is_closed" type="BOOLEAN"/>
+            <column name="is_subscribed" type="BOOLEAN"/>
+            <column name="is_favorite" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1695755794470-59" author="vsive (generated)">
+        <createTable tableName="events_attenders">
+            <column name="event_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1695755794470-60" author="vsive (generated)">
+        <createTable tableName="events_tags">
+            <column name="event_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_events_tags"/>
+            </column>
+            <column name="tag_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_events_tags"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1695755794470-66" author="vsive (generated)">
+        <addForeignKeyConstraint baseColumnNames="date_location_id" baseTableName="addresses"
+                                 constraintName="FK_ADDRESSES_ON_DATE_LOCATION" referencedColumnNames="id"
+                                 referencedTableName="dates_locations"/>
+    </changeSet>
+    <changeSet id="1695755794470-67" author="vsive (generated)">
+        <addForeignKeyConstraint baseColumnNames="address_id" baseTableName="dates_locations"
+                                 constraintName="FK_DATES_LOCATIONS_ON_ADDRESS" referencedColumnNames="id"
+                                 referencedTableName="addresses"/>
+    </changeSet>
+    <changeSet id="1695755794470-68" author="vsive (generated)">
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="dates_locations"
+                                 constraintName="FK_DATES_LOCATIONS_ON_EVENT" referencedColumnNames="id"
+                                 referencedTableName="events"/>
+    </changeSet>
+    <changeSet id="1695755794470-69" author="vsive (generated)">
+        <addForeignKeyConstraint baseColumnNames="organizer_id" baseTableName="events"
+                                 constraintName="FK_EVENTS_ON_ORGANIZER" referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1695755794470-70" author="vsive (generated)">
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="events_attenders"
+                                 constraintName="fk_eveatt_on_event" referencedColumnNames="id"
+                                 referencedTableName="events"/>
+    </changeSet>
+    <changeSet id="1695755794470-71" author="vsive (generated)">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="events_attenders"
+                                 constraintName="fk_eveatt_on_user" referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1695755794470-72" author="vsive (generated)">
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="events_tags"
+                                 constraintName="fk_evetag_on_event" referencedColumnNames="id"
+                                 referencedTableName="events"/>
+    </changeSet>
+    <changeSet id="1695755794470-73" author="vsive (generated)">
+        <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="events_tags" constraintName="fk_evetag_on_tag"
+                                 referencedColumnNames="id" referencedTableName="tags"/>
+    </changeSet>
+
+</databaseChangeLog>

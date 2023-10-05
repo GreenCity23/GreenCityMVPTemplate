@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1695755794470-56" author="Vladyslav Siverskyi">
+        <createTable tableName="addresses">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_addresses"/>
+            </column>
+            <column name="city_en" type="VARCHAR(255)"/>
+            <column name="city_ua" type="VARCHAR(255)"/>
+            <column name="country_en" type="VARCHAR(255)"/>
+            <column name="country_ua" type="VARCHAR(255)"/>
+            <column name="formatted_address_en" type="VARCHAR(255)"/>
+            <column name="formatted_address_ua" type="VARCHAR(255)"/>
+            <column name="house_number" type="VARCHAR(255)"/>
+            <column name="latitude" type="DOUBLE"/>
+            <column name="longitude" type="DOUBLE"/>
+            <column name="region_en" type="VARCHAR(255)"/>
+            <column name="region_ua" type="VARCHAR(255)"/>
+            <column name="street_en" type="VARCHAR(255)"/>
+            <column name="street_ua" type="VARCHAR(255)"/>
+            <column name="date_location_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1695755794470-57" author="Vladyslav Siverskyi">
+        <createTable tableName="dates_locations">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_dates_locations"/>
+            </column>
+            <column name="event_id" type="BIGINT"/>
+            <column name="start_date" type="timestamp with time zone"/>
+            <column name="finish_date" type="timestamp with time zone"/>
+            <column name="online_link" type="VARCHAR(255)"/>
+            <column name="address_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1695755794470-58" author="Vladyslav Siverskyi">
+        <createTable tableName="events">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_events"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="creation_date" type="timestamp with time zone"/>
+            <column name="organizer_id" type="BIGINT"/>
+            <column name="title_image" type="VARCHAR(255)"/>
+            <column name="is_closed" type="BOOLEAN"/>
+            <column name="is_subscribed" type="BOOLEAN"/>
+            <column name="is_favorite" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

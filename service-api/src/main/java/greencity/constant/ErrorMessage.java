@@ -78,6 +78,7 @@ public final class ErrorMessage {
     public static final String DUPLICATED_USER_SHOPPING_LIST_ITEM = "UserShoppingListItems should be unique";
     public static final String USER_CANT_UPDATE_HIMSELF = "User can't update yourself";
     public static final String IMPOSSIBLE_UPDATE_USER_STATUS = "Impossible to update status of admin or moderator";
+    public static final String IMPOSSIBLE_UPDATE_EVENT = "You don't have permission to edit this event";
     public static final String PROFILE_PICTURE_NOT_FOUND_BY_ID = "Profile picture not found by id : ";
     public static final String IMAGE_EXISTS = "Image should be download, PNG or JPEG ";
     public static final String OWN_USER_ID = "You can not perform actions with your own id : ";
@@ -93,8 +94,18 @@ public final class ErrorMessage {
     public static final String ECO_NEWS_NOT_FOUND_BY_ID = "Eco news doesn't exist by this id: ";
     public static final String ECO_NEWS_NOT_FOUND = "Eco news haven't been found";
     public static final String ECO_NEWS_NOT_SAVED = "Eco news haven't been saved because of constraint violation";
+    public static final String EVENT_NOT_SAVED = "Event hasn't been saved because of constraint violation";
+    public static final String EVENT_NOT_FOUND_BY_ID = "Event doesn't exist by this id: ";
+    public static final String EVENT_PAST_CANNOT_BE_SAVED = "You can't save an event in the past";
+    public static final String EVENT_PAST_CANNOT_BE_EDITED = "You can't edit a past event";
+    public static final String EVENT_INVALID_DURATION = "Event duration should be up to 7 days.";
     public static final String USER_CANNOT_ADD_MORE_THAN_5_SOCIAL_NETWORK_LINKS =
         "User cannot add more than 5 social network links";
+    public static final String USER_CANNOT_ADD_MORE_THAN_5_EVENT_IMAGES =
+        "User cannot add more than 5 event images";
+    public static final String IMAGE_SIZE_EXCEEDS_10MB =
+    "Image size should be less than 10MB.";
+    public static final String UNSUPPORTED_IMAGE_FORMAT = "Image should be in JPG or PNG format.";
     public static final String INVALID_URI = "The string could not be parsed as a URI reference.";
     public static final String MALFORMED_URL = "Malformed URL. The string could not be parsed.";
     public static final String USER_CANNOT_ADD_SAME_SOCIAL_NETWORK_LINKS =

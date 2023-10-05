@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1695761752333-64" author="vsive (generated)">
+        <dropForeignKeyConstraint baseTableName="addresses" constraintName="fk_addresses_on_date_location"/>
+    </changeSet>
+    <changeSet id="1695761752333-65" author="vsive (generated)">
+        <dropForeignKeyConstraint baseTableName="dates_locations" constraintName="fk_dates_locations_on_address"/>
+    </changeSet>
+    <changeSet id="1695761752333-66" author="vsive (generated)">
+        <dropForeignKeyConstraint baseTableName="dates_locations" constraintName="fk_dates_locations_on_event"/>
+    </changeSet>
+    <changeSet id="1695761752333-67" author="vsive (generated)">
+        <dropForeignKeyConstraint baseTableName="events" constraintName="fk_events_on_organizer"/>
+    </changeSet>
+    <changeSet id="1695761752333-68" author="vsive (generated)">
+        <dropForeignKeyConstraint baseTableName="events_tags" constraintName="fk_evetag_on_event"/>
+    </changeSet>
+    <changeSet id="1695761752333-78" author="vsive (generated)">
+        <dropTable cascadeConstraints="true" tableName="addresses"/>
+    </changeSet>
+    <changeSet id="1695761752333-79" author="vsive (generated)">
+        <dropTable cascadeConstraints="true" tableName="dates_locations"/>
+    </changeSet>
+    <changeSet id="1695761752333-80" author="vsive (generated)">
+        <dropTable cascadeConstraints="true" tableName="events"/>
+    </changeSet>
+    <changeSet id="1695761752333-81" author="vsive (generated)">
+        <dropTable cascadeConstraints="true" tableName="events_attenders"/>
+    </changeSet>
+    <changeSet id="1695761752333-82" author="vsive (generated)">
+        <dropTable cascadeConstraints="true" tableName="events_tags"/>
+    </changeSet>
+
+</databaseChangeLog>
