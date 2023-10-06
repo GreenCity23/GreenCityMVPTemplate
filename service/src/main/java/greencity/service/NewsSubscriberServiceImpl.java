@@ -5,33 +5,39 @@ import greencity.dto.newssubscriber.NewsSubscriberResponseDto;
 import greencity.entity.NewsSubscriber;
 import greencity.mapping.NewsSubscriberDtoResponseMapper;
 import greencity.repository.options.NewsSubscriberRepo;
+import greencity.security.jwt.JwtTool;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import greencity.enums.Role;
 
+@Slf4j
 @Service
-
 public class NewsSubscriberServiceImpl implements NewsSubscriberService {
     private final NewsSubscriberRepo newsSubscriberRepo;
     private final NewsSubscriberDtoResponseMapper mapper;
     private final RestTemplate restTemplate;
     private final String userServerLink;
 
+    private final JwtTool jwtTool;
+
     @Autowired
     public NewsSubscriberServiceImpl(NewsSubscriberRepo newsSubscriberRepo,
                                      NewsSubscriberDtoResponseMapper mapper,
                                      RestTemplate restTemplate,
+                                     JwtTool jwtTool,
                                      @Value("${greencityuser.server.address}") String userServerLink){
         this.newsSubscriberRepo = newsSubscriberRepo;
         this.mapper = mapper;
         this.restTemplate = restTemplate;
+        this.jwtTool = jwtTool;
         this.userServerLink = userServerLink;
     }
 
@@ -62,7 +68,7 @@ public class NewsSubscriberServiceImpl implements NewsSubscriberService {
     public boolean unsubscribe(String email, String unsubscribeToken) {
         NewsSubscriber subscriber = newsSubscriberRepo.findByEmail(email);
         if (subscriber != null && unsubscribeToken.equals(subscriber.getUnsubscribeToken())) {
-            newsSubscriberRepo.deleteSubscriberByToken(email);
+            newsSubscriberRepo.deleteSubscriberByEmailAndToken(email, unsubscribeToken);
             return true;
         }
         return false;
@@ -81,11 +87,17 @@ public class NewsSubscriberServiceImpl implements NewsSubscriberService {
     public void sendConfirmationEmail(String email, String confirmationToken) {
         String url = userServerLink + "/email/send-confirmation";
 
-        NewsSubscriberResponseDto newsSubscriberResponseDto = new NewsSubscriberResponseDto()
-                .setEmail(email)
-                .setConfirmationToken(confirmationToken);
+        NewsSubscriberResponseDto newsSubscriberResponseDto = mapper.convert(newsSubscriberRepo.findByEmail(email));
 
-        ResponseEntity<Object> response = restTemplate.postForEntity(url, newsSubscriberResponseDto, Object.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String token = jwtTool.createAccessToken(email, Role.ROLE_ADMIN);
+        headers.set("Authorization", "Bearer " + token);
+
+        HttpEntity<NewsSubscriberResponseDto> request = new HttpEntity<>(newsSubscriberResponseDto, headers);
+
+        ResponseEntity<Object> response = restTemplate.postForEntity(url, request, Object.class);
 
         if (response.getStatusCode() != HttpStatus.OK) {
             throw new RuntimeException("Failed to send email confirmation");

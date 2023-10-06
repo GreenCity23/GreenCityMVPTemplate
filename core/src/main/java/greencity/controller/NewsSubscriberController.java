@@ -42,7 +42,7 @@ public class NewsSubscriberController {
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
             @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
     })
-    @PostMapping(consumes = "application/json")
+    @PostMapping(consumes = "application/json; charset=utf-8")
     public ResponseEntity<NewsSubscriberRequestDto> saveSubscriber(@RequestBody NewsSubscriberRequestDto dto) {
         try {
             newsSubscriberService.saveSubscriber(dto);

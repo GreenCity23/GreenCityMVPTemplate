@@ -19,6 +19,7 @@ public class NewsSubscriberDtoResponseMapper {
         return new NewsSubscriberResponseDto()
                 .setId(newsSubscriber.getId())
                 .setEmail(newsSubscriber.getEmail())
+                .setConfirmationToken(newsSubscriber.getConfirmationToken())
                 .setUnsubscribeToken(newsSubscriber.getUnsubscribeToken());
     }
 }
