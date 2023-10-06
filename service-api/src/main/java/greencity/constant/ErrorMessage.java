@@ -96,6 +96,7 @@ public final class ErrorMessage {
     public static final String ECO_NEWS_NOT_SAVED = "Eco news haven't been saved because of constraint violation";
     public static final String EVENT_NOT_SAVED = "Event hasn't been saved because of constraint violation";
     public static final String EVENT_NOT_FOUND_BY_ID = "Event doesn't exist by this id: ";
+    public static final String EVENT_COMMENT_NOT_FOUND_BY_ID = "Event comment doesn't exist by this id: ";
     public static final String EVENT_PAST_CANNOT_BE_SAVED = "You can't save an event in the past";
     public static final String EVENT_PAST_CANNOT_BE_EDITED = "You can't edit a past event";
     public static final String EVENT_INVALID_DURATION = "Event duration should be up to 7 days.";

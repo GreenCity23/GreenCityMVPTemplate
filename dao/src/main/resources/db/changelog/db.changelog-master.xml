@@ -179,5 +179,7 @@
     <include file="db/changelog/logs/ch-add-tables-events-addresses-dates-locations.xml"/>
     <include file="db/changelog/logs/ch-add-tables-event-tags-event-attenders.xml"/>
     <include file="db/changelog/logs/ch-add-table-events-additional-images.xml"/>
+    <include file="db/changelog/logs/ch-add-table-event-comments-siverskyi.xml"/>
+    <include file="db/changelog/logs/ch-event-comments-add-fk-Siverkyi.xml"/>
 </databaseChangeLog>
 
