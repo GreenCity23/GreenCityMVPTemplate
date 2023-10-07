@@ -270,7 +270,7 @@ public class EventsController {
             @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
             @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)
     })
-    @GetMapping("/events")
+    @GetMapping("/search")
     @ApiPageableWithLocale
     public ResponseEntity<PageableDto<SearchEventDto>> searchEvent(
             @ApiIgnore Pageable pageable,
