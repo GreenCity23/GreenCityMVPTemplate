@@ -43,6 +43,9 @@ public class EventCommentServiceImpl implements EventCommentService{
     private final HttpServletRequest httpServletRequest;
     private final RestClient restClient;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AddEventCommentDtoResponse save(AddEventCommentDtoRequest addEventCommentDtoRequest, Long eventId, UserVO userVO) {
         Event event = eventRepo.findById(eventId)
@@ -72,6 +75,9 @@ public class EventCommentServiceImpl implements EventCommentService{
         return modelMapper.map(eventCommentRepo.save(eventComment), AddEventCommentDtoResponse.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     private void sendEmailNotificationToOrganizer(EventCommentDto eventCommentDto, EventDto eventDto) {
         EventCommentForSendDto eventCommentForSendDto = EventCommentForSendDto.builder()
                 .eventName(eventDto.getTitle())
@@ -84,6 +90,9 @@ public class EventCommentServiceImpl implements EventCommentService{
                 httpServletRequest.getHeader(AUTHORIZATION).substring(7));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(Long id, String commentText, UserVO userVO) {
         EventComment comment = eventCommentRepo.findById(id)
@@ -96,6 +105,9 @@ public class EventCommentServiceImpl implements EventCommentService{
         eventCommentRepo.save(comment);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void likeComment(Long id, UserVO userVO) {
         EventComment comment = eventCommentRepo.findById(id)
@@ -109,6 +121,9 @@ public class EventCommentServiceImpl implements EventCommentService{
         eventCommentRepo.save(comment);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteById(Long id, UserVO userVO) {
         EventComment eventComment = eventCommentRepo.findById(id)
@@ -119,6 +134,9 @@ public class EventCommentServiceImpl implements EventCommentService{
         eventCommentRepo.delete(eventComment);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     private void likeComment(UserVO userVO, EventComment eventComment) {
         User user = modelMapper.map(userVO, User.class);
         eventComment.getUsersLiked().add(user);
@@ -127,6 +145,9 @@ public class EventCommentServiceImpl implements EventCommentService{
                 .runAsync(() -> ratingCalculation.ratingCalculation(RatingCalculationEnum.LIKE_COMMENT, userVO, accessToken));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     private void unlikeComment(UserVO user, EventComment eventComment) {
         String accessToken = httpServletRequest.getHeader(AUTHORIZATION);
         eventComment.getUsersLiked().removeIf(u -> u.getId().equals(user.getId()));
@@ -134,6 +155,9 @@ public class EventCommentServiceImpl implements EventCommentService{
             .runAsync(() -> ratingCalculation.ratingCalculation(RatingCalculationEnum.LIKE_COMMENT, user, accessToken));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public EventCommentDto findEventCommentById(Long id) {
         EventComment eventComment = eventCommentRepo.findById(id)
@@ -141,6 +165,9 @@ public class EventCommentServiceImpl implements EventCommentService{
         return modelMapper.map(eventComment, EventCommentDto.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Integer getEventCommentsAmount(Long eventId) {
         Event event = eventRepo.findById(eventId)
@@ -148,6 +175,9 @@ public class EventCommentServiceImpl implements EventCommentService{
         return event.getEventComments().size();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Integer getCountOfCommentReplies(Long id) {
         if(eventCommentRepo.findById(id).isEmpty()) {
@@ -156,6 +186,9 @@ public class EventCommentServiceImpl implements EventCommentService{
         return eventCommentRepo.countByParentCommentId(id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AmountCommentLikesDto getCountOfCommentLikes(Long id, UserVO userVO) {
         EventComment eventComment = eventCommentRepo.findById(id)
@@ -163,7 +196,9 @@ public class EventCommentServiceImpl implements EventCommentService{
         return modelMapper.map(eventComment, AmountCommentLikesDto.class);
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public PageableDto<EventCommentDto> getAllActiveReplies(Pageable pageable, Long parentCommentId, UserVO userVO) {
         Page<EventComment> pages = eventCommentRepo.findAllByParentCommentIdAndDeletedFalseOrderByCreatedDateDesc(pageable, parentCommentId);
@@ -185,6 +220,9 @@ public class EventCommentServiceImpl implements EventCommentService{
                 pages.getTotalPages());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public PageableDto<EventCommentDto> getAllActiveComments(Pageable pageable, UserVO userVO, Long eventId) {
         Page<EventComment> pages =

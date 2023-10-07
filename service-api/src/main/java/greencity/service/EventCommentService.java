@@ -37,17 +37,56 @@ public interface EventCommentService {
      */
     void likeComment(Long id, UserVO userVO);
 
+    /**
+     * Method to delete {@link EventCommentVO} by id.
+     *
+     * @param id     of {@link EventCommentVO}.
+     * @param userVO current User that wants to delete by id.
+     */
     void deleteById(Long id, UserVO userVO);
 
+    /**
+     * Method to find {@link EventCommentVO} by id.
+     *
+     * @param id     of {@link EventCommentVO}.
+     */
     EventCommentDto findEventCommentById(Long id);
 
+    /**
+     * Method to get comments amount by event id.
+     *
+     * @param id     of Event.
+     */
     Integer getEventCommentsAmount(Long id);
 
+    /**
+     * Method to get comment replies amount by comment id.
+     *
+     * @param id     of Event Comment.
+     */
     Integer getCountOfCommentReplies(Long id);
 
+    /**
+     * Method to get amount of comment likes.
+     *
+     * @param id     of Event Comment.
+     * @param userVO current User.
+     */
     AmountCommentLikesDto getCountOfCommentLikes(Long id, UserVO userVO);
 
+    /**
+     * Method to get all active comment replies.
+     *
+     * @param parentCommentId id parent event comment.
+     * @param user current User.
+     */
     PageableDto<EventCommentDto> getAllActiveReplies(Pageable pageable, Long parentCommentId, UserVO user);
 
+    /**
+     * Method to get all active comments.
+     *
+     * @param eventId id event.
+     * @param user current User.
+     */
     PageableDto<EventCommentDto> getAllActiveComments(Pageable pageable, UserVO user, Long eventId);
 }
