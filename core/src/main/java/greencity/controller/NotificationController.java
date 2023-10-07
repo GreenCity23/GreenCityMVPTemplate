@@ -36,9 +36,9 @@ public class NotificationController {
     @ApiOperation(value = "Add new notification.")
     @ResponseStatus(value = HttpStatus.CREATED)
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = HttpStatuses.CREATED, response = NotificationDto.class),
-            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)
+        @ApiResponse(code = 201, message = HttpStatuses.CREATED, response = NotificationDto.class),
+        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)
     })
     @PostMapping
     public ResponseEntity<NotificationDto> saveNotification(@Valid @RequestBody NotificationDto notificationDto) {
@@ -242,10 +242,10 @@ public class NotificationController {
      */
     @ApiOperation(value = "Delete notification.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = HttpStatuses.OK),
-            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+        @ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
     })
     @GetMapping("/{id}/delete")
     public ResponseEntity<Object> deleteNotification(@PathVariable Long id) {
