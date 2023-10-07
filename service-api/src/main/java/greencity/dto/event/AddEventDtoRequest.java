@@ -14,7 +14,6 @@ import java.util.List;
 @EqualsAndHashCode
 @Builder
 public class AddEventDtoRequest {
-
     private Long id;
     private List<EventDateLocationDto> datesLocations;
 

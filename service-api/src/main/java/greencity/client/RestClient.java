@@ -369,8 +369,8 @@ public class RestClient {
         headers.setBearerAuth(token);
         HttpEntity<EventForSendEmailDto> entity = new HttpEntity<>(message, headers);
         restTemplate.exchange(greenCityUserServerAddress
-                              + RestTemplateLinks.ADD_EVENT, HttpMethod.POST, entity, Object.class)
-                .getBody();
+            + RestTemplateLinks.ADD_EVENT, HttpMethod.POST, entity, Object.class)
+            .getBody();
     }
 
     /**

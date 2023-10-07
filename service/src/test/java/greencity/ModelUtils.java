@@ -54,12 +54,12 @@ public class ModelUtils {
 
     public static Tag getTag() {
         return new Tag(1L, TagType.ECO_NEWS, getTagTranslations(), Collections.emptyList(),
-                Collections.emptySet(), Collections.emptySet());
+            Collections.emptySet(), Collections.emptySet());
     }
 
     public static Tag getEventTag() {
         return new Tag(1L, TagType.EVENT, getEventTagTranslations(), Collections.emptyList(),
-                Collections.emptySet(), Collections.emptySet());
+            Collections.emptySet(), Collections.emptySet());
     }
 
     public static Tag getHabitTag() {
@@ -202,9 +202,9 @@ public class ModelUtils {
         tag.setType(TagType.EVENT);
         tag.setTagTranslations(getEventTagTranslations());
         return new Event(1L, "event title", "event description event description", zonedDateTime,
-                List.of(getDateLocation()),
-                getUser(), "https://google.com/", false, false, false,
-                null, List.of(tag), null);
+            List.of(getDateLocation()),
+            getUser(), "https://google.com/", false, false, false,
+            null, List.of(tag), null);
     }
 
     public static Event getNotValidEvent() {
@@ -213,36 +213,36 @@ public class ModelUtils {
         tag.setType(TagType.EVENT);
         tag.setTagTranslations(getEventTagTranslations());
         return new Event(1L, "event title", "event description event description", zonedDateTime,
-                List.of(getDateLocation()),
-                getUser(), "https://google.com/", false, false, false,
-                null, List.of(tag), null);
+            List.of(getDateLocation()),
+            getUser(), "https://google.com/", false, false, false,
+            null, List.of(tag), null);
     }
+
     public static DateLocation getDateLocation() {
         return DateLocation.builder()
-                .id(1L)
-                .onlineLink("https://google.com/")
-                .startDate(zonedDateTime.plusHours(3))
-                .finishDate(zonedDateTime.plusHours(7))
-                .address(Address.builder()
-                        .latitude(1.0)
-                        .longitude(1.0)
-                        .build())
-                .build();
+            .id(1L)
+            .onlineLink("https://google.com/")
+            .startDate(zonedDateTime.plusHours(3))
+            .finishDate(zonedDateTime.plusHours(7))
+            .address(Address.builder()
+                .latitude(1.0)
+                .longitude(1.0)
+                .build())
+            .build();
     }
 
     public static DateLocation getInvalidDateLocation() {
         return DateLocation.builder()
-                .id(1L)
-                .onlineLink("https://google.com/")
-                .startDate(zonedDateTime.minusHours(3))
-                .finishDate(zonedDateTime.minusHours(7))
-                .address(Address.builder()
-                        .latitude(1.0)
-                        .longitude(1.0)
-                        .build())
-                .build();
+            .id(1L)
+            .onlineLink("https://google.com/")
+            .startDate(zonedDateTime.minusHours(3))
+            .finishDate(zonedDateTime.minusHours(7))
+            .address(Address.builder()
+                .latitude(1.0)
+                .longitude(1.0)
+                .build())
+            .build();
     }
-
 
     public static EcoNews getEcoNewsForFindDtoByIdAndLanguage() {
         return new EcoNews(1L, null, TestConst.SITE, null, "shortInfo", getUser(),
@@ -541,76 +541,76 @@ public class ModelUtils {
 
     public static TagUaEnDto getTagUaEnDto() {
         return TagUaEnDto.builder()
-                .id(1L)
-                .nameUa("Соціальний")
-                .nameEn("Social")
-                .build();
+            .id(1L)
+            .nameUa("Соціальний")
+            .nameEn("Social")
+            .build();
     }
 
     public static AddEventDtoRequest getAddEventDtoRequest() {
         return new AddEventDtoRequest(1L, List.of(getEventDateLocationDto()), "event description event description",
-                List.of("Social"), "true", "event title");
+            List.of("Social"), "true", "event title");
     }
 
     public static EventDateLocationDto getEventDateLocationDto() {
         return EventDateLocationDto.builder()
-                .id(1L)
-                .onlineLink("https://google.com/")
-                .startDate(zonedDateTime.plusHours(3))
-                .finishDate(zonedDateTime.plusHours(7))
-                .coordinates(AddressDto.builder()
-                        .latitude(1.0)
-                        .longitude(1.0)
-                        .build())
-                .build();
+            .id(1L)
+            .onlineLink("https://google.com/")
+            .startDate(zonedDateTime.plusHours(3))
+            .finishDate(zonedDateTime.plusHours(7))
+            .coordinates(AddressDto.builder()
+                .latitude(1.0)
+                .longitude(1.0)
+                .build())
+            .build();
     }
 
     public static EventDateLocationDto getInvalidEventDateLocationDto() {
         return EventDateLocationDto.builder()
-                .id(1L)
-                .onlineLink("https://google.com/")
-                .startDate(zonedDateTime.minusHours(3))
-                .finishDate(zonedDateTime.minusHours(7))
-                .coordinates(AddressDto.builder()
-                        .latitude(1.0)
-                        .longitude(1.0)
-                        .build())
-                .build();
+            .id(1L)
+            .onlineLink("https://google.com/")
+            .startDate(zonedDateTime.minusHours(3))
+            .finishDate(zonedDateTime.minusHours(7))
+            .coordinates(AddressDto.builder()
+                .latitude(1.0)
+                .longitude(1.0)
+                .build())
+            .build();
     }
 
     public static EventDto getEventDto() {
         return EventDto.builder()
-                .id(1L)
-                .title("event title")
-                .description("event description event description")
-                .creationDate(zonedDateTime)
-                .dateLocations(List.of(getEventDateLocationDto()))
-                .organizer(EventAuthorDto.builder()
-                        .id(getUser().getId())
-                        .name(getUser().getName())
-                        .organizerRating(0.0)
-                        .build())
-                .titleImage("https://google.com/")
-                .open(true)
-                .isSubscribed(false)
-                .isFavorite(false)
-                .tags(Set.of(getTagUaEnDto()))
-                .build();
+            .id(1L)
+            .title("event title")
+            .description("event description event description")
+            .creationDate(zonedDateTime)
+            .dateLocations(List.of(getEventDateLocationDto()))
+            .organizer(EventAuthorDto.builder()
+                .id(getUser().getId())
+                .name(getUser().getName())
+                .organizerRating(0.0)
+                .build())
+            .titleImage("https://google.com/")
+            .open(true)
+            .isSubscribed(false)
+            .isFavorite(false)
+            .tags(Set.of(getTagUaEnDto()))
+            .build();
     }
 
     public static EventVO getEventVO() {
         return EventVO.builder()
-                .id(1L)
-                .title("event title")
-                .description("event description event description")
-                .organizer(UserVO.builder()
-                        .id(getUser().getId())
-                        .name(getUser().getName())
-                        .userStatus(getUser().getUserStatus())
-                        .role(getUser().getRole())
-                        .build())
-                .titleImage("https://google.com/")
-                .build();
+            .id(1L)
+            .title("event title")
+            .description("event description event description")
+            .organizer(UserVO.builder()
+                .id(getUser().getId())
+                .name(getUser().getName())
+                .userStatus(getUser().getUserStatus())
+                .role(getUser().getRole())
+                .build())
+            .titleImage("https://google.com/")
+            .build();
     }
 
     public static EcoNewsGenericDto getEcoNewsGenericDto() {

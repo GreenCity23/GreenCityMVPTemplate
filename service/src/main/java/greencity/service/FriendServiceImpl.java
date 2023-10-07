@@ -56,18 +56,20 @@ public class FriendServiceImpl implements FriendService {
         validateUserExistById(userId);
 
         return userRepo.getAllUserFriends(userId).stream()
-                .map(friend -> modelMapper.map(friend, UserManagementDto.class))
-                .collect(Collectors.toList());
+            .map(friend -> modelMapper.map(friend, UserManagementDto.class))
+            .collect(Collectors.toList());
     }
 
     /**
-     * Retrieves a pageable list of friends of a user with the given ID, filtered by name.
+     * Retrieves a pageable list of friends of a user with the given ID, filtered by
+     * name.
      *
-     * @param id    The ID of the user.
-     * @param name  The name to filter friends by.
-     * @param page  The page information for pagination.
-     * @return A PageableDto containing the list of UserFriendDto objects, the total number of elements,
-     *         the current page number, and the total number of pages.
+     * @param id   The ID of the user.
+     * @param name The name to filter friends by.
+     * @param page The page information for pagination.
+     * @return A PageableDto containing the list of UserFriendDto objects, the total
+     *         number of elements, the current page number, and the total number of
+     *         pages.
      */
     @Override
     public PageableDto<UserFriendDto> findAllFriendsOfUser(Long id, String name, Pageable page) {
@@ -75,27 +77,33 @@ public class FriendServiceImpl implements FriendService {
         Page<User> userPage = userRepo.findAllFriendsOfUser(id, name, page);
         if (page.getPageNumber() >= userPage.getTotalPages()) {
             return new PageableDto<>(
-                    new ArrayList<>(),
-                    0,
-                    0,
-                    0);
+                new ArrayList<>(),
+                0,
+                0,
+                0);
         }
         List<UserFriendDto> userFriendDtos = queryUserFriendDtos(id, name, userPage.getContent());
 
         return new PageableDto<>(
-                userFriendDtos,
-                userPage.getTotalElements(),
-                userPage.getPageable().getPageNumber(),
-                userPage.getTotalPages());
+            userFriendDtos,
+            userPage.getTotalElements(),
+            userPage.getPageable().getPageNumber(),
+            userPage.getTotalPages());
     }
 
     /**
+     * Queries the database to retrieve a list of UserFriendDto objects representing
+     * the friends of a user with the given ID and filtered by name.
      *
+     * @param id          The ID of the user.
+     * @param name        The name to filter friends by.
+     * @param userContent The list of User objects representing the user's friends.
+     * @return A List of UserFriendDto objects representing the friends of the user.
      */
     private List<UserFriendDto> queryUserFriendDtos(Long id, String name, List<User> userContent) {
         TypedQuery<UserFriendDto> query = entityManager
-                .createNamedQuery("User.getAllUsersFriends",
-                        UserFriendDto.class);
+            .createNamedQuery("User.getAllUsersFriends",
+                UserFriendDto.class);
         query.setParameter("userId", id);
         query.setParameter("friends", userContent);
         query.setParameter("name", name);
@@ -103,7 +111,8 @@ public class FriendServiceImpl implements FriendService {
     }
 
     /**
-     * Generates a list of user friend DTOs, excluding the main user and their friends, via a named query
+     * Generates a list of user friend DTOs, excluding the main user and their
+     * friends, via a named query.
      *
      * @param id          ID of the main user
      * @param name        Name of the friend user
@@ -112,8 +121,8 @@ public class FriendServiceImpl implements FriendService {
      */
     private List<UserFriendDto> queryNotUserFriendDtos(Long id, String name, List<User> userContent) {
         TypedQuery<UserFriendDto> query = entityManager
-                .createNamedQuery("User.getAllUsersExceptMainUserAndFriends",
-                        UserFriendDto.class);
+            .createNamedQuery("User.getAllUsersExceptMainUserAndFriends",
+                UserFriendDto.class);
         query.setParameter("userId", id);
         query.setParameter("notFriends", userContent);
         query.setParameter("name", name);
@@ -146,19 +155,19 @@ public class FriendServiceImpl implements FriendService {
         name = name == null ? "" : name;
 
         Page<User> userPage =
-                userRepo.getAllUsersExceptMainUserAndFriends(id, name, page);
+            userRepo.getAllUsersExceptMainUserAndFriends(id, name, page);
         if (page.getPageNumber() >= userPage.getTotalPages()) {
             return new PageableDto<>(
-                    new ArrayList<>(),
-                    0,
-                    0,
-                    0);
+                new ArrayList<>(),
+                0,
+                0,
+                0);
         }
         return new PageableDto<>(
-                queryNotUserFriendDtos(id, name, userPage.getContent()),
-                userPage.getTotalElements(),
-                userPage.getPageable().getPageNumber(),
-                userPage.getTotalPages());
+            queryNotUserFriendDtos(id, name, userPage.getContent()),
+            userPage.getTotalElements(),
+            userPage.getPageable().getPageNumber(),
+            userPage.getTotalPages());
     }
 
     /**
@@ -177,8 +186,8 @@ public class FriendServiceImpl implements FriendService {
     /**
      * Accepts a friend request between two users.
      *
-     * @param id        the ID of the user accepting the friend request
-     * @param friendId  the ID of the user who sent the friend request
+     * @param id       the ID of the user accepting the friend request
+     * @param friendId the ID of the user who sent the friend request
      */
     @Override
     public void acceptFriendRequest(Long id, Long friendId) {
@@ -190,11 +199,12 @@ public class FriendServiceImpl implements FriendService {
     /**
      * Retrieves all friend requests sent to a user.
      *
-     * @param id The ID of the user.
+     * @param id   The ID of the user.
      * @param page The page number and size for pagination of the results.
-     * @return A PageableDto containing a list of UserFriendDto objects representing the friend requests,
-     *         the total number of friend requests, the current page number, and the total number of pages.
-     *         Returns an empty list if no friend requests are found.
+     * @return A PageableDto containing a list of UserFriendDto objects representing
+     *         the friend requests, the total number of friend requests, the current
+     *         page number, and the total number of pages. Returns an empty list if
+     *         no friend requests are found.
      * @throws IllegalArgumentException If the user ID is null or negative.
      */
     @Override
@@ -204,15 +214,14 @@ public class FriendServiceImpl implements FriendService {
         Page<User> users = userRepo.getAllUserFriendRequests(id, page);
 
         List<UserFriendDto> userFriendDtoList = users.getContent().stream()
-                .map(i -> modelMapper.map(i, UserFriendDto.class))
-                .collect(Collectors.toList());
-
+            .map(i -> modelMapper.map(i, UserFriendDto.class))
+            .collect(Collectors.toList());
 
         return new PageableDto<>(
-                userFriendDtoList,
-                users.getTotalElements(),
-                users.getPageable().getPageNumber(),
-                users.getTotalPages());
+            userFriendDtoList,
+            users.getTotalElements(),
+            users.getPageable().getPageNumber(),
+            users.getTotalPages());
     }
 
     /**

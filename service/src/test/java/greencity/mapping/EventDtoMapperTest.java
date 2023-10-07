@@ -26,9 +26,9 @@ class EventDtoMapperTest {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getTitle(), actual.getTitle());
         assertEquals(expected.getDescription(), actual.getDescription());
-        assertEquals(expected.getDateLocations(),  actual.getDateLocations());
-        assertEquals(expected.getOrganizer(),  actual.getOrganizer());
-        assertEquals(expected.getAdditionalImages(),  actual.getAdditionalImages());
+        assertEquals(expected.getDateLocations(), actual.getDateLocations());
+        assertEquals(expected.getOrganizer(), actual.getOrganizer());
+        assertEquals(expected.getAdditionalImages(), actual.getAdditionalImages());
         assertEquals(expected.getCreationDate(), actual.getCreationDate());
         assertEquals(expected.isOpen(), actual.isOpen());
         assertEquals(expected.isFavorite(), actual.isFavorite());

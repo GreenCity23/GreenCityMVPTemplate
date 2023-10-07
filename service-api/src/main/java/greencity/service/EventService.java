@@ -8,13 +8,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface EventService {
-
     /**
      * Method for creating the Event instance.
      *
      * @param addEventDtoRequest dto for creating Event instance.
-     * @param images event images
-     * @param organizerId ID of event creator
+     * @param images             event images
+     * @param organizerId        ID of event creator
      * @return {@link EventDto} instance.
      */
     EventDto save(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId);
@@ -47,11 +46,11 @@ public interface EventService {
      * Method for updating Event instance.
      *
      * @param addEventDtoRequest - instance of {@link AddEventDtoRequest}.
-     * @param images event images.
-     * @param organizerId ID of event author.
+     * @param images             event images.
+     * @param organizerId        ID of event author.
      * @return {@link EventDto} instance.
      */
-     EventDto update(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId);
+    EventDto update(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId);
 
     /**
      * Method for deleting the {@link EventDto} instance by its id.

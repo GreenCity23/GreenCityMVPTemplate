@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -15,7 +14,6 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode
 public class EditEventDtoRequest {
-
     @NotNull
     Long id;
 
