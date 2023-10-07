@@ -2,34 +2,54 @@ package greencity.controller;
 
 import greencity.annotations.CurrentUser;
 import greencity.constant.HttpStatuses;
+import greencity.dto.PageableDto;
+import greencity.dto.notification.NotificationDto;
 import greencity.dto.user.UserVO;
 import greencity.service.NotificationService;
 import greencity.service.NotifiedUserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
+import java.util.List;
+
 @RestController
 @RequestMapping("/notifications")
+@AllArgsConstructor
 public class NotificationController {
     private final NotificationService notificationService;
     private final NotifiedUserService notifiedUserService;
 
-    @Autowired
-    public NotificationController(NotificationService notificationService, NotifiedUserService notifiedUserService) {
-        this.notificationService = notificationService;
-        this.notifiedUserService = notifiedUserService;
+    /**
+     * Method for creating new {@link NotificationDto}.
+     *
+     * @param notificationDto dto for {@link NotificationDto} entity.
+     * @return dto {@link NotificationDto} instance.
+     * @author Nazar Klimovych
+     */
+    @ApiOperation(value = "Add new notification.")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = HttpStatuses.CREATED, response = NotificationDto.class),
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)
+    })
+    @PostMapping
+    public ResponseEntity<NotificationDto> saveNotification(@Valid @RequestBody NotificationDto notificationDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(notificationService.save(notificationDto));
     }
 
     @ApiOperation(value = "Count unread users notifications.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = HttpStatuses.OK),
-            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
+        @ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)
     })
     @GetMapping("/user/unread")
     public ResponseEntity<Long> countUnreadNotificationsForUser(@ApiIgnore @CurrentUser UserVO user) {
@@ -39,15 +59,15 @@ public class NotificationController {
 
     @ApiOperation(value = "Set notification as read.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = HttpStatuses.OK),
-            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND),
+        @ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
     })
     @PatchMapping("/{id}/user/read")
     public ResponseEntity<Void> setNotificationAsRead(
-            @PathVariable Long id,
-            @ApiIgnore @CurrentUser UserVO user
+        @PathVariable Long id,
+        @ApiIgnore @CurrentUser UserVO user
     ) {
         notifiedUserService.setNotificationAsRead(id, user.getId());
         return ResponseEntity.ok().build();
@@ -55,17 +75,181 @@ public class NotificationController {
 
     @ApiOperation(value = "Set notification as unread.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = HttpStatuses.OK),
-            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
-            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND),
+        @ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
     })
     @PatchMapping("/{id}/user/unread")
     public ResponseEntity<Void> setNotificationAsUnRead(
-            @PathVariable Long id,
-            @ApiIgnore @CurrentUser UserVO user
+        @PathVariable Long id,
+        @ApiIgnore @CurrentUser UserVO user
     ) {
         notifiedUserService.setNotificationAsUnread(id, user.getId());
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Method finds all notifications.
+     *
+     * @return Pageable of {@link NotificationDto}.
+     * @author Nazar Klimovych
+     */
+    @ApiOperation(value = "Get all notifications.")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
+    @GetMapping("/all")
+    public ResponseEntity<PageableDto<NotificationDto>> getAllNotifications() {
+        notificationService.findAll();
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Method finds all notifications generated by a user.
+     *
+     * @param id {@link Long} with needed user id.
+     * @return Pageable of {@link NotificationDto}.
+     * @author Nazar Klimovych
+     */
+    @ApiOperation(value = "Get all notifications generated by a user.")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
+    @GetMapping("/sender/{id}/all")
+    public ResponseEntity<PageableDto<NotificationDto>> getAllBySenderId(@PathVariable Long id) {
+        notificationService.findAllBySenderId(id);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Method finds specific notification by id.
+     *
+     * @param id {@link Long} with needed notification id.
+     * @return {@link NotificationDto}.
+     * @author Nazar Klimovych
+     */
+    @ApiOperation(value = "Get specific notification  by id.")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<NotificationDto> getNotificationById(@PathVariable Long id) {
+        notificationService.findById(id);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Method finds three last notifications received by the user.
+     *
+     * @param id {@link Long} with needed user id.
+     * @return List of {@link NotificationDto}.
+     * @author Nazar Klimovych
+     */
+    @ApiOperation(value = "Get three last notifications received by the user.")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
+    @GetMapping("/user/{id}/lastThreeByUserId")
+    public ResponseEntity<List<NotificationDto>> getThreeLastNotificationsByUserId(@PathVariable Long id) {
+        notificationService.findThreeLastNotificationsByUserId(id);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Method finds all notifications received by the user.
+     *
+     * @param id {@link Long} with needed user id.
+     * @return Pageable of {@link NotificationDto}.
+     * @author Nazar Klimovych
+     */
+    @ApiOperation(value = "Get all notifications received by the user.")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
+    @GetMapping("/user/{id}/all")
+    public ResponseEntity<PageableDto<NotificationDto>> getAllByNotifiedUserId(@PathVariable Long id) {
+        notificationService.findAllByNotifiedUserId(id);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Method finds all notifications received by the user and specified by
+     * the notification source.
+     *
+     * @param id {@link Long} with needed user id.
+     * @param sourceId {@link Long} with needed source id.
+     * @return Pageable of {@link NotificationDto}.
+     * @author Nazar Klimovych
+     */
+    @ApiOperation(value = "Get all notifications received by the user and specified by the notification source.")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
+    @GetMapping("/user/{id}/source/{sourceId}")
+    public ResponseEntity<PageableDto<NotificationDto>> getAllByUserIdAndSourceId(
+        @PathVariable Long id,
+        @PathVariable Long sourceId
+    ) {
+        notificationService.findAllByUserIdAndSourceId(id, sourceId);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Method finds all notifications specified by the notification source.
+     *
+     * @param id {@link Long} with needed source id.
+     * @return Pageable of {@link NotificationDto}.
+     * @author Nazar Klimovych
+     */
+    @ApiOperation(value = "Get all notifications specified by the notification source.")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = HttpStatuses.OK),
+        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
+        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
+    @GetMapping("/source/{id}/all")
+    public ResponseEntity<PageableDto<NotificationDto>> getAllBySourceId(@PathVariable Long id) {
+        notificationService.findAllBySourceId(id);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Method for deleting {@link NotificationDto} by its id.
+     *
+     * @param id {@link Long} with needed notification id.
+     * @return id of deleted {@link NotificationDto}.
+     * @author Nazar Klimovych
+     */
+    @ApiOperation(value = "Delete notification.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
+    @GetMapping("/{id}/delete")
+    public ResponseEntity<Object> deleteNotification(@PathVariable Long id) {
+        notificationService.delete(id);
         return ResponseEntity.ok().build();
     }
 }

@@ -5,23 +5,90 @@ import greencity.dto.notification.NotificationDto;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Provides the interface to manage {@code Notification} entity.
+ */
 public interface NotificationService {
-    List<NotificationDto> getAllNotifications();
+    /**
+     * Method for getting all notifications.
+     *
+     * @return List of {@link NotificationDto} instances.
+     * @author Nazar Klimovych
+     */
+    List<NotificationDto> findAll();
 
-    Optional<NotificationDto> getNotificationById(Long id);
+    /**
+     * Method for getting notification by id.
+     *
+     * @param id {@link Long} notification id.
+     * @return List of {@link NotificationDto} instances.
+     * @author Nazar Klimovych
+     */
+    Optional<NotificationDto> findById(Long id);
 
-    NotificationDto saveNotification(NotificationDto notification);
+    /**
+     * Method for saving notification to a database.
+     *
+     * @param notification {@link NotificationDto} .
+     * @return {@code Notification} instance.
+     * @author Nazar Klimovych
+     */
+    NotificationDto save(NotificationDto notification);
 
-    void deleteNotification(Long id);
+    /**
+     * Method for deleting notification from a database.
+     *
+     * @param id {@link Long} notification id.
+     * @return {@link Long} id of deleted notification.
+     * @author Nazar Klimovych
+     */
+    Long delete(Long id);
 
-    List<NotificationDto> getAllBySenderId(Long userId);
+    /**
+     * Method for getting all notifications by sender id.
+     *
+     * @param id {@link Long} sender id.
+     * @return List of {@link NotificationDto} instances.
+     * @author Nazar Klimovych
+     */
+    List<NotificationDto> findAllBySenderId(Long id);
 
-    List<NotificationDto> getThreeLastNotificationsByUserId(Long userId);
+    /**
+     * Method for getting the last three notifications of a specific user.
+     *
+     * @param id {@link Long} user id.
+     * @return List of {@link NotificationDto} instances.
+     * @author Nazar Klimovych
+     */
+    List<NotificationDto> findThreeLastNotificationsByUserId(Long id);
 
-    List<NotificationDto> getAllByNotifiedUserId(Long userId);
+    /**
+     * Method for getting all notifications for a notified user.
+     *
+     * @param id {@link Long} notified user id.
+     * @return List of {@link NotificationDto} instances.
+     * @author Nazar Klimovych
+     */
+    List<NotificationDto> findAllByNotifiedUserId(Long id);
 
-    List<NotificationDto> getAllByUserIdAndSourceId(Long userId, Long sourceId);
+    /**
+     * Method for getting all notifications for a notified user
+     * by notification source.
+     *
+     * @param userId {@link Long} notified user id.
+     * @param sourceId {@link Long} notification source id.
+     * @return list of {@code Notification} instances.
+     * @author Nazar Klimovych
+     */
+    List<NotificationDto> findAllByUserIdAndSourceId(Long userId, Long sourceId);
 
-    List<NotificationDto> getAllBySourceId(Long sourceId);
+    /**
+     * Method for getting all notifications by notification source.
+     *
+     * @param id {@link Long} notification source id.
+     * @return list of {@code Notification} instances.
+     * @author Nazar Klimovych
+     */
+    List<NotificationDto> findAllBySourceId(Long id);
 }
 

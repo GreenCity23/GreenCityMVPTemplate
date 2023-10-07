@@ -73,9 +73,9 @@ public interface NotificationRepo extends JpaRepository<Notification, Long>, Jpa
     /**
      * Method for getting all notifications by notification source.
      *
-     * @param sourceId {@link Long} notification source id.
+     * @param id {@link Long} notification source id.
      * @return list of {@link Notification} instances.
      * @author Nazar Klimovych
      */
-    List<Notification> findAllBySourceId(@Param("sourceId") Long sourceId);
+    List<Notification> findAllBySourceId(@Param("id") Long id);
 }
