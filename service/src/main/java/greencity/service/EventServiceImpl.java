@@ -57,10 +57,9 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + organizerId));
         Event eventToSave = modelMapper.map(addEventDtoRequest, Event.class);
         eventToSave.setOrganizer(organizer);
-        processEventImages(eventToSave, images);
 
         EventDto eventDto =
-                modelMapper.map(genericSaveOrUpdate(eventToSave, addEventDtoRequest, images, organizer), EventDto.class);
+                modelMapper.map(genericSaveOrUpdate(eventToSave, addEventDtoRequest, images), EventDto.class);
         sendEmailDto(eventDto, organizer);
         return eventDto;
     }
@@ -79,36 +78,23 @@ public class EventServiceImpl implements EventService {
         }
         updatedEvent.setTitle(addEventDtoRequest.getTitle());
         updatedEvent.setDescription(addEventDtoRequest.getDescription());
-
-        updatedEvent.setDateLocations(addEventDtoRequest.getDatesLocations().stream()
-                .map(eventDateLocationDto -> {
-                    if (eventDateLocationDto.getStartDate().isBefore(ZonedDateTime.now())) {
-                        throw new NotSavedException(ErrorMessage.EVENT_PAST_CANNOT_BE_SAVED);
-                    }
-                    return modelMapper.map(eventDateLocationDto, DateLocation.class).setEvent(updatedEvent);
-                })
-                .collect(Collectors.toList()));
-
-        List<TagVO> tagVOS = tagService.findTagsWithAllTranslationsByNamesAndType(
-                addEventDtoRequest.getTags(), TagType.EVENT);
-        List<Tag> tags = modelMapper.map(tagVOS,
-                new TypeToken<List<Tag>>() {
-                }.getType());
-        updatedEvent.setTags(tags);
-
-        if (images != null && images.length > 0) {
-            processEventImages(updatedEvent, images);
-        }
-
-        updatedEvent.setEventClosed(Boolean.parseBoolean(addEventDtoRequest.getOpen()));
-        return modelMapper.map(genericSaveOrUpdate(updatedEvent, addEventDtoRequest, images, organizer), EventDto.class);
+        updatedEvent.setEventClosed(!Boolean.parseBoolean(addEventDtoRequest.getOpen()));
+        EventDto eventDto = modelMapper.map(genericSaveOrUpdate(updatedEvent, addEventDtoRequest, images), EventDto.class);
+        return eventDto;
     }
 
-    private Event genericSaveOrUpdate(Event event, AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, User organizer) {
+    private Event genericSaveOrUpdate(Event event, AddEventDtoRequest addEventDtoRequest, MultipartFile[] images) {
         validateDateLocations(event, addEventDtoRequest.getDatesLocations());
         validateTags(event, addEventDtoRequest.getTags());
+        validateImages(event, images);
 
         return eventRepo.save(event);
+    }
+
+    private void validateImages(Event event, MultipartFile[] images) {
+        if (images != null && images.length > 0) {
+            processEventImages(event, images);
+        }
     }
 
     private void validateDateLocations(Event event, List<EventDateLocationDto> dateLocations) {
@@ -283,6 +269,40 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PageableAdvancedDto<EventDto> findAllByAttenderId(Long attenderId, Pageable page) {
+        userRepo.findById(attenderId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + attenderId));
+
+        Page<Event> pages;
+        if (page.getSort().isEmpty()) {
+            pages = eventRepo.findAllByAttenderIdOrderByCreationDateDesc(attenderId, page);
+        } else {
+            throw new UnsupportedSortException(ErrorMessage.INVALID_SORTING_VALUE);
+        }
+        return buildPageableAdvancedDto(pages);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PageableAdvancedDto<EventDto> findAllRelatedToUser(Long userId, Pageable page) {
+        userRepo.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + userId));
+
+        Page<Event> pages;
+        if (page.getSort().isEmpty()) {
+            pages = eventRepo.findAllRelatedToUserOrderByCreationDateDesc(userId, page);
+        } else {
+            throw new UnsupportedSortException(ErrorMessage.INVALID_SORTING_VALUE);
+        }
+        return buildPageableAdvancedDto(pages);
+    }
+
+    /**
      * Method to upload events images.
      *
      * @param eventToSave - event which should be created after adding images
@@ -291,6 +311,14 @@ public class EventServiceImpl implements EventService {
     private void processEventImages(Event eventToSave, MultipartFile[] images) {
         if (images.length > 5) {
             throw new IllegalArgumentException(ErrorMessage.USER_CANNOT_ADD_MORE_THAN_5_EVENT_IMAGES);
+        }
+        for (MultipartFile image : images) {
+            if (image.getSize() > 10 * 1024 * 1024) {
+                throw new IllegalArgumentException(ErrorMessage.IMAGE_SIZE_EXCEEDS_10MB);
+            }
+            if (!isSupportedContentType(image.getContentType())) {
+                throw new IllegalArgumentException(ErrorMessage.UNSUPPORTED_IMAGE_FORMAT);
+            }
         }
         String[] paths = uploadImages(images);
         if (paths.length != images.length) {
@@ -303,5 +331,10 @@ public class EventServiceImpl implements EventService {
                     .collect(Collectors.toList());
             eventToSave.setAdditionalImages(additionalImages);
         }
+    }
+
+    private boolean isSupportedContentType(String contentType) {
+        var supportedContents = List.of("image/jpg", "image/jpeg", "image/png");
+        return supportedContents.contains(contentType);
     }
 }
