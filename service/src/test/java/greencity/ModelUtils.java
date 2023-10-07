@@ -203,7 +203,7 @@ public class ModelUtils {
         tag.setTagTranslations(getEventTagTranslations());
         return new Event(1L, "event title", "event description event description", zonedDateTime,
                 List.of(getDateLocation()),
-                getUser(), "https://google.com/", false, false, false,
+                getUser(), "https://google.com/", false, false, false, null,
                 null, List.of(tag), null);
     }
 
@@ -214,7 +214,7 @@ public class ModelUtils {
         tag.setTagTranslations(getEventTagTranslations());
         return new Event(1L, "event title", "event description event description", zonedDateTime,
                 List.of(getDateLocation()),
-                getUser(), "https://google.com/", false, false, false,
+                getUser(), "https://google.com/", false, false, false,null,
                 null, List.of(tag), null);
     }
     public static DateLocation getDateLocation() {

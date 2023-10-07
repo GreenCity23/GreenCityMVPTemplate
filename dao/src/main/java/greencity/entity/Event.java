@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -70,6 +71,9 @@ public class Event {
             regexp = "^(https://|http://).*"
     ) String> additionalImages;
 
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    private List<EventGrade> eventGrades = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(
             name = "events_tags",
@@ -85,4 +89,6 @@ public class Event {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> attenders;
+
+
 }

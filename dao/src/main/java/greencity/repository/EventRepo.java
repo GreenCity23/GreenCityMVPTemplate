@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface EventRepo extends JpaRepository<Event, Long>, JpaSpecificationExecutor<Event> {
 
@@ -38,4 +40,12 @@ public interface EventRepo extends JpaRepository<Event, Long>, JpaSpecificationE
     @Query(nativeQuery = true,
         value = "select count(id) from events")
     int totalCountOfCreationEvents();
+
+    /**
+     * Method for retrieving all events organized by a specific user.
+     *
+     * @param organizer The user who organized the events
+     * @return List of Event objects organized by the specified user
+     */
+    List<Event> getAllByOrganizer(User organizer);
 }

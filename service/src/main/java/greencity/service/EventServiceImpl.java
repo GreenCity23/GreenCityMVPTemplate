@@ -3,17 +3,18 @@ package greencity.service;
 import greencity.client.RestClient;
 import greencity.constant.ErrorMessage;
 import greencity.dto.PageableAdvancedDto;
-import greencity.dto.event.*;
+import greencity.dto.event.AddEventDtoRequest;
+import greencity.dto.event.AddEventDtoRequest;
+import greencity.dto.event.EventDateLocationDto;
+import greencity.dto.event.EventDto;
+import greencity.dto.event.EventForSendEmailDto;
 import greencity.dto.tag.TagVO;
 import greencity.dto.user.PlaceAuthorDto;
 import greencity.dto.user.UserVO;
 import greencity.entity.*;
 import greencity.enums.Role;
 import greencity.enums.TagType;
-import greencity.exception.exceptions.NotFoundException;
-import greencity.exception.exceptions.NotSavedException;
-import greencity.exception.exceptions.UnsupportedSortException;
-import greencity.exception.exceptions.UserHasNoPermissionToAccessException;
+import greencity.exception.exceptions.*;
 import greencity.repository.EventRepo;
 import greencity.repository.TagTranslationRepo;
 import greencity.repository.UserRepo;
@@ -44,6 +45,7 @@ public class EventServiceImpl implements EventService {
     private final FileService fileService;
     private final HttpServletRequest httpServletRequest;
     private final RestClient restClient;
+    private final UserService userService;
 
     /**
      * {@inheritDoc}
@@ -248,6 +250,49 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
+     * Method to rate an event.
+     *
+     * @param eventId - the ID of the event to rate
+     * @param email - the email of the user rating the event
+     * @param grade - the grade to assign to the event
+     */
+    @Override
+    public void rateEvent(Long eventId, String email, Integer grade) {
+        Event event =
+                eventRepo.findById(eventId).orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND));
+        User currentUser = modelMapper.map(restClient.findByEmail(email), User.class);
+
+        event.getEventGrades().add(EventGrade.builder().event(event).grade(grade).user(currentUser).build());
+        eventRepo.save(event);
+
+        userService.updateEventOrganizerRating(event.getOrganizer().getId(),
+                calculateEventOrganizerRating(event.getOrganizer()));
+    }
+
+    private Double calculateEventOrganizerRating(User user) {
+        double finalRating = 0;
+
+        List<Event> events = eventRepo.getAllByOrganizer(user);
+
+        if (events != null && !events.isEmpty()) {
+            long totalGrades = events.stream()
+                    .mapToLong(event -> event.getEventGrades().size())
+                    .sum();
+
+            if (totalGrades != 0) {
+                double summaryGrade = events.stream()
+                        .flatMap(event -> event.getEventGrades().stream())
+                        .mapToDouble(EventGrade::getGrade)
+                        .sum();
+
+                finalRating = summaryGrade / totalGrades;
+            }
+        }
+
+        return finalRating;
+    }
+
+    /**
      * Method to upload events images.
      *
      * @param eventToSave - event which should be created after adding images
@@ -277,6 +322,7 @@ public class EventServiceImpl implements EventService {
             eventToSave.setAdditionalImages(additionalImages);
         }
     }
+
     private boolean isSupportedContentType(String contentType) {
         var supportedContents = List.of("image/jpg", "image/jpeg", "image/png");
         return supportedContents.contains(contentType);

@@ -7,6 +7,8 @@ import greencity.dto.user.UserVO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.Email;
+
 public interface EventService {
 
     /**
@@ -68,4 +70,13 @@ public interface EventService {
      * @return array of images path
      */
     String[] uploadImages(MultipartFile[] images);
+
+    /**
+     * Method to rate an event.
+     *
+     * @param eventId - the ID of the event to be rated
+     * @param name - the name of the person rating the event
+     * @param grade - the rating grade given to the event
+     */
+    void rateEvent(Long eventId, String email, Integer grade);
 }
