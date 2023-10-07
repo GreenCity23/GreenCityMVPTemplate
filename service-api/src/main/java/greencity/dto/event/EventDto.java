@@ -1,6 +1,7 @@
 package greencity.dto.event;
 
 import greencity.dto.tag.TagUaEnDto;
+import greencity.dto.user.AttendersEmailsDto;
 import lombok.*;
 
 import java.io.Serializable;
@@ -30,4 +31,5 @@ public class EventDto implements Serializable {
     private boolean isFavorite;
     private Set<TagUaEnDto> tags;
     private List<String> additionalImages;
+    private List<AttendersEmailsDto> attendersEmailsDtos;
 }

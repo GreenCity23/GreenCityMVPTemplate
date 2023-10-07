@@ -383,6 +383,21 @@ public class RestClient {
                               + RestTemplateLinks.COMMENT_EVENT, HttpMethod.POST, entity, Object.class)
                 .getBody();
     }
+    /**
+     * send AddEventMessage to GreenCityUser.
+     *
+     * @param message containing information for sending an email about updating an existing event.
+     */
+
+    public void editEvent(EventForSendEmailDto message, String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token);
+        HttpEntity<EventForSendEmailDto> entity = new HttpEntity<>(message, headers);
+        restTemplate.exchange(greenCityUserServerAddress
+                        + RestTemplateLinks.EDIT_EVENT, HttpMethod.POST, entity, Object.class)
+                .getBody();
+    }
 
     /**
      * send SendReportEmailMessage to GreenCityUser.

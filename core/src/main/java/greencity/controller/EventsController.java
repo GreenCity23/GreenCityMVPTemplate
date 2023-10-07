@@ -68,10 +68,10 @@ public class EventsController {
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
             @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
             @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
-    @PostMapping(path = "/addAttender/{eventId}",
-            consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE})
-    public ResponseEntity<String> addAttender(@PathVariable Long eventId) {
-        return null;
+    @PostMapping(path = "/addAttender/{eventId}")
+    public ResponseEntity<Object> addAttender(@PathVariable Long eventId, @ApiIgnore @CurrentUser UserVO userVO) {
+        eventService.addAttenderToEvent(eventId, userVO.getId());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
@@ -114,9 +114,8 @@ public class EventsController {
             @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @GetMapping(path = "/getAllSubscribers/{eventId}")
     public ResponseEntity<List<EventAttenderDto>> getAllEventSubscribers(@PathVariable Long eventId) {
-        return null;
+        return ResponseEntity.status(HttpStatus.OK).body(eventService.getAllSubscribers(eventId));
     }
-
     /**
      * Method for getting all event by id.
      *
@@ -217,10 +216,10 @@ public class EventsController {
             @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
             @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @DeleteMapping(path = "/removeAttender/{eventId}")
-    public ResponseEntity<Object> removeAttender(@PathVariable Long eventId) {
-        return null;
+    public ResponseEntity<Object> removeAttender(@PathVariable Long eventId, @ApiIgnore @CurrentUser UserVO userVO) {
+        eventService.removeAttenderFromEvent(eventId, userVO.getId());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
-
     /**
      * Method for removing an event from favorites.
      */

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -74,4 +75,25 @@ public interface EventRepo extends JpaRepository<Event, Long>, JpaSpecificationE
     )
     Page<Event> findAllRelatedToUserOrderByCreationDateDesc(Long userId, Pageable page);
 
+    /**
+     * Add an attender to the event.
+     *
+     * @param userId   the ID of the user who wants to join the event
+     * @param eventId the ID of the event
+     */
+    @Modifying
+    @Query(nativeQuery = true,
+            value = "INSERT INTO events_attenders (event_id, user_id) VALUES (:eventId, :userId)")
+    void addAttender(Long userId, Long eventId);
+
+    /**
+     * Remove an attender from the event.
+     *
+     * @param userId   the ID of the user to be removed from the event's attendees
+     * @param eventId  the ID of the event from which the user is to be removed
+     */
+    @Modifying
+    @Query(nativeQuery = true,
+            value = "DELETE FROM events_attenders WHERE event_id = :eventId AND user_id = :userId")
+    void removeAttender(Long userId, Long eventId);
 }

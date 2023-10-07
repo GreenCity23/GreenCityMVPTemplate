@@ -68,7 +68,7 @@ public class EventServiceImplTest {
 
     @Test
     void save() throws MalformedURLException {
-        MultipartFile[] images = new MultipartFile[]{getFile()};
+        MultipartFile[] images = new MultipartFile[]{getImage()};
         AddEventDtoRequest addEventDtoRequest = getAddEventDtoRequest();
         List<TagVO> tagVOS = Collections.singletonList(ModelUtils.getEventTagVO());
         List<Tag> tags = Collections.singletonList(getEventTag());
@@ -217,7 +217,7 @@ public class EventServiceImplTest {
 
     @Test
     void update() throws MalformedURLException {
-        MultipartFile[] images = new MultipartFile[]{getFile()};
+        MultipartFile[] images = new MultipartFile[]{getImage()};
         AddEventDtoRequest addEventDtoRequest = getAddEventDtoRequest();
         List<TagVO> tagVOS = Collections.singletonList(ModelUtils.getEventTagVO());
         List<Tag> tags = Collections.singletonList(getEventTag());
