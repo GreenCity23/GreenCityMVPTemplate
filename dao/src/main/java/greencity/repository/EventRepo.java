@@ -38,4 +38,5 @@ public interface EventRepo extends JpaRepository<Event, Long>, JpaSpecificationE
     @Query(nativeQuery = true,
         value = "select count(id) from events")
     int totalCountOfCreationEvents();
+
 }

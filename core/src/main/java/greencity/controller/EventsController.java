@@ -1,13 +1,16 @@
 package greencity.controller;
 
 import greencity.annotations.ApiPageable;
+import greencity.annotations.ApiPageableWithLocale;
 import greencity.annotations.CurrentUser;
 import greencity.constant.HttpStatuses;
 import greencity.constant.SwaggerExampleModel;
 import greencity.dto.PageableAdvancedDto;
+import greencity.dto.PageableDto;
 import greencity.dto.event.*;
 import greencity.dto.user.UserVO;
 import greencity.service.EventService;
+import greencity.service.SearchService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -31,6 +34,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EventsController {
     private final EventService eventService;
+    private final SearchService searchService;
 
     /**
      * Method for creating Event.
@@ -252,7 +256,26 @@ public class EventsController {
             @ApiParam(value = "Image of event") @RequestPart(required = false) MultipartFile[] images,
             @ApiIgnore @CurrentUser UserVO user) {
         return ResponseEntity.status(HttpStatus.OK).body(eventService.update(addEventDtoRequest, images, user.getId()));
-
     }
 
+    /**
+     * Method for search.
+     *
+     * @param searchQuery query to search.
+     * @return PageableDto of {@link SearchEventDto} instances.
+     */
+    @ApiOperation(value = "Search Event.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = HttpStatuses.OK),
+            @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
+            @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)
+    })
+    @GetMapping("/events")
+    @ApiPageableWithLocale
+    public ResponseEntity<PageableDto<SearchEventDto>> searchEvent(
+            @ApiIgnore Pageable pageable,
+            @ApiParam(value = "Query to search") @RequestParam String searchQuery) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(eventService.searchEvent(pageable, searchQuery));
+    }
 }

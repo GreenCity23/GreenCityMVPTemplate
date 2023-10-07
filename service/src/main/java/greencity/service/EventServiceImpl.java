@@ -3,6 +3,7 @@ package greencity.service;
 import greencity.client.RestClient;
 import greencity.constant.ErrorMessage;
 import greencity.dto.PageableAdvancedDto;
+import greencity.dto.PageableDto;
 import greencity.dto.event.*;
 import greencity.dto.tag.TagVO;
 import greencity.dto.user.PlaceAuthorDto;
@@ -15,6 +16,7 @@ import greencity.exception.exceptions.NotSavedException;
 import greencity.exception.exceptions.UnsupportedSortException;
 import greencity.exception.exceptions.UserHasNoPermissionToAccessException;
 import greencity.repository.EventRepo;
+import greencity.repository.EventSearchRepo;
 import greencity.repository.TagTranslationRepo;
 import greencity.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,7 @@ import static greencity.constant.AppConstant.AUTHORIZATION;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
     private final EventRepo eventRepo;
+    private final EventSearchRepo eventSearchRepo;
     private final UserRepo userRepo;
     private final ModelMapper modelMapper;
     private final TagsService tagService;
@@ -259,6 +262,24 @@ public class EventServiceImpl implements EventService {
     @Override
     public String[] uploadImages(MultipartFile[] images) {
         return Arrays.stream(images).map(fileService::upload).toArray(String[]::new);
+    }
+
+    @Override
+    public PageableDto<SearchEventDto> searchEvent(Pageable pageable, String searchQuery) {
+        Page<Event> page = eventSearchRepo.find(pageable, searchQuery);
+        return getSearchEventDtoPageableDto(page);
+    }
+
+    private PageableDto<SearchEventDto> getSearchEventDtoPageableDto(Page<Event> page) {
+        List<SearchEventDto> searchEventDTOs = page.stream()
+                .map(event -> modelMapper.map(event, SearchEventDto.class))
+                .collect(Collectors.toList());
+
+        return new PageableDto<>(
+                searchEventDTOs,
+                page.getTotalElements(),
+                page.getPageable().getPageNumber(),
+                page.getTotalPages());
     }
 
     /**

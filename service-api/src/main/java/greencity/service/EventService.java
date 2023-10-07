@@ -1,8 +1,10 @@
 package greencity.service;
 
 import greencity.dto.PageableAdvancedDto;
+import greencity.dto.PageableDto;
 import greencity.dto.event.AddEventDtoRequest;
 import greencity.dto.event.EventDto;
+import greencity.dto.event.SearchEventDto;
 import greencity.dto.user.UserVO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -68,4 +70,13 @@ public interface EventService {
      * @return array of images path
      */
     String[] uploadImages(MultipartFile[] images);
+
+    /**
+     * Method that allow you to search {@link SearchEventDto}.
+     *
+     * @param pageable    {@link Pageable}.
+     * @param searchQuery query to search.
+     * @return PageableDto of {@link SearchEventDto} instances.
+     */
+    PageableDto<SearchEventDto> searchEvent(Pageable pageable, String searchQuery);
 }
