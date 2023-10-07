@@ -19,7 +19,9 @@ public class EventCommentDto {
     @Min(1)
     private Long id;
 
-    @NotEmpty
+    private LocalDateTime createdDate;
+
+
     private LocalDateTime modifiedDate;
 
     private EventCommentAuthorDto author;

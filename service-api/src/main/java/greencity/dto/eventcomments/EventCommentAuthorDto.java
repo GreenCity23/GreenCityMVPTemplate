@@ -17,7 +17,6 @@ public class EventCommentAuthorDto {
     @NotEmpty
     private String name;
 
-    @NotEmpty
     private String userProfilePicturePath;
 }
 

@@ -1,8 +1,11 @@
 package greencity.service;
 
 import greencity.annotations.RatingCalculationEnum;
+import greencity.client.RestClient;
 import greencity.constant.ErrorMessage;
 import greencity.dto.PageableDto;
+import greencity.dto.eventcomments.EventCommentForSendDto;
+import greencity.dto.event.EventDto;
 import greencity.dto.eventcomments.AddEventCommentDtoRequest;
 import greencity.dto.eventcomments.AddEventCommentDtoResponse;
 import greencity.dto.eventcomments.AmountCommentLikesDto;
@@ -38,6 +41,7 @@ public class EventCommentServiceImpl implements EventCommentService{
     private final ModelMapper modelMapper;
     private final RatingCalculation ratingCalculation;
     private final HttpServletRequest httpServletRequest;
+    private final RestClient restClient;
 
     @Override
     public AddEventCommentDtoResponse save(AddEventCommentDtoRequest addEventCommentDtoRequest, Long eventId, UserVO userVO) {
@@ -61,7 +65,23 @@ public class EventCommentServiceImpl implements EventCommentService{
         String accessToken = httpServletRequest.getHeader(AUTHORIZATION);
         CompletableFuture.runAsync(
                 () -> ratingCalculation.ratingCalculation(RatingCalculationEnum.ADD_COMMENT, userVO, accessToken));
+        if(event.getOrganizer().getId() != eventComment.getUser().getId()) {
+            sendEmailNotificationToOrganizer(modelMapper.map(eventComment,EventCommentDto.class),
+                    modelMapper.map(event, EventDto.class));
+        }
         return modelMapper.map(eventCommentRepo.save(eventComment), AddEventCommentDtoResponse.class);
+    }
+
+    private void sendEmailNotificationToOrganizer(EventCommentDto eventCommentDto, EventDto eventDto) {
+        EventCommentForSendDto eventCommentForSendDto = EventCommentForSendDto.builder()
+                .eventName(eventDto.getTitle())
+                .eventAuthorDto(eventDto.getOrganizer())
+                .eventCommentCreationDate(eventCommentDto.getCreatedDate())
+                .eventCommentText(eventCommentDto.getText())
+                .eventCommentAuthorDto(eventCommentDto.getAuthor())
+                .build();
+        restClient.sendEmailAfterEmailWasCommented(eventCommentForSendDto,
+                httpServletRequest.getHeader(AUTHORIZATION).substring(7));
     }
 
     @Override
@@ -72,6 +92,7 @@ public class EventCommentServiceImpl implements EventCommentService{
             throw new BadRequestException(ErrorMessage.NOT_A_CURRENT_USER);
         }
         comment.setText(commentText);
+        comment.setModifiedDate(LocalDateTime.now());
         eventCommentRepo.save(comment);
     }
 
@@ -89,9 +110,12 @@ public class EventCommentServiceImpl implements EventCommentService{
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(Long id, UserVO userVO) {
         EventComment eventComment = eventCommentRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_COMMENT_NOT_FOUND_BY_ID + id));
+        if (!userVO.getId().equals(eventComment.getUser().getId())) {
+            throw new BadRequestException(ErrorMessage.NOT_A_CURRENT_USER);
+        }
         eventCommentRepo.delete(eventComment);
     }
 

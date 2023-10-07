@@ -18,7 +18,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-@ToString(exclude = "parentComment, comments")
+@ToString(exclude = "parentComment, replies")
 public class EventComment {
 
     @Id

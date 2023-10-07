@@ -61,10 +61,15 @@ public class EventCommentController {
             @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND),
     })
     @DeleteMapping("/{eventCommentId}")
-    public void deleteEventCommentById(@PathVariable Long eventCommentId) {
-        eventCommentService.deleteById(eventCommentId);
+    public void deleteEventCommentById(@PathVariable Long eventCommentId, @ApiIgnore @CurrentUser UserVO userVO) {
+        eventCommentService.deleteById(eventCommentId, userVO);
     }
 
+    /**
+     * Method to get all active comment replies
+     * @param parentCommentId id of comment
+     * @param user current user
+     */
     @ApiOperation(value = "Get all active replies to event comment.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
@@ -79,6 +84,11 @@ public class EventCommentController {
         return ResponseEntity.ok(eventCommentService.getAllActiveReplies(pageable, parentCommentId, user));
     }
 
+    /**
+     * Method to get all event active comments
+     * @param eventId id of event
+     * @param user current user
+     */
     @ApiOperation(value = "Get all active comments.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
@@ -92,6 +102,10 @@ public class EventCommentController {
         return ResponseEntity.ok(eventCommentService.getAllActiveComments(pageable, user, eventId));
     }
 
+    /**
+     * Method to get amount of comment replies by comment id.
+     * @param parentCommentId id of parent comment
+     */
     @ApiOperation(value = "Count replies for comment.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
@@ -104,6 +118,10 @@ public class EventCommentController {
         return ResponseEntity.ok(eventCommentService.getCountOfCommentReplies(parentCommentId));
     }
 
+    /**
+     * Method to get amount of event comments by event id.
+     * @param eventId id of event
+     */
     @ApiOperation(value = "Count comments.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
@@ -117,6 +135,10 @@ public class EventCommentController {
         return ResponseEntity.ok(eventCommentService.getEventCommentsAmount(eventId));
     }
 
+    /**
+     * Method to get event comment by id.
+     * @param id id of comment
+     */
     @ApiOperation(value = "Get event comment by id.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
@@ -129,6 +151,11 @@ public class EventCommentController {
         return ResponseEntity.ok(eventCommentService.findEventCommentById(id));
     }
 
+    /**
+     * Method to put like on event comment.
+     * @param id id of comment
+     * @param userVO current user
+     */
     @ApiOperation(value = "Like comment.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = HttpStatuses.OK),
@@ -141,6 +168,13 @@ public class EventCommentController {
         eventCommentService.likeComment(id, userVO);
     }
 
+
+    /**
+     * Method to save event comment.
+     * @param eventId id of commented event
+     * @param userVO current user
+     * @param addEventCommentDtoRequest comment text and parent comment id (optional)
+     */
     @ApiOperation(value = "Add comment to event.")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = HttpStatuses.CREATED),
@@ -157,6 +191,12 @@ public class EventCommentController {
                 .body(eventCommentService.save(addEventCommentDtoRequest, eventId, userVO));
     }
 
+    /**
+     * Method to update event comment.
+     * @param id id of comment
+     * @param userVO current user
+     * @param commentText edited comment text
+     */
     @ApiOperation("Update comment")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = HttpStatuses.OK),

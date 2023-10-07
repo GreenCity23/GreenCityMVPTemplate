@@ -37,7 +37,7 @@ public interface EventCommentService {
      */
     void likeComment(Long id, UserVO userVO);
 
-    void deleteById(Long id);
+    void deleteById(Long id, UserVO userVO);
 
     EventCommentDto findEventCommentById(Long id);
 
