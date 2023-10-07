@@ -73,4 +73,5 @@ public interface EventRepo extends JpaRepository<Event, Long>, JpaSpecificationE
                     "ORDER BY e.creation_date DESC "
     )
     Page<Event> findAllRelatedToUserOrderByCreationDateDesc(Long userId, Pageable page);
+
 }

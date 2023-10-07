@@ -14,7 +14,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-@ToString
+@ToString(exclude = "event")
 public class DateLocation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

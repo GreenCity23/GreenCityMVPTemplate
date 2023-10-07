@@ -16,13 +16,13 @@ import java.util.List;
 public class AddEventDtoRequest {
 
     private Long id;
+    
     private List<EventDateLocationDto> datesLocations;
 
     @NotEmpty
     @Size(min = 20, max = 63206)
     private String description;
 
-    @NotEmpty
     private List<String> tags;
 
     @NotEmpty
