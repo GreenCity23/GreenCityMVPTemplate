@@ -248,6 +248,40 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PageableAdvancedDto<EventDto> findAllByAttenderId(Long attenderId, Pageable page) {
+        userRepo.findById(attenderId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + attenderId));
+
+        Page<Event> pages;
+        if (page.getSort().isEmpty()) {
+            pages = eventRepo.findAllByAttenderIdOrderByCreationDateDesc(attenderId, page);
+        } else {
+            throw new UnsupportedSortException(ErrorMessage.INVALID_SORTING_VALUE);
+        }
+        return buildPageableAdvancedDto(pages);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PageableAdvancedDto<EventDto> findAllRelatedToUser(Long userId, Pageable page) {
+        userRepo.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + userId));
+
+        Page<Event> pages;
+        if (page.getSort().isEmpty()) {
+            pages = eventRepo.findAllRelatedToUserOrderByCreationDateDesc(userId, page);
+        } else {
+            throw new UnsupportedSortException(ErrorMessage.INVALID_SORTING_VALUE);
+        }
+        return buildPageableAdvancedDto(pages);
+    }
+
+    /**
      * Method to upload events images.
      *
      * @param eventToSave - event which should be created after adding images
@@ -277,6 +311,7 @@ public class EventServiceImpl implements EventService {
             eventToSave.setAdditionalImages(additionalImages);
         }
     }
+
     private boolean isSupportedContentType(String contentType) {
         var supportedContents = List.of("image/jpg", "image/jpeg", "image/png");
         return supportedContents.contains(contentType);

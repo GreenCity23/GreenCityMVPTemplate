@@ -36,6 +36,41 @@ public interface EventRepo extends JpaRepository<Event, Long>, JpaSpecificationE
      * @return {@link int} total count of Events
      */
     @Query(nativeQuery = true,
-        value = "select count(id) from events")
+            value = "select count(id) from events")
     int totalCountOfCreationEvents();
+
+    /**
+     * Method returns {@link Event} by attender id and page.
+     *
+     * @param attenderId {@link Long} attender id.
+     * @return all {@link Event} by page.
+     * @author Maksym Fartushok
+     */
+    @Query(nativeQuery = true,
+            value = "SELECT e.* " +
+                    "FROM events AS e " +
+                    "INNER JOIN events_attenders AS ea ON e.id = ea.event_id " +
+                    "WHERE ea.user_id = (:attenderId) " +
+                    "ORDER BY e.creation_date DESC "
+    )
+    Page<Event> findAllByAttenderIdOrderByCreationDateDesc(Long attenderId, Pageable page);
+
+    /**
+     * Method returns {@link Event} by page, where user is organizer or attender.
+     *
+     * @param userId {@link Long} user id.
+     * @return all {@link Event} by page.
+     * @author Maksym Fartushok
+     */
+    @Query(nativeQuery = true,
+            value = "SELECT e.* " +
+                    "FROM events AS e " +
+                    "WHERE e.organizer_id = (:userId) " +
+                    "OR e.id in " +
+                    "(SELECT ea.event_id " +
+                    "FROM events_attenders AS ea " +
+                    "WHERE ea.user_id = (:userId)) " +
+                    "ORDER BY e.creation_date DESC "
+    )
+    Page<Event> findAllRelatedToUserOrderByCreationDateDesc(Long userId, Pageable page);
 }

@@ -171,8 +171,8 @@ public class EventsController {
             @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)})
     @GetMapping("/myEvents/relatedEvents")
     @ApiPageable
-    public ResponseEntity<PageableAdvancedDto<EventDto>> getRelatedToUserEvents(@ApiIgnore Pageable page) {
-        return null;
+    public ResponseEntity<PageableAdvancedDto<EventDto>> getRelatedToUserEvents(@ApiIgnore Pageable page, @ApiIgnore @CurrentUser UserVO user) {
+        return ResponseEntity.status(HttpStatus.OK).body(eventService.findAllRelatedToUser(user.getId(), page));
     }
 
     /**
@@ -186,8 +186,8 @@ public class EventsController {
             @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)})
     @GetMapping("/myEvents")
     @ApiPageable
-    public ResponseEntity<PageableAdvancedDto<EventDto>> getUserEvents(@ApiIgnore Pageable page) {
-        return null;
+    public ResponseEntity<PageableAdvancedDto<EventDto>> getUserEvents(@ApiIgnore Pageable page, @ApiIgnore @CurrentUser UserVO user) {
+        return ResponseEntity.status(HttpStatus.OK).body(eventService.findAllByAttenderId(user.getId(), page));
     }
 
     /**

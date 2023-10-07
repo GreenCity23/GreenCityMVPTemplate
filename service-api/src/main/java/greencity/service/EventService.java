@@ -4,6 +4,7 @@ import greencity.dto.PageableAdvancedDto;
 import greencity.dto.event.AddEventDtoRequest;
 import greencity.dto.event.EventDto;
 import greencity.dto.user.UserVO;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,8 +14,8 @@ public interface EventService {
      * Method for creating the Event instance.
      *
      * @param addEventDtoRequest dto for creating Event instance.
-     * @param images event images
-     * @param organizerId ID of event creator
+     * @param images             event images
+     * @param organizerId        ID of event creator
      * @return {@link EventDto} instance.
      */
     EventDto save(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId);
@@ -47,11 +48,11 @@ public interface EventService {
      * Method for updating Event instance.
      *
      * @param addEventDtoRequest - instance of {@link AddEventDtoRequest}.
-     * @param images event images.
-     * @param organizerId ID of event author.
+     * @param images             event images.
+     * @param organizerId        ID of event author.
      * @return {@link EventDto} instance.
      */
-     EventDto update(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId);
+    EventDto update(AddEventDtoRequest addEventDtoRequest, MultipartFile[] images, Long organizerId);
 
     /**
      * Method for deleting the {@link EventDto} instance by its id.
@@ -68,4 +69,24 @@ public interface EventService {
      * @return array of images path
      */
     String[] uploadImages(MultipartFile[] images);
+
+    /**
+     * Method returns {@link EventDto} by attender id and page.
+     *
+     * @param attenderId {@link Long} attender id.
+     * @param page       parameters of to search.
+     * @return PageableDto of {@link EventDto} instances.
+     * @author Maksym Fartushok
+     */
+    PageableAdvancedDto<EventDto> findAllByAttenderId(Long attenderId, Pageable page);
+
+    /**
+     * Method returns {@link EventDto} where user is organizer or attender by page.
+     *
+     * @param userId {@link Long} attender id.
+     * @param page   parameters of to search.
+     * @return PageableDto of {@link EventDto} instances.
+     * @author Maksym Fartushok
+     */
+    PageableAdvancedDto<EventDto> findAllRelatedToUser(Long userId, Pageable page);
 }
