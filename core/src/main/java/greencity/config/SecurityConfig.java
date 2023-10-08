@@ -184,6 +184,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/habit/{habitId}/friends/profile-pictures",
                 "/notifications/{id}/user/read",
                 "/notifications/{id}/user/unread",
+                "/notifications/{id}/user/delete",
                 "/notifications/user/unread")
             .hasAnyRole(USER, ADMIN, MODERATOR, UBS_EMPLOYEE)
             .antMatchers(HttpMethod.POST,

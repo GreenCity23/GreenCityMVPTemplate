@@ -1,6 +1,7 @@
 package greencity.service;
 
 import greencity.dto.notification.NotificationDto;
+import greencity.dto.notification.NotificationDtoResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,11 @@ import java.util.Optional;
  * Provides the interface to manage {@code Notification} entity.
  */
 public interface NotificationService {
+
+    List<NotificationDto> createEcoNewsCommentNotification(Long id);
+
+    List<NotificationDtoResponse> getNotificationsForUser(Long id);
+
     /**
      * Method for getting a list of all notifications.
      *
@@ -91,4 +97,5 @@ public interface NotificationService {
      */
     List<NotificationDto> findAllBySourceId(Long id);
 }
+
 

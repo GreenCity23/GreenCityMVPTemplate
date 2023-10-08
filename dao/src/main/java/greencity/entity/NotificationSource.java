@@ -14,8 +14,8 @@ import java.util.List;
 @Setter
 @Builder
 @Table(name = "notification_sources")
-@ToString(exclude = {"source"})
-@EqualsAndHashCode(exclude = {"source"})
+@ToString(exclude = {"sentNotifications"})
+@EqualsAndHashCode(exclude = {"sentNotifications"})
 public class NotificationSource {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
