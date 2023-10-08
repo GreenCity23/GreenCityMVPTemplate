@@ -83,29 +83,46 @@ public interface EventService {
      * @return PageableDto of {@link SearchEventDto} instances.
      */
     PageableDto<SearchEventDto> searchEvent(Pageable pageable, String searchQuery);
-    
+
     /**
-     * Method returns {@link EventDto} by attender id and page.
+     * Method returns PageableAdvancedDto of {@link EventDto} by attender id and page.
      *
      * @param attenderId {@link Long} attender id.
      * @param page       parameters of to search.
-     * @return PageableDto of {@link EventDto} instances.
+     * @return PageableAdvancedDto of {@link EventDto} instances.
      * @author Maksym Fartushok
      */
     PageableAdvancedDto<EventDto> findAllByAttenderId(Long attenderId, Pageable page);
 
     /**
-     * Method returns {@link EventDto} where user is organizer or attender by page.
+     * Method returns PageableAdvancedDto of {@link EventDto} where user is organizer or attender by page.
      *
      * @param userId {@link Long} attender id.
      * @param page   parameters of to search.
-     * @return PageableDto of {@link EventDto} instances.
+     * @return PageableAdvancedDto of {@link EventDto} instances.
      * @author Maksym Fartushok
      */
     PageableAdvancedDto<EventDto> findAllRelatedToUser(Long userId, Pageable page);
+
     void addAttenderToEvent(Long eventId, Long attenderId);
 
     List<EventAttenderDto> getAllSubscribers(Long eventId);
 
     void removeAttenderFromEvent(Long eventId, Long attenderId);
+
+    /**
+     * Method for adding event to favourites.
+     *
+     * @param eventId ID of the event to be added to favorites.
+     * @author Maksym Fartushok
+     */
+    void addToFavorites(Long eventId);
+
+    /**
+     * Method for removing event from favourites.
+     *
+     * @param eventId ID of the event to be removed from favorites.
+     * @author Maksym Fartushok
+     */
+    void removeFromFavorites(Long eventId);
 }

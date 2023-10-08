@@ -78,7 +78,7 @@ public interface EventRepo extends JpaRepository<Event, Long>, JpaSpecificationE
     /**
      * Add an attender to the event.
      *
-     * @param userId   the ID of the user who wants to join the event
+     * @param userId  the ID of the user who wants to join the event
      * @param eventId the ID of the event
      */
     @Modifying
@@ -89,11 +89,38 @@ public interface EventRepo extends JpaRepository<Event, Long>, JpaSpecificationE
     /**
      * Remove an attender from the event.
      *
-     * @param userId   the ID of the user to be removed from the event's attendees
-     * @param eventId  the ID of the event from which the user is to be removed
+     * @param userId  the ID of the user to be removed from the event's attendees
+     * @param eventId the ID of the event from which the user is to be removed
      */
     @Modifying
     @Query(nativeQuery = true,
             value = "DELETE FROM events_attenders WHERE event_id = :eventId AND user_id = :userId")
     void removeAttender(Long userId, Long eventId);
+
+    /**
+     * Method for adding event to favourites.
+     *
+     * @param eventId ID of the event to be added to favorites.
+     * @author Maksym Fartushok
+     */
+    @Modifying
+    @Query(nativeQuery = true,
+            value = "UPDATE events " +
+                    "SET is_favorite = true " +
+                    "WHERE id = (:eventId)")
+    void addToFavorites(Long eventId);
+
+    /**
+     * Method for removing event from favourites.
+     *
+     * @param eventId ID of the event to be removed from favorites.
+     * @author Maksym Fartushok
+     */
+    @Modifying
+    @Query(nativeQuery = true,
+            value = "UPDATE events " +
+                    "SET is_favorite = false " +
+                    "WHERE id = (:eventId)")
+    void removeFromFavorites(Long eventId);
+
 }
