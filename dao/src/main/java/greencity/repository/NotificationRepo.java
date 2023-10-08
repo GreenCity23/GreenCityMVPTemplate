@@ -2,8 +2,11 @@ package greencity.repository;
 
 import greencity.dto.notification.NotificationDtoResponse;
 import greencity.entity.Notification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -23,7 +26,7 @@ public interface NotificationRepo extends JpaRepository<Notification, Long>, Jpa
      * @return list of {@link Notification} instances.
      * @author Nazar Klimovych
      */
-    List<Notification> findAllBySenderId(Long userId);
+    Page<Notification> findAllBySenderId(Pageable pageable, Long userId);
 
     /**
      * Method for getting the last three notifications of a specific user.
@@ -52,7 +55,7 @@ public interface NotificationRepo extends JpaRepository<Notification, Long>, Jpa
         + "INNER JOIN notified_users nu ON n.id = nu.notification_id "
         + "WHERE nu.user_id = :userId "
         + "ORDER BY n.creation_date")
-    List<Notification> findAllByNotifiedUserId(@Param("userId") Long userId);
+    Page<Notification> findAllByNotifiedUserId(Pageable pageable, @Param("userId") Long userId);
 
     /**
      * Method for getting all notifications for a notified user
@@ -69,7 +72,7 @@ public interface NotificationRepo extends JpaRepository<Notification, Long>, Jpa
         + "WHERE nu.user_id = :userId "
         + "AND n.source_id = :sourceId "
         + "ORDER BY n.creation_date")
-    List<Notification> findAllByUserIdAndSourceId(@Param("userId") Long userId, @Param("sourceId") Long sourceId);
+    Page<Notification> findAllByUserIdAndSourceId(Pageable pageable, @Param("userId") Long userId, @Param("sourceId") Long sourceId);
 
     @Query(nativeQuery = true, value =
             "SELECT " +
@@ -93,5 +96,16 @@ public interface NotificationRepo extends JpaRepository<Notification, Long>, Jpa
      * @return list of {@link Notification} instances.
      * @author Nazar Klimovych
      */
-    List<Notification> findAllBySourceId(@Param("id") Long id);
+    Page<Notification> findAllBySourceId(Pageable pageable, @Param("id") Long id);
+
+    /**
+     * Method for deleting notifications by list of ids.
+     *
+     * @param ids {@link List} of {@link Notification} ids to delete.
+     * @author Nazar Klimovych
+     */
+
+    @Modifying
+    @Query(nativeQuery = true, value = "DELETE FROM notifications n WHERE n.id IN (?1)")
+    void deleteNotificationsWithIds(List<Long> ids);
 }

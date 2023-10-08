@@ -1,10 +1,12 @@
 package greencity.service;
 
+import greencity.dto.PageableDto;
 import greencity.dto.notification.NotificationDto;
 import greencity.dto.notification.NotificationDtoResponse;
+import greencity.dto.user.UserVO;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Provides the interface to manage {@code Notification} entity.
@@ -21,7 +23,7 @@ public interface NotificationService {
      * @return List of {@link NotificationDto} instances.
      * @author Nazar Klimovych
      */
-    List<NotificationDto> findAll();
+    PageableDto<NotificationDto> findAll(Pageable pageable);
 
     /**
      * Method for getting notification by id.
@@ -30,7 +32,7 @@ public interface NotificationService {
      * @return List of {@link NotificationDto} instances.
      * @author Nazar Klimovych
      */
-    Optional<NotificationDto> findById(Long id);
+    NotificationDto findById(Long id);
 
     /**
      * Method for saving notification to a database.
@@ -48,7 +50,7 @@ public interface NotificationService {
      * @return {@link Long} id of deleted notification.
      * @author Nazar Klimovych
      */
-    Long delete(Long id);
+    Long delete(Long id, UserVO user);
 
     /**
      * Method for getting all notifications by sender id.
@@ -57,7 +59,7 @@ public interface NotificationService {
      * @return List of {@link NotificationDto} instances.
      * @author Nazar Klimovych
      */
-    List<NotificationDto> findAllBySenderId(Long id);
+    PageableDto<NotificationDto> findAllBySenderId(Pageable pageable, Long id);
 
     /**
      * Method for getting the last three notifications of a specific user.
@@ -75,7 +77,7 @@ public interface NotificationService {
      * @return List of {@link NotificationDto} instances.
      * @author Nazar Klimovych
      */
-    List<NotificationDto> findAllByNotifiedUserId(Long id);
+    PageableDto<NotificationDto> findAllByNotifiedUserId(Pageable pageable, Long id);
 
     /**
      * Method for getting all notifications for a notified user
@@ -86,7 +88,7 @@ public interface NotificationService {
      * @return list of {@code Notification} instances.
      * @author Nazar Klimovych
      */
-    List<NotificationDto> findAllByUserIdAndSourceId(Long userId, Long sourceId);
+    PageableDto<NotificationDto> findAllByUserIdAndSourceId(Pageable pageable, Long userId, Long sourceId);
 
     /**
      * Method for getting all notifications by notification source.
@@ -95,7 +97,16 @@ public interface NotificationService {
      * @return list of {@code Notification} instances.
      * @author Nazar Klimovych
      */
-    List<NotificationDto> findAllBySourceId(Long id);
+    PageableDto<NotificationDto> findAllBySourceId(Pageable pageable, Long id);
+
+    /**
+     * Method for deleting notifications by list of ids.
+     *
+     * @param listId {@link List} of {@code Notification} ids to delete.
+     * @param user current {@link UserVO} that wants to delete.
+     * @author Nazar Klimovych
+     */
+    List<Long> deleteTheListOfNotifications(List<Long> listId, UserVO user);
 }
 
 

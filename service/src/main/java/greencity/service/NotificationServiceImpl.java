@@ -1,24 +1,33 @@
 package greencity.service;
 
 import greencity.constant.ErrorMessage;
+import greencity.dto.PageableDto;
 import greencity.dto.notification.NotificationDto;
 import greencity.dto.notification.NotificationDtoResponse;
+import greencity.dto.user.UserVO;
+import greencity.entity.EcoNewsComment;
+import greencity.entity.Notification;
+import greencity.entity.NotifiedUser;
+import greencity.entity.User;
 import greencity.enums.NotificationSourceType;
+import greencity.enums.Role;
 import greencity.exception.exceptions.NotFoundException;
+import greencity.exception.exceptions.UserHasNoPermissionToAccessException;
 import greencity.mapping.NotificationDtoMapper;
 import greencity.mapping.NotificationDtoResponseMapper;
 import greencity.repository.EcoNewsCommentRepo;
 import greencity.repository.NotificationRepo;
-import greencity.entity.*;
 import greencity.repository.NotificationSourcesRepo;
 import greencity.repository.NotifiedUserRepo;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -41,8 +50,8 @@ public class NotificationServiceImpl implements NotificationService {
      * @author Nazar Klimovych
      */
     @Override
-    public List<NotificationDto> findAll() {
-        return mapList(notificationRepo.findAll());
+    public PageableDto<NotificationDto> findAll(Pageable pageable) {
+        return mapToPageableDto(notificationRepo.findAll(pageable));
     }
 
     /**
@@ -53,8 +62,10 @@ public class NotificationServiceImpl implements NotificationService {
      * @author Nazar Klimovych
      */
     @Override
-    public Optional<NotificationDto> findById(Long id) {
-        return notificationRepo.findById(id).map(notificationDtoMapper::convertToDto);
+    public NotificationDto findById(Long id) {
+        Notification notification = notificationRepo.findById(id)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.NOTIFICATION_NOT_FOUND_BY_ID + id));
+        return notificationDtoMapper.convertToDto(notification);
     }
 
     /**
@@ -65,13 +76,13 @@ public class NotificationServiceImpl implements NotificationService {
      * @author Nazar Klimovych
      */
     @Override
-    public List<NotificationDto> findAllBySenderId(Long id) {
-        return mapList(notificationRepo.findAllBySenderId(id));
+    public PageableDto<NotificationDto> findAllBySenderId(Pageable pageable, Long id) {
+        return mapToPageableDto(notificationRepo.findAllBySenderId(pageable, id));
     }
 
     @Override
-    public List<NotificationDto> createEcoNewsCommentNotification(Long Id){
-        EcoNewsComment comment = ecoNewsCommentRepo.findById(Id)
+    public List<NotificationDto> createEcoNewsCommentNotification(Long id){
+        EcoNewsComment comment = ecoNewsCommentRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.COMMENT_NOT_FOUND_EXCEPTION));
 
         List<Notification> notifications = new ArrayList<>();
@@ -138,8 +149,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public NotificationDto save(NotificationDto notificationDto) {
         Notification notification = notificationDtoMapper.convertToEntity(notificationDto);
-        Notification savedNotification = notificationRepo.save(notification);
-        return notificationDtoMapper.convertToDto(savedNotification);
+        return notificationDtoMapper.convertToDto(notificationRepo.save(notification));
     }
 
     /**
@@ -162,8 +172,8 @@ public class NotificationServiceImpl implements NotificationService {
      * @author Nazar Klimovych
      */
     @Override
-    public List<NotificationDto> findAllByNotifiedUserId(Long id) {
-        return mapList(notificationRepo.findAllByNotifiedUserId(id));
+    public PageableDto<NotificationDto> findAllByNotifiedUserId(Pageable pageable, Long id) {
+        return mapToPageableDto(notificationRepo.findAllByNotifiedUserId(pageable, id));
     }
 
     /**
@@ -176,8 +186,8 @@ public class NotificationServiceImpl implements NotificationService {
      * @author Nazar Klimovych
      */
     @Override
-    public List<NotificationDto> findAllByUserIdAndSourceId(Long userId, Long sourceId) {
-        return mapList(notificationRepo.findAllByUserIdAndSourceId(userId, sourceId));
+    public PageableDto<NotificationDto> findAllByUserIdAndSourceId(Pageable pageable, Long userId, Long sourceId) {
+        return mapToPageableDto(notificationRepo.findAllByUserIdAndSourceId(pageable, userId, sourceId));
     }
 
     /**
@@ -188,21 +198,43 @@ public class NotificationServiceImpl implements NotificationService {
      * @author Nazar Klimovych
      */
     @Override
-    public List<NotificationDto> findAllBySourceId(Long id) {
-        return mapList(notificationRepo.findAllBySourceId(id));
+    public PageableDto<NotificationDto> findAllBySourceId(Pageable pageable, Long id) {
+        return mapToPageableDto(notificationRepo.findAllBySourceId(pageable, id));
     }
 
     /**
      * Method for deleting notification from a database.
      *
      * @param id {@link Long} notification id.
+     * @param user current {@link UserVO} that wants to delete.
      * @return {@link Long} id of deleted notification.
      * @author Nazar Klimovych
      */
     @Override
-    public Long delete(Long id) {
+    public Long delete(Long id, UserVO user) {
+        if (user.getRole() != Role.ROLE_ADMIN) {
+            throw new UserHasNoPermissionToAccessException(ErrorMessage.USER_HAS_NO_PERMISSION);
+        }
         notificationRepo.deleteById(id);
         return id;
+    }
+
+    /**
+     * Method for deleting notifications from a database by list of ids.
+     *
+     * @param listId {@link List} of {@link Notification} ids to delete.
+     * @param user current {@link UserVO} that wants to delete.
+     * @return {@link List} of {@link Long} ids of deleted notifications.
+     * @author Nazar Klimovych
+     */
+    @Transactional
+    @Override
+    public List<Long> deleteTheListOfNotifications(List<Long> listId, UserVO user) {
+        if (user.getRole() != Role.ROLE_ADMIN) {
+            throw new UserHasNoPermissionToAccessException(ErrorMessage.USER_HAS_NO_PERMISSION);
+        }
+        notificationRepo.deleteNotificationsWithIds(listId);
+        return listId;
     }
 
     /**
@@ -210,10 +242,29 @@ public class NotificationServiceImpl implements NotificationService {
      *
      * @param notifications the list of {@link Notification} objects to be mapped.
      * @return a list of {@link NotificationDto} objects.
+     * @author Nazar Klimovych
      */
     private List<NotificationDto> mapList(List<Notification> notifications) {
         return notifications.stream()
                 .map(notificationDtoMapper::convertToDto)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Maps a Page of {@link Notification} objects to a {@link PageableDto} of {@link NotificationDto} objects.
+     *
+     * @param pages the page of {@link Notification} objects to be mapped to {@link NotificationDto} objects.
+     * @return a {@link PageableDto} containing a list of {@link NotificationDto} objects.
+     * @author Nazar Klimovych
+     */
+    private PageableDto<NotificationDto> mapToPageableDto(Page<Notification> pages) {
+        List<NotificationDto> notificationDtos = pages.stream()
+                .map(notificationDtoMapper::convertToDto)
+                .collect(Collectors.toList());
+        return new PageableDto<>(
+                notificationDtos,
+                pages.getTotalElements(),
+                pages.getPageable().getPageNumber(),
+                pages.getTotalPages());
     }
 }
