@@ -3,12 +3,15 @@ package greencity.service;
 import greencity.dto.PageableAdvancedDto;
 import greencity.dto.PageableDto;
 import greencity.dto.event.AddEventDtoRequest;
+import greencity.dto.event.EventAttenderDto;
 import greencity.dto.event.EventDto;
 import greencity.dto.event.SearchEventDto;
 import greencity.dto.user.UserVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface EventService {
 
@@ -100,5 +103,9 @@ public interface EventService {
      * @author Maksym Fartushok
      */
     PageableAdvancedDto<EventDto> findAllRelatedToUser(Long userId, Pageable page);
+    void addAttenderToEvent(Long eventId, Long attenderId);
 
+    List<EventAttenderDto> getAllSubscribers(Long eventId);
+
+    void removeAttenderFromEvent(Long eventId, Long attenderId);
 }

@@ -204,7 +204,7 @@ public class ModelUtils {
         return new Event(1L, "event title", "event description event description", zonedDateTime,
                 List.of(getDateLocation()),
                 getUser(), "https://google.com/", false, false, false,
-                null, List.of(tag), null);
+                null, List.of(tag), null, null);
     }
 
     public static Event getNotValidEvent() {
@@ -215,7 +215,7 @@ public class ModelUtils {
         return new Event(1L, "event title", "event description event description", zonedDateTime,
                 List.of(getDateLocation()),
                 getUser(), "https://google.com/", false, false, false,
-                null, List.of(tag), null);
+                null, List.of(tag), null, null);
     }
     public static DateLocation getDateLocation() {
         return DateLocation.builder()
@@ -431,6 +431,20 @@ public class ModelUtils {
         }
         return new MockMultipartFile(name,
             name, contentType, content);
+    }
+
+    public static MultipartFile getImage() {
+        Path path = Paths.get("src/test/resources/test.jpg");
+        String name = TestConst.IMG_NAME;
+        String contentType = "image/jpeg";
+        byte[] content = null;
+        try {
+            content = Files.readAllBytes(path);
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+        return new MockMultipartFile(name,
+                name, contentType, content);
     }
 
     public static URL getUrl() throws MalformedURLException {
