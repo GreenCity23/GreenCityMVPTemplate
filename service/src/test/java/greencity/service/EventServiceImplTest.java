@@ -285,4 +285,26 @@ public class EventServiceImplTest {
 
         assertEquals(expected, actual);
     }
+
+    @Test
+    void addToFavorites() {
+        when(eventRepo.findById(anyLong())).thenReturn(Optional.ofNullable(event));
+        doNothing().when(eventRepo).addToFavorites(anyLong());
+
+        eventService.addToFavorites(event.getId());
+
+        verify(eventRepo).findById(event.getId());
+        verify(eventRepo).addToFavorites(event.getId());
+    }
+
+    @Test
+    void removeFromFavourites() {
+        when(eventRepo.findById(anyLong())).thenReturn(Optional.ofNullable(event));
+        doNothing().when(eventRepo).removeFromFavorites(anyLong());
+
+        eventService.removeFromFavorites(event.getId());
+
+        verify(eventRepo).findById(event.getId());
+        verify(eventRepo).removeFromFavorites(event.getId());
+    }
 }
