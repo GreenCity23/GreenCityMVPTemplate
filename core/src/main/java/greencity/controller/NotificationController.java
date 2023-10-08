@@ -11,6 +11,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -104,8 +106,15 @@ public class NotificationController {
     })
     @GetMapping("/all")
     public ResponseEntity<PageableDto<NotificationDto>> getAllNotifications() {
-        notificationService.findAll();
-        return ResponseEntity.ok().build();
+        List<NotificationDto> notificationDtos = notificationService.findAll();
+        Pageable pageable = PageRequest.of(0, 5);
+
+        long totalElements = notificationDtos.size();
+        int totalPages = (int) Math.ceil((double) totalElements / pageable.getPageSize());
+
+        PageableDto<NotificationDto> pageableDto = new PageableDto<>(notificationDtos, totalElements,
+            pageable.getPageNumber(), totalPages);
+        return ResponseEntity.ok(pageableDto);
     }
 
     /**

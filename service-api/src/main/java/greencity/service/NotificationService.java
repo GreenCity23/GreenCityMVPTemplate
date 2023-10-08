@@ -10,7 +10,7 @@ import java.util.Optional;
  */
 public interface NotificationService {
     /**
-     * Method for getting all notifications.
+     * Method for getting a list of all notifications.
      *
      * @return List of {@link NotificationDto} instances.
      * @author Nazar Klimovych
