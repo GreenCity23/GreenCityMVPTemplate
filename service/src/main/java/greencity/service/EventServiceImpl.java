@@ -296,7 +296,12 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
-     * {@inheritDoc}
+     * Method returns PageableAdvancedDto of {@link EventDto} by attender id and page.
+     *
+     * @param attenderId {@link Long} attender id.
+     * @param page       parameters of to search.
+     * @return PageableAdvancedDto of {@link EventDto} instances.
+     * @author Maksym Fartushok
      */
     @Override
     public PageableAdvancedDto<EventDto> findAllByAttenderId(Long attenderId, Pageable page) {
@@ -313,7 +318,12 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
-     * {@inheritDoc}
+     * Method returns PageableAdvancedDto of {@link EventDto} where user is organizer or attender by page.
+     *
+     * @param userId {@link Long} attender id.
+     * @param page   parameters of to search.
+     * @return PageableAdvancedDto of {@link EventDto} instances.
+     * @author Maksym Fartushok
      */
     @Override
     public PageableAdvancedDto<EventDto> findAllRelatedToUser(Long userId, Pageable page) {
@@ -395,6 +405,34 @@ public class EventServiceImpl implements EventService {
         if (eventRepo.getOne(eventId).getAttenders().contains(userRepo.getOne(attenderId))) {
             eventRepo.removeAttender(attenderId, eventId);
         } else throw new UsersAttendingException("Can't remove user, because he is not the attender of the event");
+    }
+
+    /**
+     * Method for adding event to favourites.
+     *
+     * @param eventId ID of the event to be added to favorites.
+     * @author Maksym Fartushok
+     */
+    @Override
+    public void addToFavorites(Long eventId) {
+        eventRepo.findById(eventId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventId));
+
+        eventRepo.addToFavorites(eventId);
+    }
+
+    /**
+     * Method for removing event from favourites.
+     *
+     * @param eventId ID of the event to be removed from favorites.
+     * @author Maksym Fartushok
+     */
+    @Override
+    public void removeFromFavorites(Long eventId) {
+        eventRepo.findById(eventId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventId));
+
+        eventRepo.removeFromFavorites(eventId);
     }
 
     private void checkIfUserIsOrganizer(Long eventId, Long userId) {

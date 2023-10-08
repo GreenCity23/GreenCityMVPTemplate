@@ -82,10 +82,10 @@ public class EventsController {
             @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
             @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
             @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
-    @PostMapping(path = "/addToFavorites/{eventId}",
-            consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    @PostMapping(path = "/addToFavorites/{eventId}")
     public ResponseEntity<Object> addToFavorites(@PathVariable Long eventId) {
-        return null;
+        eventService.addToFavorites(eventId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
@@ -116,6 +116,7 @@ public class EventsController {
     public ResponseEntity<List<EventAttenderDto>> getAllEventSubscribers(@PathVariable Long eventId) {
         return ResponseEntity.status(HttpStatus.OK).body(eventService.getAllSubscribers(eventId));
     }
+
     /**
      * Method for getting all event by id.
      *
@@ -220,6 +221,7 @@ public class EventsController {
         eventService.removeAttenderFromEvent(eventId, userVO.getId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
     /**
      * Method for removing an event from favorites.
      */
@@ -230,7 +232,8 @@ public class EventsController {
             @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @DeleteMapping(path = "/removeFromFavorites/{eventId}")
     public ResponseEntity<Object> removeFromFavorites(@PathVariable Long eventId) {
-        return null;
+        eventService.removeFromFavorites(eventId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
