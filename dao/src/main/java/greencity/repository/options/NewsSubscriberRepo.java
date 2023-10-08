@@ -48,7 +48,7 @@ public interface NewsSubscriberRepo extends JpaRepository<NewsSubscriber, Long> 
      */
     @Modifying
     @Transactional
-    @Query(nativeQuery = true, value = "UPDATE news_subscribers SET is_verified = true WHERE email = :email")
+    @Query(nativeQuery = true, value = "UPDATE news_subscribers SET is_confirmed=true WHERE email = :email")
     void confirmSubscriber(@Param("email") String email);
 
 

@@ -79,6 +79,7 @@ public class NewsSubscriberServiceImpl implements NewsSubscriberService {
         NewsSubscriber subscriber = newsSubscriberRepo.findByEmail(email);
         if (subscriber != null && subscriber.getConfirmationToken().equals(confirmationToken)){
             newsSubscriberRepo.confirmSubscriber(email);
+            return true;
         }
         return false;
     }
