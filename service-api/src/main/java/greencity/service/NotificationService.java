@@ -7,26 +7,26 @@ import java.util.List;
 import java.util.Optional;
 
 public interface NotificationService {
-    List<NotificationDto> getAllNotifications();
+    List<NotificationDto> findAll();
 
-    Optional<NotificationDto> getNotificationById(Long id);
+    Optional<NotificationDto> findById(Long id);
 
-    public List<NotificationDto> createEcoNewsCommentNotification(Long Id);
+    public List<NotificationDto> createEcoNewsCommentNotification(Long id);
 
-    List<NotificationDtoResponse> getNotificationsForUser(Long userId);
+    List<NotificationDtoResponse> getNotificationsForUser(Long id);
 
-    NotificationDto saveNotification(NotificationDto notification);
+    NotificationDto save(NotificationDto notification);
 
-    void deleteNotification(Long id);
+    void delete(Long id);
 
-    List<NotificationDto> getAllBySenderId(Long userId);
+    List<NotificationDto> findAllBySenderId(Long id);
 
-    List<NotificationDto> getThreeLastNotificationsByUserId(Long userId);
+    List<NotificationDto> findThreeLastNotificationsByUserId(Long id);
 
-    List<NotificationDto> getAllByNotifiedUserId(Long userId);
+    List<NotificationDto> findAllByNotifiedUserId(Long id);
 
-    List<NotificationDto> getAllByUserIdAndSourceId(Long userId, Long sourceId);
+    List<NotificationDto> findAllByUserIdAndSourceId(Long userId, Long sourceId);
 
-    List<NotificationDto> getAllBySourceId(Long sourceId);
+    List<NotificationDto> findAllBySourceId(Long id);
 }
 

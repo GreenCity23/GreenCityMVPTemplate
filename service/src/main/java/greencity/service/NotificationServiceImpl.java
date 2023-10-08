@@ -34,18 +34,18 @@ public class NotificationServiceImpl implements NotificationService {
 
 
     @Override
-    public List<NotificationDto> getAllNotifications() {
+    public List<NotificationDto> findAll() {
         return mapList(notificationRepo.findAll());
     }
 
     @Override
-    public Optional<NotificationDto> getNotificationById(Long id) {
+    public Optional<NotificationDto> findById(Long id) {
         return notificationRepo.findById(id).map(notificationDtoMapper::convertToDto);
 
     }
 
     @Override
-    public List<NotificationDto> getAllBySenderId(Long userId) {
+    public List<NotificationDto> findAllBySenderId(Long userId) {
         return mapList(notificationRepo.findAllBySenderId(userId));
     }
 
@@ -109,34 +109,34 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public NotificationDto saveNotification(NotificationDto notificationDto) {
+    public NotificationDto save(NotificationDto notificationDto) {
         Notification savedNotification = notificationRepo.save(notificationDtoMapper.convertToEntity(notificationDto));
         return notificationDtoMapper.convertToDto(savedNotification);
     }
 
     @Override
-    public List<NotificationDto> getThreeLastNotificationsByUserId(Long userId) {
+    public List<NotificationDto> findThreeLastNotificationsByUserId(Long userId) {
         return mapList(notificationRepo.findThreeLastNotificationsByUserId(userId));
     }
 
     @Override
-    public List<NotificationDto> getAllByNotifiedUserId(Long userId) {
+    public List<NotificationDto> findAllByNotifiedUserId(Long userId) {
         List<Notification> notifications = notificationRepo.findAllByNotifiedUserId(userId);
         return mapList(notifications);
     }
 
     @Override
-    public List<NotificationDto> getAllByUserIdAndSourceId(Long userId, Long sourceId) {
+    public List<NotificationDto> findAllByUserIdAndSourceId(Long userId, Long sourceId) {
         return mapList(notificationRepo.findAllByUserIdAndSourceId(userId, sourceId));
     }
 
     @Override
-    public List<NotificationDto> getAllBySourceId(Long sourceId) {
+    public List<NotificationDto> findAllBySourceId(Long sourceId) {
         return mapList(notificationRepo.findAllBySourceId(sourceId));
     }
 
     @Override
-    public void deleteNotification(Long id) {
+    public void delete(Long id) {
         notificationRepo.deleteById(id);
     }
 
