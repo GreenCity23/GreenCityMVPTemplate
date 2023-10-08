@@ -1,4 +1,5 @@
 package greencity.dto.notifieduser;
+import greencity.dto.user.UserVO;
 import lombok.*;
 
 @NoArgsConstructor
@@ -11,5 +12,5 @@ public class NotifiedUserDto {
     private Long id;
     private Long notificationId;
     private Boolean isRead;
-    private Long userId;
+    private UserVO user;
 }

@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode
+@Builder
 public class NotificationDto {
     private Long id;
     private ZonedDateTime creationDate;

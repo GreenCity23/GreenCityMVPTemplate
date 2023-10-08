@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 @Entity
 @Table(name = "notifications")
-@ToString(exclude = {"sender"})
-@EqualsAndHashCode(exclude = {"sender"})
+@ToString(exclude = {"sender", "ecoNewsComments", "notifiedUsers"})
+@EqualsAndHashCode(exclude = {"sender", "ecoNewsComments", "notifiedUsers"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

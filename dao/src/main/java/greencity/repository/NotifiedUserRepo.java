@@ -30,4 +30,9 @@ public interface NotifiedUserRepo extends JpaRepository<NotifiedUser, Long>, Jpa
     @Query("UPDATE NotifiedUser nu SET nu.isRead = false WHERE nu.notification.id = :notificationId AND nu.user.id = :userId")
     void setNotificationAsUnread(Long notificationId, Long userId);
 
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM NotifiedUser nu WHERE nu.user.id = :userId AND nu.notification.id = :notificationId")
+    void deleteByUserIdAndNotificationId(Long userId, Long notificationId);
+
 }
