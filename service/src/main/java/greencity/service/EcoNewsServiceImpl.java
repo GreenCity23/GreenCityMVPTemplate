@@ -24,6 +24,7 @@ import greencity.filters.SearchCriteria;
 import greencity.repository.EcoNewsRepo;
 import greencity.repository.EcoNewsSearchRepo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.cache.annotation.CacheEvict;
@@ -45,6 +46,7 @@ import java.util.stream.Collectors;
 
 import static greencity.constant.AppConstant.AUTHORIZATION;
 
+@Slf4j
 @Service
 @EnableCaching
 @RequiredArgsConstructor
@@ -129,6 +131,7 @@ public class EcoNewsServiceImpl implements EcoNewsService {
             .imagePath(ecoNewsDto.getImagePath())
             .source(ecoNewsDto.getSource())
             .build();
+        log.warn("ACCESS TOKEN: " + accessToken);
         restClient.addEcoNews(dto);
     }
 

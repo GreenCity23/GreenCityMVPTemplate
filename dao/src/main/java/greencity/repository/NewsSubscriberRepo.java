@@ -1,5 +1,6 @@
-package greencity.repository.options;
+package greencity.repository;
 
+import greencity.entity.Habit;
 import greencity.entity.NewsSubscriber;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,6 +11,10 @@ import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 import java.util.List;
 
+/**
+ * Provides an interface to manage {@link NewsSubscriber} entity.
+ * @author Arthur Mkrtchian
+ */
 @Repository
 public interface NewsSubscriberRepo extends JpaRepository<NewsSubscriber, Long> {
 

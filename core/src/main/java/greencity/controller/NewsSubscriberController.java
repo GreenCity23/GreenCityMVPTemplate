@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,9 @@ import java.util.List;
 public class NewsSubscriberController {
 
     private final NewsSubscriberService newsSubscriberService;
+
+    @Value("${client.address}")
+    private String clientAddress;
 
     @ApiOperation(value = "Get all subscribers")
     @ApiResponses(value = {
@@ -89,7 +94,9 @@ public class NewsSubscriberController {
         try {
             boolean result = newsSubscriberService.confirmSubscription(email, confirmationToken);
             if (result) {
-                return ResponseEntity.ok().build();
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Location", clientAddress);
+                return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);
             } else {
                 return ResponseEntity.status(404).build();
             }

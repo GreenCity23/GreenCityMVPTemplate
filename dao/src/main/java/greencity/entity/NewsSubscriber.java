@@ -8,6 +8,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

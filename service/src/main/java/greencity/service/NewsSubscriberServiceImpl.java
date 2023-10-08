@@ -4,7 +4,7 @@ import greencity.dto.newssubscriber.NewsSubscriberRequestDto;
 import greencity.dto.newssubscriber.NewsSubscriberResponseDto;
 import greencity.entity.NewsSubscriber;
 import greencity.mapping.NewsSubscriberDtoResponseMapper;
-import greencity.repository.options.NewsSubscriberRepo;
+import greencity.repository.NewsSubscriberRepo;
 import greencity.security.jwt.JwtTool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import greencity.enums.Role;
 
+/**
+ * Implementation of {@link NewsSubscriberService}.
+ *
+ * @author Arthur Mkrtchian
+ */
 @Slf4j
 @Service
 public class NewsSubscriberServiceImpl implements NewsSubscriberService {
