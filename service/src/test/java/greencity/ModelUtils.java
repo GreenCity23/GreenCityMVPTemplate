@@ -39,6 +39,7 @@ import java.nio.file.Paths;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -205,9 +206,9 @@ public class ModelUtils {
         tag.setType(TagType.EVENT);
         tag.setTagTranslations(getEventTagTranslations());
         return new Event(1L, "event title", "event description event description", zonedDateTime,
-            List.of(getDateLocation()),
-            getUser(), "https://google.com/", false, false, false,
-            null, List.of(tag), null, new ArrayList<>());
+                List.of(getDateLocation()),
+                getUser(), "https://google.com/", false, false, false, null,
+                null, List.of(tag), null);
     }
 
     public static Event getNotValidEvent() {
@@ -216,9 +217,9 @@ public class ModelUtils {
         tag.setType(TagType.EVENT);
         tag.setTagTranslations(getEventTagTranslations());
         return new Event(1L, "event title", "event description event description", zonedDateTime,
-            List.of(getDateLocation()),
-            getUser(), "https://google.com/", false, false, false,
-            null, List.of(tag), null, null);
+                List.of(getDateLocation()),
+                getUser(), "https://google.com/", false, false, false,null,
+                null, List.of(tag), null);
     }
 
     public static DateLocation getDateLocation() {
@@ -832,6 +833,29 @@ public class ModelUtils {
             .content("Test content")
             .build();
     }
+
+
+    public static Event getEvents() {
+        Event event = new Event();
+        event.setDescription("Description");
+        event.setId(1L);
+        event.setOrganizer(getUser());
+        event.setTitle("Title");
+        event.setTags(List.of(getEventTag()));
+        event.setTitleImage(AppConstant.DEFAULT_HABIT_IMAGE);
+        return event;
+    }
+
+    public static Event getEventWithGrades() {
+        Event event = new Event();
+        event.setDescription("Description");
+        event.setId(1L);
+        event.setOrganizer(getUser());
+        event.setTitle("Title");
+        event.setTags(List.of(getEventTag()));
+        event.setTitleImage(AppConstant.DEFAULT_HABIT_IMAGE);
+        event.setEventGrades(List.of(EventGrade.builder().grade(2).event(event).build()));
+        return event;
 
     public static AddEventCommentDtoRequest getAddEventCommentDtoRequest() {
         return AddEventCommentDtoRequest.builder()

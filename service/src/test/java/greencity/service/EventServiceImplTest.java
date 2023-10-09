@@ -22,8 +22,10 @@ import greencity.repository.EventRepo;
 import greencity.repository.UserRepo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Page;
@@ -34,7 +36,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.net.MalformedURLException;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -51,6 +52,8 @@ class EventServiceImplTest {
     FileService fileService;
     @Mock
     TagsService tagsService;
+    @Mock
+    UserService userService;
     @Mock
     ModelMapper modelMapper;
     @Mock
@@ -182,6 +185,20 @@ class EventServiceImplTest {
     }
 
     @Test
+    public void testRateEvent() {
+        Event event = ModelUtils.getEvents();
+        User user = ModelUtils.getUser();
+        event.setAttenders(List.of(user));
+        when(eventRepo.findById(any())).thenReturn(Optional.of(event));
+        when(modelMapper.map(restClient.findByEmail(user.getEmail()), User.class)).thenReturn(user);
+        doNothing().when(userService).updateEventOrganizerRating(event.getOrganizer().getId(), 2.0);
+        List<Event> events = List.of(event, ModelUtils.getEventWithGrades());
+        when(eventRepo.getAllByOrganizer(event.getOrganizer())).thenReturn(events);
+        eventService.rateEvent(event.getId(), user.getEmail(), 2);
+        verify(eventRepo).save(event);
+    }
+
+    @Test
     void findAllByUserPage() {
         List<Event> events = Collections.singletonList(ModelUtils.getEvent());
         PageRequest pageRequest = PageRequest.of(0, 2);
@@ -214,6 +231,7 @@ class EventServiceImplTest {
 
         assertThrows(UnsupportedSortException.class, () -> eventService.findAllByUser(userVO, pageRequest));
     }
+
 
     @Test
     void update() throws MalformedURLException {

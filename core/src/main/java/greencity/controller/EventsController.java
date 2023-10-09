@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @Validated
@@ -146,6 +147,28 @@ public class EventsController {
     }
 
     /**
+     * Method for rating an event.
+     *
+     * @param eventId   The ID of the event to rate.
+     * @param grade     The rating grade.
+     * @param principal The authenticated user.
+     * @return A ResponseEntity with a 200 status code if the rating is successful, or an error response if any error occurs.
+     */
+    @ApiOperation(value = "Rate event")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = HttpStatuses.OK),
+            @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
+            @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
+            @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)
+    })
+    @PostMapping("/rateEvent/{eventId}/{grade}")
+    public ResponseEntity<Object> rateEvent(@PathVariable Long eventId, @PathVariable Integer grade,
+                                            @ApiIgnore Principal principal) {
+        eventService.rateEvent(eventId, principal.getName(), grade);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    /**
      * Method for getting all events created by user.
      *
      * @return PageableDto of {@link EventDto} instances.
@@ -193,20 +216,6 @@ public class EventsController {
     public ResponseEntity<PageableAdvancedDto<EventDto>> getUserEvents(@ApiIgnore Pageable page,
         @ApiIgnore @CurrentUser UserVO user) {
         return ResponseEntity.status(HttpStatus.OK).body(eventService.findAllByAttenderId(user.getId(), page));
-    }
-
-    /**
-     * Method for rating event.
-     */
-    @ApiOperation(value = "Rate event")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK),
-        @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
-        @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
-        @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
-    @PostMapping(path = "/rateEvent/{eventId}/{grade}",
-        consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE})
-    public ResponseEntity<Object> rateEvent(@PathVariable Long eventId, @PathVariable int grade) {
-        return null;
     }
 
     /**

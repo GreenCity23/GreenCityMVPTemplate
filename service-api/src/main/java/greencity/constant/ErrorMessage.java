@@ -145,6 +145,9 @@ public final class ErrorMessage {
     public static final String FILTER_NOT_FOUND_BY_ID = "Filter not found";
     public static final String USER_HAS_NO_FRIEND_WITH_ID = "User has no friend with this id: ";
     public static final String INVALID_DURATION = "The duration for such habit is lower than previously set";
+
+    public static final String EVENT_NOT_FOUND = "Event does not found";
+
     public static final String ATTENDER_ALREADY_EXISTS = "User is already an attender for this event";
     public static final String USER_NOT_ATTENDING_EVENT = "User is not attending this event";
     public static final String ORGANIZER_CANNOT_JOIN_OR_LEAVE_ATTENDER_LIST =

@@ -238,7 +238,23 @@ class EventsControllerTest {
 
         verify(eventService, times(1)).addAttenderToEvent(eventId, userVO.getId());
     }
+  
+    @Test
+    public void testRateEvent() throws Exception {
+        Long eventId = 1L;
+        Integer grade = 5;
+        String principalName = "testUser";
 
+        doNothing().when(eventService).rateEvent(eventId, principalName, grade);
+
+        this.mockMvc.perform(post(eventsLink+"/rateEvent/{eventId}/{grade}", eventId, grade)
+                        .principal(() -> principalName)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(eventService, times(1)).rateEvent(eventId, principalName, grade);
+    }
+  
     @Test
     void testRemoveAttender() throws Exception {
         Long eventId = 1L;

@@ -3,6 +3,11 @@ package greencity.service;
 import greencity.client.RestClient;
 import greencity.constant.ErrorMessage;
 import greencity.dto.PageableAdvancedDto;
+import greencity.dto.event.AddEventDtoRequest;
+import greencity.dto.event.AddEventDtoRequest;
+import greencity.dto.event.EventDateLocationDto;
+import greencity.dto.event.EventDto;
+import greencity.dto.event.EventForSendEmailDto;
 import greencity.dto.PageableDto;
 import greencity.dto.event.*;
 import greencity.dto.tag.TagVO;
@@ -48,6 +53,7 @@ public class EventServiceImpl implements EventService {
     private final FileService fileService;
     private final HttpServletRequest httpServletRequest;
     private final RestClient restClient;
+    private final UserService userService;
 
     /**
      * {@inheritDoc}
@@ -340,6 +346,49 @@ public class EventServiceImpl implements EventService {
             throw new UnsupportedSortException(ErrorMessage.INVALID_SORTING_VALUE);
         }
         return buildPageableAdvancedDto(pages);
+    }
+
+    /**
+     * Method to rate an event.
+     *
+     * @param eventId - the ID of the event to rate
+     * @param email - the email of the user rating the event
+     * @param grade - the grade to assign to the event
+     */
+    @Override
+    public void rateEvent(Long eventId, String email, Integer grade) {
+        Event event =
+                eventRepo.findById(eventId).orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND));
+        User currentUser = modelMapper.map(restClient.findByEmail(email), User.class);
+
+        event.getEventGrades().add(EventGrade.builder().event(event).grade(grade).user(currentUser).build());
+        eventRepo.save(event);
+
+        userService.updateEventOrganizerRating(event.getOrganizer().getId(),
+                calculateEventOrganizerRating(event.getOrganizer()));
+    }
+
+    private Double calculateEventOrganizerRating(User user) {
+        double finalRating = 0;
+
+        List<Event> events = eventRepo.getAllByOrganizer(user);
+
+        if (events != null && !events.isEmpty()) {
+            long totalGrades = events.stream()
+                    .mapToLong(event -> event.getEventGrades().size())
+                    .sum();
+
+            if (totalGrades != 0) {
+                double summaryGrade = events.stream()
+                        .flatMap(event -> event.getEventGrades().stream())
+                        .mapToDouble(EventGrade::getGrade)
+                        .sum();
+
+                finalRating = summaryGrade / totalGrades;
+            }
+        }
+
+        return finalRating;
     }
 
     /**

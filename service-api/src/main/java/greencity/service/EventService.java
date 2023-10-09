@@ -141,4 +141,13 @@ public interface EventService {
      * @author Maksym Fartushok
      */
     void removeFromFavorites(Long eventId);
+  
+    /**
+     * Method to rate an event.
+     *
+     * @param eventId - the ID of the event to be rated
+     * @param name - the name of the person rating the event
+     * @param grade - the rating grade given to the event
+     */
+    void rateEvent(Long eventId, String email, Integer grade);
 }

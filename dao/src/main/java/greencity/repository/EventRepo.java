@@ -119,4 +119,12 @@ public interface EventRepo extends JpaRepository<Event, Long>, JpaSpecificationE
             + "SET is_favorite = false "
             + "WHERE id = (:eventId)")
     void removeFromFavorites(Long eventId);
+  
+      /**
+     * Method for retrieving all events organized by a specific user.
+     *
+     * @param organizer The user who organized the events
+     * @return List of Event objects organized by the specified user
+     */
+    List<Event> getAllByOrganizer(User organizer);
 }
