@@ -63,7 +63,7 @@ public class NewsSubscriberServiceImpl implements NewsSubscriberService {
                         .setUnsubscribeToken(unsubscribeToken)
                         .setConfirmationToken(confirmationToken)
         );
-        sendConfirmationEmail(newsSubscriber.getEmail(), newsSubscriber.getConfirmationToken()); //TODO check!
+        sendConfirmationEmail(newsSubscriber.getEmail(), newsSubscriber.getConfirmationToken());
         return new NewsSubscriberResponseDto()
                 .setId(newsSubscriber.getId())
                 .setEmail(newsSubscriber.getEmail());

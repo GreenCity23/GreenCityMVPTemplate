@@ -74,7 +74,9 @@ public class NewsSubscriberController {
         try {
             boolean result = newsSubscriberService.unsubscribe(email, unsubscribeToken);
             if (result) {
-                return ResponseEntity.ok().build();
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Location", clientAddress);
+                return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);
             } else {
                 return ResponseEntity.status(404).build();
             }
