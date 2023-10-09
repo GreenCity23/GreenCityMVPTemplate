@@ -78,6 +78,12 @@ public class NotificationServiceImpl implements NotificationService {
         return mapToPageableDto(notificationRepo.findAllBySenderId(pageable, id));
     }
 
+    /**
+     * Method for creating notifications for EcoNewsComment by comment id.
+     *
+     * @param id {@link Long} EcoNewsComment id.
+     * @return List of {@link NotificationDto} instances.
+     */
     @Override
     public List<NotificationDto> createEcoNewsCommentNotification(Long id){
         EcoNewsComment comment = ecoNewsCommentRepo.findById(id)
@@ -109,6 +115,15 @@ public class NotificationServiceImpl implements NotificationService {
         return mapList(notifications);
     }
 
+    /**
+     * Method for creating a notification.
+     *
+     * @param sender     {@link User} sender of the notification.
+     * @param title      {@link String} title of the notification.
+     * @param sourceType {@link NotificationSourceType} type of the notification source.
+     * @param recipient  {@link User} recipient of the notification.
+     * @return Created {@link Notification} instance.
+     */
     private Notification createNotification(User sender, String title, NotificationSourceType sourceType, User recipient) {
         Notification notification = new Notification();
         notification.setCreationDate(ZonedDateTime.now());
@@ -129,12 +144,26 @@ public class NotificationServiceImpl implements NotificationService {
         return notification;
     }
 
+    /**
+     * Retrieves notifications for a user by their user ID.
+     *
+     * @param userId The ID of the user for whom notifications are retrieved.
+     * @return A list of {@link NotificationDtoResponse} instances representing the notifications.
+     */
     @Override
-    public List<NotificationDtoResponse> getNotificationsForUser(Long userId) {
-        List<NotifiedUser> notifiedUsers = notifiedUserRepo.findAllByUserId(userId);
-        return notifiedUsers.stream()
+    public PageableDto<NotificationDtoResponse> getNotificationsForUser(Pageable pageable, Long userId) {
+        Page<NotifiedUser> notifiedUserPage = notifiedUserRepo.findAllByUserId(pageable, userId);
+
+        List<NotificationDtoResponse> notificationDtoResponses = notifiedUserPage.getContent().stream()
                 .map(notificationDtoResponseMapper::convert)
                 .collect(Collectors.toList());
+
+        return new PageableDto<>(
+                notificationDtoResponses,
+                notifiedUserPage.getTotalElements(),
+                pageable.getPageNumber(),
+                notifiedUserPage.getTotalPages()
+        );
     }
 
     /**

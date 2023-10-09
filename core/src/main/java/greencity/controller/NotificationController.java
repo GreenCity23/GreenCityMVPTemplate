@@ -68,8 +68,9 @@ public class NotificationController {
         @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN),
     })
     @GetMapping("/user")
-    public ResponseEntity<List<NotificationDtoResponse>> getNotifications(@ApiIgnore @CurrentUser UserVO user) {
-        List<NotificationDtoResponse> notifications = notificationService.getNotificationsForUser(user.getId());
+    public ResponseEntity<PageableDto<NotificationDtoResponse>> getNotifications(@ApiIgnore @CurrentUser UserVO user,
+                                                                                 @ApiIgnore Pageable pageable) {
+        PageableDto<NotificationDtoResponse>  notifications = notificationService.getNotificationsForUser(pageable, user.getId());
         return ResponseEntity.ok(notifications);
     }
 

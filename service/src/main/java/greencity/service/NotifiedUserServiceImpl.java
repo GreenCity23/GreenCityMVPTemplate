@@ -21,6 +21,9 @@ public class NotifiedUserServiceImpl implements NotifiedUserService {
     private final NotifiedUserDtoMapper notifiedUserDtoMapper;
     private final ModelMapper modelMapper;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<NotifiedUserDto> getAllNotifiedUsers() {
         List<NotifiedUser> notifiedUsers = notifiedUserRepo.findAll();
@@ -29,12 +32,18 @@ public class NotifiedUserServiceImpl implements NotifiedUserService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public NotifiedUserDto getNotifiedUserById(Long id) {
         Optional<NotifiedUser> notifiedUser = notifiedUserRepo.findById(id);
         return modelMapper.map(notifiedUser, NotifiedUserDto.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public NotifiedUserDto saveNotifiedUsers(NotifiedUserDto notifiedUserDto) {
         NotifiedUser notifiedUser = modelMapper.map(notifiedUserDto, NotifiedUser.class);
@@ -42,19 +51,17 @@ public class NotifiedUserServiceImpl implements NotifiedUserService {
         return modelMapper.map(savedNotifiedUser, NotifiedUserDto.class);
     }
 
-    @Override
-    public List<NotifiedUserDto> getAllUsersNotifications(Long userId) {
-        List<NotifiedUser> userNotifications = notifiedUserRepo.findAllByUserId(userId);
-        return userNotifications.stream()
-                .map(notifiedUserDtoMapper::convert)
-                .collect(Collectors.toList());
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Long countUnreadNotificationsForUser(Long userId) {
         return notifiedUserRepo.countByUserIdAndIsReadIsFalse(userId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setNotificationAsRead(Long notificationId, Long userId) {
         if (notifiedUserRepo.countByUserIdAndNotificationId(userId, notificationId) == 0L){
@@ -63,6 +70,9 @@ public class NotifiedUserServiceImpl implements NotifiedUserService {
         notifiedUserRepo.setNotificationAsRead(notificationId, userId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setNotificationAsUnread(Long notificationId, Long userId) {
         if (notifiedUserRepo.countByUserIdAndNotificationId(userId, notificationId) == 0L){
@@ -71,15 +81,14 @@ public class NotifiedUserServiceImpl implements NotifiedUserService {
         notifiedUserRepo.setNotificationAsUnread(notificationId, userId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void deleteByUserIdAndNotificationId(Long userId, Long notificationId){
         if (notifiedUserRepo.countByUserIdAndNotificationId(userId, notificationId) == 0L){
             throw new NotFoundException(ErrorMessage.NOTIFICATION_NOT_FOUND_FOR_USER);
         }
         notifiedUserRepo.deleteByUserIdAndNotificationId(userId, notificationId);
-    }
-
-    @Override
-    public void deleteNotifiedUser(Long id) {
-        notifiedUserRepo.deleteById(id);
     }
 }

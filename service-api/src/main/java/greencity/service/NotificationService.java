@@ -13,9 +13,21 @@ import java.util.List;
  */
 public interface NotificationService {
 
+    /**
+     * Method for creating notifications for EcoNewsComment by comment id.
+     *
+     * @param id {@link Long} EcoNewsComment id.
+     * @return List of {@link NotificationDto} instances.
+     */
     List<NotificationDto> createEcoNewsCommentNotification(Long id);
 
-    List<NotificationDtoResponse> getNotificationsForUser(Long id);
+    /**
+     * Retrieves notifications for a user by their user ID.
+     *
+     * @param id The ID of the user for whom notifications are retrieved.
+     * @return A list of {@link NotificationDtoResponse} instances representing the notifications.
+     */
+    PageableDto<NotificationDtoResponse> getNotificationsForUser(Pageable pageable, Long id);
 
     /**
      * Method for getting a list of all notifications.
