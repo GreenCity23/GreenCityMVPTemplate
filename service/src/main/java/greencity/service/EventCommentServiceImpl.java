@@ -59,7 +59,7 @@ public class EventCommentServiceImpl implements EventCommentService {
         if (addEventCommentDtoRequest.getParentCommentId() != 0) {
             EventComment parentComment = eventCommentRepo.findById(addEventCommentDtoRequest.getParentCommentId())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_COMMENT_NOT_FOUND_BY_ID
-                                                         + addEventCommentDtoRequest.getParentCommentId()));
+                    + addEventCommentDtoRequest.getParentCommentId()));
             if (parentComment.getParentComment() == null) {
                 eventComment.setParentComment(parentComment);
             } else {
