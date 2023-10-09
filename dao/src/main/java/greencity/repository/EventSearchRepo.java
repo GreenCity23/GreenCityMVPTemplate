@@ -15,7 +15,6 @@ import java.util.List;
 
 @Repository
 public class EventSearchRepo {
-
     private final EntityManager entityManager;
     private final CriteriaBuilder criteriaBuilder;
 
@@ -27,6 +26,13 @@ public class EventSearchRepo {
         this.criteriaBuilder = entityManager.getCriteriaBuilder();
     }
 
+    /**
+     * Method to find Event by criteria
+     *
+     * @param pageable
+     * @param searchQuery criteria
+     * @return
+     */
     public Page<Event> find(Pageable pageable, String searchQuery) {
         CriteriaQuery<Event> criteriaQuery =
             criteriaBuilder.createQuery(Event.class);
@@ -63,5 +69,4 @@ public class EventSearchRepo {
         countQuery.select(criteriaBuilder.count(countEventRoot)).where(predicate);
         return entityManager.createQuery(countQuery).getSingleResult();
     }
-
 }

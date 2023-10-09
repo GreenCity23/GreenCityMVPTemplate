@@ -20,7 +20,6 @@ import java.util.Set;
 @Builder
 @ToString(exclude = "parentComment, replies")
 public class EventComment {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -61,5 +60,4 @@ public class EventComment {
         joinColumns = @JoinColumn(name = "event_comment_id"),
         inverseJoinColumns = @JoinColumn(name = "users_liked_id"))
     private Set<User> usersLiked;
-
 }

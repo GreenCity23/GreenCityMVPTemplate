@@ -31,6 +31,4 @@ public interface TagTranslationRepo extends JpaRepository<TagTranslation, Long> 
             + "INNER JOIN languages AS l ON l.id = tt.language_id "
             + "WHERE l.code = :languageCode ORDER BY tt.tag_id")
     List<TagTranslation> findAllEcoNewsTags(String languageCode);
-
-    List<TagTranslation> findAllByTagId(Long tagId);
 }

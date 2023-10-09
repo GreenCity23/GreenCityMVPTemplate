@@ -17,7 +17,6 @@ import java.util.List;
 @Builder
 @ToString(exclude = "organizer")
 public class Event {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

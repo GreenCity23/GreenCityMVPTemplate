@@ -14,7 +14,6 @@ import javax.persistence.*;
 @ToString
 @EqualsAndHashCode(exclude = "dateLocation")
 public class Address {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
