@@ -141,7 +141,7 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
-     * Method for sending an email to user, when event was created
+     * Method for sending an email to user, when event was created.
      *
      * @author Vladyslav Siverskyi.
      */
@@ -161,7 +161,7 @@ public class EventServiceImpl implements EventService {
 
     /**
      * Method for sending an email to user and event attenders, when event was
-     * edited
+     * edited.
      *
      */
 
@@ -407,8 +407,9 @@ public class EventServiceImpl implements EventService {
         checkIfUserIsOrganizer(eventId, attenderId);
         if (eventRepo.getOne(eventId).getAttenders().contains(userRepo.getOne(attenderId))) {
             eventRepo.removeAttender(attenderId, eventId);
-        } else
+        } else {
             throw new UsersAttendingException("Can't remove user, because he is not the attender of the event");
+        }
     }
 
     /**

@@ -85,7 +85,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     /**
-     * Generates a list of user friend DTOs via a named query
+     * Generates a list of user friend DTOs via a named query.
      *
      * @param id          - ID of the user
      * @param name        - Name of the friend user

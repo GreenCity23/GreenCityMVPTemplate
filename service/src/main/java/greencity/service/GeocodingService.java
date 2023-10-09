@@ -16,14 +16,17 @@ import java.util.Map;
 
 @Service
 public class GeocodingService {
-    private final String API_KEY;
+    private final String apiKey;
 
+    /**
+     * Initialize service
+     */
     public GeocodingService() {
-        API_KEY = System.getenv("GEOCODING_API_KEY");
+        apiKey = System.getenv("GEOCODING_API_KEY");
     }
 
     /**
-     * Method for getting address by coordinates of the place
+     * Method for getting address by coordinates of the place.
      *
      * @param latitude  - latitude of the place
      * @param longitude - longitude of the place
@@ -47,7 +50,7 @@ public class GeocodingService {
     private void processAddressComponents(LatLng latLng, String language, Map<String, String> addresses) {
         GeocodingResult[] results;
 
-        try (GeoApiContext context = new GeoApiContext.Builder().apiKey(API_KEY).build()) {
+        try (GeoApiContext context = new GeoApiContext.Builder().apiKey(apiKey).build()) {
             results = GeocodingApi.reverseGeocode(context, latLng)
                 .language(language)
                 .await();
@@ -76,11 +79,14 @@ public class GeocodingService {
                 break;
             case STREET_NUMBER:
                 putIfNotExists("houseNumber", addressComponent, addresses);
+                break;
             case ADMINISTRATIVE_AREA_LEVEL_1:
                 putIfNotExists(language.equals("en") ? "regionEn" : "regionUa", addressComponent, addresses);
                 break;
             case ROUTE:
                 putIfNotExists(language.equals("en") ? "streetEn" : "streetUa", addressComponent, addresses);
+                break;
+            default:
                 break;
         }
     }

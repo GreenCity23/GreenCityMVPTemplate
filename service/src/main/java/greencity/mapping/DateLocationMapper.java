@@ -18,7 +18,6 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class DateLocationMapper extends AbstractConverter<EventDateLocationDto, DateLocation> {
-
     private final GeocodingService geocodingService;
 
     /**
