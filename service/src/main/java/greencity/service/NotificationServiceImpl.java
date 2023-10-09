@@ -15,15 +15,11 @@ import greencity.exception.exceptions.NotFoundException;
 import greencity.exception.exceptions.UserHasNoPermissionToAccessException;
 import greencity.mapping.NotificationDtoMapper;
 import greencity.mapping.NotificationDtoResponseMapper;
-import greencity.repository.EcoNewsCommentRepo;
-import greencity.repository.NotificationRepo;
-import greencity.repository.NotificationSourcesRepo;
-import greencity.repository.NotifiedUserRepo;
+import greencity.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -42,6 +38,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationDtoMapper notificationDtoMapper;
     private final NotificationDtoResponseMapper notificationDtoResponseMapper;
     private final NotifiedUserRepo notifiedUserRepo;
+    private final UserRepo userRepo;
 
     /**
      * Method for getting all notifications.
@@ -77,6 +74,7 @@ public class NotificationServiceImpl implements NotificationService {
      */
     @Override
     public PageableDto<NotificationDto> findAllBySenderId(Pageable pageable, Long id) {
+        doesUserExist(id);
         return mapToPageableDto(notificationRepo.findAllBySenderId(pageable, id));
     }
 
@@ -161,6 +159,7 @@ public class NotificationServiceImpl implements NotificationService {
      */
     @Override
     public List<NotificationDto> findThreeLastNotificationsByUserId(Long id) {
+        doesUserExist(id);
         return mapList(notificationRepo.findThreeLastNotificationsByUserId(id));
     }
 
@@ -173,6 +172,7 @@ public class NotificationServiceImpl implements NotificationService {
      */
     @Override
     public PageableDto<NotificationDto> findAllByNotifiedUserId(Pageable pageable, Long id) {
+        doesUserExist(id);
         return mapToPageableDto(notificationRepo.findAllByNotifiedUserId(pageable, id));
     }
 
@@ -187,6 +187,7 @@ public class NotificationServiceImpl implements NotificationService {
      */
     @Override
     public PageableDto<NotificationDto> findAllByUserIdAndSourceId(Pageable pageable, Long userId, Long sourceId) {
+        doesUserExist(userId);
         return mapToPageableDto(notificationRepo.findAllByUserIdAndSourceId(pageable, userId, sourceId));
     }
 
@@ -215,26 +216,10 @@ public class NotificationServiceImpl implements NotificationService {
         if (user.getRole() != Role.ROLE_ADMIN) {
             throw new UserHasNoPermissionToAccessException(ErrorMessage.USER_HAS_NO_PERMISSION);
         }
-        notificationRepo.deleteById(id);
+        Notification notification = notificationRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.NOTIFICATION_NOT_FOUND_BY_ID + id));
+        notificationRepo.deleteById(notification.getId());
         return id;
-    }
-
-    /**
-     * Method for deleting notifications from a database by list of ids.
-     *
-     * @param listId {@link List} of {@link Notification} ids to delete.
-     * @param user current {@link UserVO} that wants to delete.
-     * @return {@link List} of {@link Long} ids of deleted notifications.
-     * @author Nazar Klimovych
-     */
-    @Transactional
-    @Override
-    public List<Long> deleteTheListOfNotifications(List<Long> listId, UserVO user) {
-        if (user.getRole() != Role.ROLE_ADMIN) {
-            throw new UserHasNoPermissionToAccessException(ErrorMessage.USER_HAS_NO_PERMISSION);
-        }
-        notificationRepo.deleteNotificationsWithIds(listId);
-        return listId;
     }
 
     /**
@@ -266,5 +251,11 @@ public class NotificationServiceImpl implements NotificationService {
             pages.getTotalElements(),
             pages.getPageable().getPageNumber(),
             pages.getTotalPages());
+    }
+
+    private void doesUserExist(Long id) {
+        if (userRepo.findById(id).isEmpty()) {
+            throw new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id);
+        }
     }
 }

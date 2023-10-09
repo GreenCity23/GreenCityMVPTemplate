@@ -98,15 +98,6 @@ public interface NotificationService {
      * @author Nazar Klimovych
      */
     PageableDto<NotificationDto> findAllBySourceId(Pageable pageable, Long id);
-
-    /**
-     * Method for deleting notifications by list of ids.
-     *
-     * @param listId {@link List} of {@code Notification} ids to delete.
-     * @param user current {@link UserVO} that wants to delete.
-     * @author Nazar Klimovych
-     */
-    List<Long> deleteTheListOfNotifications(List<Long> listId, UserVO user);
 }
 
 

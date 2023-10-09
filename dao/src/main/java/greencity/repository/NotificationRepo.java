@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -98,14 +97,4 @@ public interface NotificationRepo extends JpaRepository<Notification, Long>, Jpa
      */
     Page<Notification> findAllBySourceId(Pageable pageable, @Param("id") Long id);
 
-    /**
-     * Method for deleting notifications by list of ids.
-     *
-     * @param ids {@link List} of {@link Notification} ids to delete.
-     * @author Nazar Klimovych
-     */
-
-    @Modifying
-    @Query(nativeQuery = true, value = "DELETE FROM notifications n WHERE n.id IN (?1)")
-    void deleteNotificationsWithIds(List<Long> ids);
 }
