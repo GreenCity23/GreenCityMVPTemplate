@@ -113,7 +113,7 @@ public class EventCommentController {
             @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
             @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND),
     })
-    @GetMapping("/replies/active/count/{parentCommentId}")
+    @GetMapping("/replies/count/{parentCommentId}")
     public ResponseEntity<Integer> getCountOfCommentReplies(@PathVariable Long parentCommentId) {
         return ResponseEntity.ok(eventCommentService.getCountOfCommentReplies(parentCommentId));
     }

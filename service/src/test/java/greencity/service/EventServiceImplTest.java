@@ -308,4 +308,72 @@ public class EventServiceImplTest {
         assertEquals(2, eventAttenderDtos.size());
         verify(eventRepo, times(1)).findById(event.getId());
     }
+
+    @Test
+    void findAllByAttenderId() {
+        List<Event> events = Collections.singletonList(event);
+        PageRequest pageRequest = PageRequest.of(0, 5);
+        Page<Event> page = new PageImpl<>(events,
+                pageRequest, events.size());
+
+        List<EventDto> eventDtoList = Collections.singletonList(getEventDto());
+        PageableAdvancedDto<EventDto> expected = new PageableAdvancedDto<>(eventDtoList, eventDtoList.size(), 0, 1, 0, false, false, true, true);
+
+        UserVO userVO = getUserVO();
+        User user = getUser();
+
+        when(modelMapper.map(userVO, User.class)).thenReturn(user);
+        when(eventRepo.findAllByAttenderIdOrderByCreationDateDesc(1L, pageRequest)).thenReturn(page);
+        when(userRepo.findById(1L)).thenReturn(Optional.ofNullable(user));
+        when(modelMapper.map(events.get(0), EventDto.class)).thenReturn(eventDtoList.get(0));
+
+        PageableAdvancedDto<EventDto> actual = eventService.findAllByAttenderId(1L, pageRequest);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void findAllRelatedToUser() {
+        List<Event> events = Collections.singletonList(event);
+        PageRequest pageRequest = PageRequest.of(0, 5);
+        Page<Event> page = new PageImpl<>(events,
+                pageRequest, events.size());
+
+        List<EventDto> eventDtoList = Collections.singletonList(getEventDto());
+        PageableAdvancedDto<EventDto> expected = new PageableAdvancedDto<>(eventDtoList, eventDtoList.size(), 0, 1, 0, false, false, true, true);
+
+        UserVO userVO = getUserVO();
+        User user = getUser();
+
+        when(modelMapper.map(userVO, User.class)).thenReturn(user);
+        when(eventRepo.findAllRelatedToUserOrderByCreationDateDesc(1L, pageRequest)).thenReturn(page);
+        when(userRepo.findById(1L)).thenReturn(Optional.ofNullable(user));
+        when(modelMapper.map(events.get(0), EventDto.class)).thenReturn(eventDtoList.get(0));
+
+        PageableAdvancedDto<EventDto> actual = eventService.findAllRelatedToUser(1L, pageRequest);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void addToFavorites() {
+        when(eventRepo.findById(anyLong())).thenReturn(Optional.ofNullable(event));
+        doNothing().when(eventRepo).addToFavorites(anyLong());
+
+        eventService.addToFavorites(event.getId());
+
+        verify(eventRepo).findById(event.getId());
+        verify(eventRepo).addToFavorites(event.getId());
+    }
+
+    @Test
+    void removeFromFavourites() {
+        when(eventRepo.findById(anyLong())).thenReturn(Optional.ofNullable(event));
+        doNothing().when(eventRepo).removeFromFavorites(anyLong());
+
+        eventService.removeFromFavorites(event.getId());
+
+        verify(eventRepo).findById(event.getId());
+        verify(eventRepo).removeFromFavorites(event.getId());
+    }
 }

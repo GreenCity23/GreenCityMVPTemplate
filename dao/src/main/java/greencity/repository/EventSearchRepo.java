@@ -1,6 +1,9 @@
 package greencity.repository;
 
+import greencity.entity.EcoNews;
 import greencity.entity.Event;
+import greencity.entity.Tag;
+import greencity.entity.localization.TagTranslation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +35,7 @@ public class EventSearchRepo {
                 criteriaBuilder.createQuery(Event.class);
         Root<Event> root = criteriaQuery.from(Event.class);
 
-        Predicate predicate = getPredicate(criteriaQuery, searchQuery, root);
+        Predicate predicate = getPredicate(searchQuery, root);
 
         criteriaQuery.select(root).distinct(true).where(predicate);
         TypedQuery<Event> typedQuery = entityManager.createQuery(criteriaQuery);
@@ -43,17 +46,15 @@ public class EventSearchRepo {
         return new PageImpl<>(resultList, pageable, getEventCount(predicate));
     }
 
-    private Predicate getPredicate(CriteriaQuery<Event> criteriaQuery, String searchingText, Root<Event> root) {
+    private Predicate getPredicate(String searchingText, Root<Event> root) {
         List<Predicate> predicateList = formEventLikePredicate(searchingText, root);
-        //TODO: mb, add tags search
         return criteriaBuilder.or(predicateList.toArray(new Predicate[0]));
     }
 
-    private List<Predicate> formEventLikePredicate(String searcingText, Root<Event> root) {
+    private List<Predicate> formEventLikePredicate(String searchingText, Root<Event> root) {
         Expression<String> title = root.get("title").as(String.class);
-
         List<Predicate> predicateList = new ArrayList<>();
-        Arrays.stream(searcingText.split(" ")).forEach(partOfSearchingText -> predicateList.add(
+        Arrays.stream(searchingText.split(" ")).forEach(partOfSearchingText -> predicateList.add(
                 criteriaBuilder.or(
                         criteriaBuilder.like(criteriaBuilder.lower(title), "%" + partOfSearchingText.toLowerCase() + "%"))));
         return predicateList;
