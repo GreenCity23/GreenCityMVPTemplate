@@ -46,7 +46,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-public class EventServiceImplTest {
+class EventServiceImplTest {
     @Mock
     FileService fileService;
     @Mock
@@ -244,7 +244,7 @@ public class EventServiceImplTest {
     }
 
     @Test
-    public void testAddAttenderToEvent() {
+    void testAddAttenderToEvent() {
         Long eventId = 1L;
         Long attenderId = 2L;
         List<User> attenders = new ArrayList<>();
@@ -267,7 +267,7 @@ public class EventServiceImplTest {
     }
 
     @Test
-    public void testRemoveAttenderFromEvent() {
+    void testRemoveAttenderFromEvent() {
         Long eventId = 1L;
         Long attenderId = 2L;
 
@@ -291,7 +291,7 @@ public class EventServiceImplTest {
     }
 
     @Test
-    public void testGetAllSubscribers() {
+    void testGetAllSubscribers() {
 
         List<User> attenders = new ArrayList<>();
         User user1 = ModelUtils.getUser();

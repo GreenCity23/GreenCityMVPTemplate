@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 @ExtendWith(SpringExtension.class)
-public class LanguageValidatorTest {
+class LanguageValidatorTest {
     @InjectMocks
     LanguageValidator languageValidator;
     @Mock

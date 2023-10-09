@@ -128,7 +128,6 @@ public class EventsController {
             @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @GetMapping(path = "/{eventId}")
     public ResponseEntity<EventDto> getEventById(@PathVariable Long eventId) {
-        System.out.println(eventId);
         return ResponseEntity.status(HttpStatus.OK).body(eventService.findById(eventId));
     }
 

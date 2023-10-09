@@ -1,9 +1,12 @@
 package greencity.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 /**
@@ -13,7 +16,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EventDateLocationDto {
+public class EventDateLocationDto implements Serializable {
     Long id;
     @JsonIgnore
     EventDto event;

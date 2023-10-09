@@ -133,10 +133,6 @@ class EventsControllerTest {
     }
 
     @Test
-    void delete() {
-    }
-
-    @Test
     void updateEvent() throws Exception {
         UserVO userVO = mock(UserVO.class);
         when(userVO.getId()).thenReturn(3L);
@@ -208,7 +204,7 @@ class EventsControllerTest {
     }
 
     @Test
-    public void testGetEventsCreatedByUser() throws Exception {
+    void testGetEventsCreatedByUser() throws Exception {
         int pageNumber = 5;
         int pageSize = 2;
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -219,7 +215,7 @@ class EventsControllerTest {
     }
 
     @Test
-    public void testGetAllEventSubscribers() throws Exception {
+    void testGetAllEventSubscribers() throws Exception {
         Long eventId = 1L;
 
         List<EventAttenderDto> subscribers = new ArrayList<>();
@@ -233,7 +229,7 @@ class EventsControllerTest {
     }
 
     @Test
-    public void testAddAttender() throws Exception {
+    void testAddAttender() throws Exception {
         Long eventId = 1L;
         UserVO userVO = ModelUtils.getUserVO();
         when(userService.findByEmail(anyString())).thenReturn(userVO);
@@ -245,7 +241,7 @@ class EventsControllerTest {
     }
 
     @Test
-    public void testRemoveAttender() throws Exception {
+    void testRemoveAttender() throws Exception {
         Long eventId = 1L;
         UserVO userVO = ModelUtils.getUserVO();
         when(userService.findByEmail(anyString())).thenReturn(userVO);

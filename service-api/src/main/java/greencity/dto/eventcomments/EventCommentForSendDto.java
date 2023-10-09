@@ -1,7 +1,6 @@
 package greencity.dto.eventcomments;
 
 import greencity.dto.event.EventAuthorDto;
-import greencity.dto.eventcomments.EventCommentAuthorDto;
 import lombok.*;
 
 import java.time.LocalDateTime;

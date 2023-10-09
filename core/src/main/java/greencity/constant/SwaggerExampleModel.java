@@ -27,7 +27,6 @@ public final class SwaggerExampleModel {
             + "  \"textTranslation\":\n"
             + "     {\"content\": \"string\",\n"
             + "     \"languageCode\": \"string\"}\n";
-    // {"tags":["string"],"text":"string","title":"string","source":"string"}
     private static final String ECO_NEWS_REQUEST =
         "{\"tags\":[\"string\"],\"text\":\"string\",\"title\":\"string\",\"source\":\"string\"}";
 

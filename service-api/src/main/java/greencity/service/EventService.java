@@ -7,7 +7,6 @@ import greencity.dto.event.EventAttenderDto;
 import greencity.dto.event.EventDto;
 import greencity.dto.event.SearchEventDto;
 import greencity.dto.user.UserVO;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 

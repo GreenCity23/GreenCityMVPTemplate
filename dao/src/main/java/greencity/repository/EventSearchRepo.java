@@ -1,9 +1,6 @@
 package greencity.repository;
 
-import greencity.entity.EcoNews;
 import greencity.entity.Event;
-import greencity.entity.Tag;
-import greencity.entity.localization.TagTranslation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
