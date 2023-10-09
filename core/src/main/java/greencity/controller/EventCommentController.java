@@ -165,7 +165,7 @@ public class EventCommentController {
     })
     @PostMapping("/like")
     public void likeComment(@RequestParam("id") Long id, @ApiIgnore @CurrentUser UserVO userVO) {
-        eventCommentService.likeComment(id, userVO);
+        eventCommentService.likeCommentById(id, userVO);
     }
 
 

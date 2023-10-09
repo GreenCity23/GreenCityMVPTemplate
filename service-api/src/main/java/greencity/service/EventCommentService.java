@@ -35,7 +35,7 @@ public interface EventCommentService {
      * @param id     of {@link EventCommentVO} to like/dislike.
      * @param userVO current User that wants to like/dislike.
      */
-    void likeComment(Long id, UserVO userVO);
+    void likeCommentById(Long id, UserVO userVO);
 
     /**
      * Method to delete {@link EventCommentVO} by id.

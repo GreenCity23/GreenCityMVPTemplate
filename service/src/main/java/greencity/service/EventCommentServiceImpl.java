@@ -68,7 +68,7 @@ public class EventCommentServiceImpl implements EventCommentService{
         String accessToken = httpServletRequest.getHeader(AUTHORIZATION);
         CompletableFuture.runAsync(
                 () -> ratingCalculation.ratingCalculation(RatingCalculationEnum.ADD_COMMENT, userVO, accessToken));
-        if(event.getOrganizer().getId() != eventComment.getUser().getId()) {
+        if(!event.getOrganizer().getId().equals(eventComment.getUser().getId())) {
             sendEmailNotificationToOrganizer(modelMapper.map(eventComment,EventCommentDto.class),
                     modelMapper.map(event, EventDto.class));
         }
@@ -109,7 +109,7 @@ public class EventCommentServiceImpl implements EventCommentService{
      * {@inheritDoc}
      */
     @Override
-    public void likeComment(Long id, UserVO userVO) {
+    public void likeCommentById(Long id, UserVO userVO) {
         EventComment comment = eventCommentRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_COMMENT_NOT_FOUND_BY_ID + id));
         if (comment.getUsersLiked().stream()
@@ -137,7 +137,7 @@ public class EventCommentServiceImpl implements EventCommentService{
     /**
      * {@inheritDoc}
      */
-    private void likeComment(UserVO userVO, EventComment eventComment) {
+    public void likeComment(UserVO userVO, EventComment eventComment) {
         User user = modelMapper.map(userVO, User.class);
         eventComment.getUsersLiked().add(user);
         String accessToken = httpServletRequest.getHeader(AUTHORIZATION);
@@ -148,7 +148,7 @@ public class EventCommentServiceImpl implements EventCommentService{
     /**
      * {@inheritDoc}
      */
-    private void unlikeComment(UserVO user, EventComment eventComment) {
+    public void unlikeComment(UserVO user, EventComment eventComment) {
         String accessToken = httpServletRequest.getHeader(AUTHORIZATION);
         eventComment.getUsersLiked().removeIf(u -> u.getId().equals(user.getId()));
         CompletableFuture

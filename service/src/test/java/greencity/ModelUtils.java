@@ -4,6 +4,9 @@ import greencity.constant.AppConstant;
 import greencity.dto.PageableAdvancedDto;
 import greencity.dto.econews.*;
 import greencity.dto.econewscomment.*;
+import greencity.dto.eventcomments.AddEventCommentDtoRequest;
+import greencity.dto.eventcomments.EventCommentAuthorDto;
+import greencity.dto.eventcomments.EventCommentDto;
 import greencity.dto.tag.TagUaEnDto;
 import greencity.dto.event.*;
 import greencity.dto.habit.HabitAssignPropertiesDto;
@@ -204,7 +207,7 @@ public class ModelUtils {
         return new Event(1L, "event title", "event description event description", zonedDateTime,
                 List.of(getDateLocation()),
                 getUser(), "https://google.com/", false, false, false,
-                null, List.of(tag), null, null);
+                null, List.of(tag), null, new ArrayList<>());
     }
 
     public static Event getNotValidEvent() {
@@ -827,5 +830,43 @@ public class ModelUtils {
             .habitId("1L")
             .content("Test content")
             .build();
+    }
+
+    public static AddEventCommentDtoRequest getAddEventCommentDtoRequest() {
+        return AddEventCommentDtoRequest.builder()
+                .parentCommentId(0L)
+                .text("My comment")
+                .build();
+    }
+    public static AddEventCommentDtoRequest getAddEventReplyCommentDtoRequest() {
+        return AddEventCommentDtoRequest.builder()
+                .parentCommentId(1L)
+                .text("My comment")
+                .build();
+    }
+
+    public static EventComment getEventComment() {
+        return EventComment.builder()
+                .id(1L)
+                .createdDate(LocalDateTime.now())
+                .event(getEvent())
+                .user(getUser())
+                .usersLiked(new HashSet<>())
+                .text("My comment")
+                .build();
+    }
+
+    public static EventCommentDto getEventCommentDto() {
+        return EventCommentDto.builder()
+                .id(1l)
+                .createdDate(LocalDateTime.now())
+                .likes(0)
+                .text("My comment")
+                .author(EventCommentAuthorDto.builder()
+                        .id(getUser().getId())
+                        .name(getUser().getName())
+                        .userProfilePicturePath(getUser().getProfilePicturePath())
+                        .build())
+                .build();
     }
 }
