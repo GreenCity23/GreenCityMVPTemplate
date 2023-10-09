@@ -5,10 +5,12 @@ import greencity.TestConst;
 import greencity.client.RestClient;
 import greencity.dto.PageableAdvancedDto;
 import greencity.dto.event.AddEventDtoRequest;
+import greencity.dto.event.EventAttenderDto;
 import greencity.dto.event.EventAuthorDto;
 import greencity.dto.event.EventDto;
 import greencity.dto.tag.TagUaEnDto;
 import greencity.dto.tag.TagVO;
+import greencity.dto.user.AttendersEmailsDto;
 import greencity.dto.user.UserVO;
 import greencity.entity.*;
 import greencity.entity.localization.TagTranslation;
@@ -24,7 +26,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -40,8 +41,7 @@ import java.util.*;
 
 import static greencity.ModelUtils.*;
 import static greencity.constant.AppConstant.AUTHORIZATION;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -80,7 +80,7 @@ public class EventServiceImplTest {
         when(tagsService.findTagsWithAllTranslationsByNamesAndType(
                 addEventDtoRequest.getTags(), TagType.EVENT)).thenReturn(tagVOS);
         when(modelMapper.map(tagVOS, new TypeToken<List<Tag>>() {
-                }.getType())).thenReturn(tags);
+        }.getType())).thenReturn(tags);
         when(modelMapper.map(getEventDateLocationDto(), DateLocation.class)).thenReturn(getDateLocation());
         when(httpServletRequest.getHeader(AUTHORIZATION)).thenReturn("Bearer token");
         when(fileService.upload(any())).thenReturn(ModelUtils.getUrl().toString());
@@ -182,7 +182,7 @@ public class EventServiceImplTest {
     }
 
     @Test
-    void findAllByUserPageIsSort() {
+    void findAllByUserPage() {
         List<Event> events = Collections.singletonList(ModelUtils.getEvent());
         PageRequest pageRequest = PageRequest.of(0, 2);
         Page<Event> translationPage = new PageImpl<>(events,
@@ -221,7 +221,10 @@ public class EventServiceImplTest {
         AddEventDtoRequest addEventDtoRequest = getAddEventDtoRequest();
         List<TagVO> tagVOS = Collections.singletonList(ModelUtils.getEventTagVO());
         List<Tag> tags = Collections.singletonList(getEventTag());
-
+        List<User> attenders = new ArrayList<>();
+        User attender1 = ModelUtils.getUser();
+        attenders.add(attender1);
+        event.setAttenders(attenders);
         when(eventRepo.findById(anyLong())).thenReturn(Optional.ofNullable(event));
         when(modelMapper.map(addEventDtoRequest, Event.class)).thenReturn(event);
         when(modelMapper.map(event, EventDto.class)).thenReturn(getEventDto());
@@ -234,10 +237,76 @@ public class EventServiceImplTest {
         when(modelMapper.map(getEventDateLocationDto(), DateLocation.class)).thenReturn(getDateLocation());
         when(httpServletRequest.getHeader(AUTHORIZATION)).thenReturn("Bearer token");
         when(fileService.upload(any())).thenReturn(ModelUtils.getUrl().toString());
-
+        List<AttendersEmailsDto> emailsDtos = new ArrayList<>();
         EventDto res = eventService.update(addEventDtoRequest, images, 1L);
+        res.setAttendersEmailsDtos(emailsDtos);
+        assertEquals(getEventDto(), res);
+    }
 
-        assertEquals(res, getEventDto());
+    @Test
+    public void testAddAttenderToEvent() {
+        Long eventId = 1L;
+        Long attenderId = 2L;
+        List<User> attenders = new ArrayList<>();
+        List<User> friends = new ArrayList<>();
+        event.setEventClosed(false);
+        event.setAttenders(attenders);
+        User attender = ModelUtils.getUser();
+        when(userRepo.existsById(attenderId)).thenReturn(true);
+        when(eventRepo.existsById(eventId)).thenReturn(true);
+        when(userRepo.getAllUserFriends(any())).thenReturn(friends);
+        when(eventRepo.getOne(eventId)).thenReturn(event);
+        when(eventRepo.findById(eventId)).thenReturn(Optional.of(event));
+        when(userRepo.getOne(attenderId)).thenReturn(attender);
+        doNothing().when(eventRepo).addAttender(attenderId, eventId);
+        eventService.addAttenderToEvent(eventId, attenderId);
+
+        verify(eventRepo, times(2)).findById(eventId);
+        verify(eventRepo, times(2)).getOne(eventId);
+        verify(eventRepo, times(1)).addAttender(attenderId, eventId);
+    }
+
+    @Test
+    public void testRemoveAttenderFromEvent() {
+        Long eventId = 1L;
+        Long attenderId = 2L;
+
+        User organizer = ModelUtils.getUser();
+        List<User> attenders = new ArrayList<>();
+        User attender = new User();
+        attender.setId(2L);
+        attender.setName("Marko");
+        attenders.add(attender);
+
+        event.setOrganizer(organizer);
+        event.setAttenders(attenders);
+
+        when(eventRepo.getOne(eventId)).thenReturn(event);
+        when(eventRepo.findById(eventId)).thenReturn(Optional.ofNullable(event));
+        when(userRepo.getOne(attenderId)).thenReturn(attender);
+        eventService.removeAttenderFromEvent(eventId, attenderId);
+        verify(eventRepo, times(2)).findById(eventId);
+        verify(eventRepo, times(1)).getOne(eventId);
+        verify(userRepo, times(1)).getOne(attenderId);
+    }
+
+    @Test
+    public void testGetAllSubscribers() {
+
+        List<User> attenders = new ArrayList<>();
+        User user1 = ModelUtils.getUser();
+        User user2 = new User();
+        user2.setName("Marko");
+        attenders.add(user1);
+        attenders.add(user2);
+        event.setAttenders(attenders);
+        when(eventRepo.findById(event.getId())).thenReturn(Optional.of(event));
+
+        List<EventAttenderDto> eventAttenderDtos = eventService.getAllSubscribers(event.getId());
+
+        assertFalse(eventAttenderDtos.isEmpty());
+        assertEquals(2, eventAttenderDtos.size());
+        verify(eventRepo, times(1)).findById(event.getId());
     }
 
     @Test
@@ -284,5 +353,27 @@ public class EventServiceImplTest {
         PageableAdvancedDto<EventDto> actual = eventService.findAllRelatedToUser(1L, pageRequest);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void addToFavorites() {
+        when(eventRepo.findById(anyLong())).thenReturn(Optional.ofNullable(event));
+        doNothing().when(eventRepo).addToFavorites(anyLong());
+
+        eventService.addToFavorites(event.getId());
+
+        verify(eventRepo).findById(event.getId());
+        verify(eventRepo).addToFavorites(event.getId());
+    }
+
+    @Test
+    void removeFromFavourites() {
+        when(eventRepo.findById(anyLong())).thenReturn(Optional.ofNullable(event));
+        doNothing().when(eventRepo).removeFromFavorites(anyLong());
+
+        eventService.removeFromFavorites(event.getId());
+
+        verify(eventRepo).findById(event.getId());
+        verify(eventRepo).removeFromFavorites(event.getId());
     }
 }

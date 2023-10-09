@@ -611,6 +611,7 @@ public class ModelUtils {
                 .open(true)
                 .isSubscribed(false)
                 .isFavorite(false)
+                .attendersEmailsDtos(new ArrayList<>())
                 .tags(Set.of(getTagUaEnDto()))
                 .build();
     }
