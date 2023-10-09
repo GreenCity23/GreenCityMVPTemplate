@@ -27,10 +27,9 @@ public class EventSearchRepo {
     }
 
     /**
-     * Method to find Event by criteria
+     * Method to find Event by criteria.
      *
-     * @param pageable
-     * @param searchQuery criteria
+     * @param searchQuery - text criteria for searching.
      * @return
      */
     public Page<Event> find(Pageable pageable, String searchQuery) {
