@@ -4,10 +4,13 @@ import greencity.constant.AppConstant;
 import greencity.dto.PageableAdvancedDto;
 import greencity.dto.econews.*;
 import greencity.dto.econewscomment.*;
+import greencity.dto.eventcomments.AddEventCommentDtoRequest;
+import greencity.dto.eventcomments.EventCommentAuthorDto;
+import greencity.dto.eventcomments.EventCommentDto;
+import greencity.dto.tag.TagUaEnDto;
+import greencity.dto.event.*;
 import greencity.dto.habit.HabitAssignPropertiesDto;
 import greencity.dto.habit.HabitAssignVO;
-import greencity.dto.habit.HabitDto;
-import greencity.dto.habitfact.HabitFactDto;
 import greencity.dto.habitfact.HabitFactTranslationVO;
 import greencity.dto.habitfact.HabitFactViewDto;
 import greencity.dto.language.LanguageDTO;
@@ -53,12 +56,18 @@ public class ModelUtils {
     public static LocalDateTime localDateTime = LocalDateTime.now();
 
     public static Tag getTag() {
-        return new Tag(1L, TagType.ECO_NEWS, getTagTranslations(), Collections.emptyList(), Collections.emptySet());
+        return new Tag(1L, TagType.ECO_NEWS, getTagTranslations(), Collections.emptyList(),
+            Collections.emptySet(), Collections.emptySet());
+    }
+
+    public static Tag getEventTag() {
+        return new Tag(1L, TagType.EVENT, getEventTagTranslations(), Collections.emptyList(),
+            Collections.emptySet(), Collections.emptySet());
     }
 
     public static Tag getHabitTag() {
         return new Tag(1L, TagType.HABIT, getHabitTagTranslations(), Collections.emptyList(),
-            Collections.emptySet());
+            Collections.emptySet(), Collections.emptySet());
     }
 
     public static List<TagTranslation> getTagTranslations() {
@@ -184,12 +193,58 @@ public class ModelUtils {
 
     public static EcoNews getEcoNews() {
         Tag tag = new Tag();
-        tag.setTagTranslations(
-            List.of(TagTranslation.builder().name("Новини").language(Language.builder().code("ua").build()).build(),
-                TagTranslation.builder().name("News").language(Language.builder().code("en").build()).build()));
+        tag.setTagTranslations(getTagTranslations());
         return new EcoNews(1L, zonedDateTime, TestConst.SITE, "source", "shortInfo", getUser(),
             "title", "text", List.of(EcoNewsComment.builder().id(1L).text("test").build()),
             Collections.singletonList(tag), Collections.emptySet(), Collections.emptySet());
+    }
+
+    public static Event getEvent() {
+        Tag tag = new Tag();
+        tag.setId(1L);
+        tag.setType(TagType.EVENT);
+        tag.setTagTranslations(getEventTagTranslations());
+        return new Event(1L, "event title", "event description event description", zonedDateTime,
+            List.of(getDateLocation()),
+            getUser(), "https://google.com/", false, false, false,
+            null, List.of(tag), null, new ArrayList<>());
+    }
+
+    public static Event getNotValidEvent() {
+        Tag tag = new Tag();
+        tag.setId(1L);
+        tag.setType(TagType.EVENT);
+        tag.setTagTranslations(getEventTagTranslations());
+        return new Event(1L, "event title", "event description event description", zonedDateTime,
+            List.of(getDateLocation()),
+            getUser(), "https://google.com/", false, false, false,
+            null, List.of(tag), null, null);
+    }
+
+    public static DateLocation getDateLocation() {
+        return DateLocation.builder()
+            .id(1L)
+            .onlineLink("https://google.com/")
+            .startDate(zonedDateTime.plusHours(3))
+            .finishDate(zonedDateTime.plusHours(7))
+            .address(Address.builder()
+                .latitude(1.0)
+                .longitude(1.0)
+                .build())
+            .build();
+    }
+
+    public static DateLocation getInvalidDateLocation() {
+        return DateLocation.builder()
+            .id(1L)
+            .onlineLink("https://google.com/")
+            .startDate(zonedDateTime.minusHours(3))
+            .finishDate(zonedDateTime.minusHours(7))
+            .address(Address.builder()
+                .latitude(1.0)
+                .longitude(1.0)
+                .build())
+            .build();
     }
 
     public static EcoNews getEcoNewsForFindDtoByIdAndLanguage() {
@@ -381,6 +436,20 @@ public class ModelUtils {
             name, contentType, content);
     }
 
+    public static MultipartFile getImage() {
+        Path path = Paths.get("src/test/resources/test.jpg");
+        String name = TestConst.IMG_NAME;
+        String contentType = "image/jpeg";
+        byte[] content = null;
+        try {
+            content = Files.readAllBytes(path);
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+        return new MockMultipartFile(name,
+            name, contentType, content);
+    }
+
     public static URL getUrl() throws MalformedURLException {
         return new URL(TestConst.SITE);
     }
@@ -402,6 +471,10 @@ public class ModelUtils {
 
     public static TagVO getTagVO() {
         return new TagVO(1L, TagType.ECO_NEWS, getTagTranslationsVO(), null, null);
+    }
+
+    public static TagVO getEventTagVO() {
+        return new TagVO(1L, TagType.EVENT, getTagTranslationsVO(), null, null);
     }
 
     public static TagPostDto getTagPostDto() {
@@ -481,6 +554,81 @@ public class ModelUtils {
     public static EcoNewsDto getEcoNewsDto() {
         return new EcoNewsDto(ZonedDateTime.now(), "imagePath", 1L, "title", "content", "text",
             getEcoNewsAuthorDto(), Collections.singletonList("tag"), Collections.singletonList("тег"), 1, 0, 0);
+    }
+
+    public static TagUaEnDto getTagUaEnDto() {
+        return TagUaEnDto.builder()
+            .id(1L)
+            .nameUa("Соціальний")
+            .nameEn("Social")
+            .build();
+    }
+
+    public static AddEventDtoRequest getAddEventDtoRequest() {
+        return new AddEventDtoRequest(1L, List.of(getEventDateLocationDto()), "event description event description",
+            List.of("Social"), "true", "event title");
+    }
+
+    public static EventDateLocationDto getEventDateLocationDto() {
+        return EventDateLocationDto.builder()
+            .id(1L)
+            .onlineLink("https://google.com/")
+            .startDate(zonedDateTime.plusHours(3))
+            .finishDate(zonedDateTime.plusHours(7))
+            .coordinates(AddressDto.builder()
+                .latitude(1.0)
+                .longitude(1.0)
+                .build())
+            .build();
+    }
+
+    public static EventDateLocationDto getInvalidEventDateLocationDto() {
+        return EventDateLocationDto.builder()
+            .id(1L)
+            .onlineLink("https://google.com/")
+            .startDate(zonedDateTime.minusHours(3))
+            .finishDate(zonedDateTime.minusHours(7))
+            .coordinates(AddressDto.builder()
+                .latitude(1.0)
+                .longitude(1.0)
+                .build())
+            .build();
+    }
+
+    public static EventDto getEventDto() {
+        return EventDto.builder()
+            .id(1L)
+            .title("event title")
+            .description("event description event description")
+            .creationDate(zonedDateTime)
+            .dateLocations(List.of(getEventDateLocationDto()))
+            .organizer(EventAuthorDto.builder()
+                .id(getUser().getId())
+                .name(getUser().getName())
+                .organizerRating(0.0)
+                .build())
+            .titleImage("https://google.com/")
+            .open(true)
+            .isSubscribed(false)
+            .isFavorite(false)
+            .attendersEmailsDtos(new ArrayList<>())
+            .tags(Set.of(getTagUaEnDto()))
+            .build();
+    }
+
+    public static EventVO getEventVO() {
+        return EventVO.builder()
+            .id(1L)
+            .title("event title")
+            .description("event description event description")
+            .organizer(UserVO.builder()
+                .id(getUser().getId())
+                .name(getUser().getName())
+                .userStatus(getUser().getUserStatus())
+                .role(getUser().getRole())
+                .build())
+            .titleImage("https://google.com/")
+            .build();
     }
 
     public static EcoNewsGenericDto getEcoNewsGenericDto() {
@@ -682,6 +830,45 @@ public class ModelUtils {
             .id("1L")
             .habitId("1L")
             .content("Test content")
+            .build();
+    }
+
+    public static AddEventCommentDtoRequest getAddEventCommentDtoRequest() {
+        return AddEventCommentDtoRequest.builder()
+            .parentCommentId(0L)
+            .text("My comment")
+            .build();
+    }
+
+    public static AddEventCommentDtoRequest getAddEventReplyCommentDtoRequest() {
+        return AddEventCommentDtoRequest.builder()
+            .parentCommentId(1L)
+            .text("My comment")
+            .build();
+    }
+
+    public static EventComment getEventComment() {
+        return EventComment.builder()
+            .id(1L)
+            .createdDate(LocalDateTime.now())
+            .event(getEvent())
+            .user(getUser())
+            .usersLiked(new HashSet<>())
+            .text("My comment")
+            .build();
+    }
+
+    public static EventCommentDto getEventCommentDto() {
+        return EventCommentDto.builder()
+            .id(1l)
+            .createdDate(LocalDateTime.now())
+            .likes(0)
+            .text("My comment")
+            .author(EventCommentAuthorDto.builder()
+                .id(getUser().getId())
+                .name(getUser().getName())
+                .userProfilePicturePath(getUser().getProfilePicturePath())
+                .build())
             .build();
     }
 }

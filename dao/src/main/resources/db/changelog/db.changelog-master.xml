@@ -177,5 +177,11 @@
     <include file="db/changelog/logs/ch-drop-news-subscribers-table-Bokalo.xml"/>
     <include file="db/changelog/logs/ch-drop-user-friends-table-Bokalo.xml"/>
     <include file="db/changelog/logs/ch-add-user-friend-table-Anisimov.xml"/>
+    <include file="db/changelog/logs/ch-add-tables-events-addresses-dates-locations.xml"/>
+    <include file="db/changelog/logs/ch-add-tables-event-tags-event-attenders.xml"/>
+    <include file="db/changelog/logs/ch-add-table-events-additional-images.xml"/>
+    <include file="db/changelog/logs/ch-add-table-event-comments-siverskyi.xml"/>
+    <include file="db/changelog/logs/ch-event-comments-add-fk-Siverkyi.xml"/>
+    <include file="db/changelog/logs/ch-add-timestamp-column-to-userFriends-table.xml"/>
 </databaseChangeLog>
 

@@ -27,21 +27,21 @@ class EcoNewsDtoRequestValidatorTest {
     }
 
     @Test
-    public void testInvalidSourceUrl() {
+    void testInvalidSourceUrl() {
         AddEcoNewsDtoRequest requestWithInvalidUrl = getAddEcoNewsDtoRequest();
         requestWithInvalidUrl.setSource("invalidurl");
         assertThrows(InvalidURLException.class, () -> validator.isValid(requestWithInvalidUrl, null));
     }
 
     @Test()
-    public void testEmptyTags() {
+    void testEmptyTags() {
         AddEcoNewsDtoRequest requestWithNullTags = getAddEcoNewsDtoRequest();
         requestWithNullTags.setTags(Collections.emptyList());
         assertThrows(WrongCountOfTagsException.class, () -> validator.isValid(requestWithNullTags, null));
     }
 
     @Test
-    public void testTooManyTags() {
+    void testTooManyTags() {
         AddEcoNewsDtoRequest requestWithNullTags = getAddEcoNewsDtoRequest();
         requestWithNullTags.setTags(Collections.nCopies(4, "Tag"));
         assertThrows(WrongCountOfTagsException.class, () -> validator.isValid(requestWithNullTags, null));

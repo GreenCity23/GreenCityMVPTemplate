@@ -1,6 +1,7 @@
 package greencity.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import greencity.ModelUtils;
 import greencity.converters.UserArgumentResolver;
 import greencity.dto.econews.AddEcoNewsDtoRequest;
 import greencity.dto.user.UserVO;
@@ -35,8 +36,7 @@ import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
 
-import static greencity.ModelUtils.getPrincipal;
-import static greencity.ModelUtils.getUserVO;
+import static greencity.ModelUtils.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -160,18 +160,19 @@ class EcoNewsControllerTest {
         verify(ecoNewsService).findGenericAll(pageable);
     }
 
-//    @Test
-//    @SneakyThrows
-//    void getEcoNewsByUserByPage() {
-//        int pageNumber = 1;
-//        int pageSize = 2;
-//        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-//
-//        mockMvc.perform(get(ecoNewsLink + "/byUserPage?page=1&size=2"))
-//            .andExpect(status().isOk());
-//
-//        verify(ecoNewsService).findAllByUser(null, pageable);
-//    }
+    @Test
+    @SneakyThrows
+    void getEcoNewsByUserByPage() {
+        int pageNumber = 1;
+        int pageSize = 2;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        when(userService.findByEmail(principal.getName())).thenReturn(getUserVO());
+        mockMvc.perform(get(ecoNewsLink + "/byUserPage?page=1&size=2")
+            .principal(principal))
+            .andExpect(status().isOk());
+
+        verify(ecoNewsService).findAllByUser(ModelUtils.getUserVO(), pageable);
+    }
 
     @Test
     void deleteTest() throws Exception {

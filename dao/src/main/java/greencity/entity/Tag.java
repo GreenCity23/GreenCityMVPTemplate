@@ -15,8 +15,8 @@ import java.util.Set;
 @Setter
 @Builder
 @Table(name = "tags")
-@ToString(exclude = {"ecoNews", "habits", "tagTranslations"})
-@EqualsAndHashCode(exclude = {"ecoNews", "habits", "tagTranslations"})
+@ToString(exclude = {"ecoNews", "events", "habits", "tagTranslations"})
+@EqualsAndHashCode(exclude = {"ecoNews", "events", "habits", "tagTranslations"})
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,4 +34,7 @@ public class Tag {
 
     @ManyToMany(mappedBy = "tags")
     private Set<Habit> habits;
+
+    @ManyToMany(mappedBy = "tags")
+    private Set<Event> events;
 }

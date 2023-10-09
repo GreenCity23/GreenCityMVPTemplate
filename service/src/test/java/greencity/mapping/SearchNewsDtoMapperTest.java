@@ -11,7 +11,7 @@ import static greencity.ModelUtils.getEcoNews;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class SearchNewsDtoMapperTest {
+class SearchNewsDtoMapperTest {
     @InjectMocks
     private SearchNewsDtoMapper searchNewsDtoMapper;
 

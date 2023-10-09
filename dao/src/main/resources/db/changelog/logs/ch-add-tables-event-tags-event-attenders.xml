@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1695755794470-59" author="Vladyslav Siverskyi">
+        <createTable tableName="events_attenders">
+            <column name="event_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1695755794470-60" author="Vladyslav Siverskyi">
+        <createTable tableName="events_tags">
+            <column name="event_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_events_tags"/>
+            </column>
+            <column name="tag_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_events_tags"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1695755794470-66" author="Vladyslav Siverskyi">
+        <addForeignKeyConstraint baseColumnNames="date_location_id" baseTableName="addresses"
+                                 constraintName="FK_ADDRESSES_ON_DATE_LOCATION" referencedColumnNames="id"
+                                 referencedTableName="dates_locations"/>
+    </changeSet>
+
+    <changeSet id="1695755794470-67" author="Vladyslav Siverskyi">
+        <addForeignKeyConstraint baseColumnNames="address_id" baseTableName="dates_locations"
+                                 constraintName="FK_DATES_LOCATIONS_ON_ADDRESS" referencedColumnNames="id"
+                                 referencedTableName="addresses"/>
+    </changeSet>
+
+    <changeSet id="1695755794470-68" author="Vladyslav Siverskyi">
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="dates_locations"
+                                 constraintName="FK_DATES_LOCATIONS_ON_EVENT" referencedColumnNames="id"
+                                 referencedTableName="events"/>
+    </changeSet>
+
+    <changeSet id="1695755794470-69" author="Vladyslav Siverskyi">
+        <addForeignKeyConstraint baseColumnNames="organizer_id" baseTableName="events"
+                                 constraintName="FK_EVENTS_ON_ORGANIZER" referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="1695755794470-70" author="Vladyslav Siverskyi">
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="events_attenders"
+                                 constraintName="fk_eveatt_on_event" referencedColumnNames="id"
+                                 referencedTableName="events"/>
+    </changeSet>
+
+    <changeSet id="1695755794470-71" author="Vladyslav Siverskyi">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="events_attenders"
+                                 constraintName="fk_eveatt_on_user" referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="1695755794470-72" author="Vladyslav Siverskyi">
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="events_tags"
+                                 constraintName="fk_evetag_on_event" referencedColumnNames="id"
+                                 referencedTableName="events"/>
+    </changeSet>
+
+    <changeSet id="1695755794470-73" author="Vladyslav Siverskyi">
+        <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="events_tags" constraintName="fk_evetag_on_tag"
+                                 referencedColumnNames="id" referencedTableName="tags"/>
+    </changeSet>
+
+</databaseChangeLog>
