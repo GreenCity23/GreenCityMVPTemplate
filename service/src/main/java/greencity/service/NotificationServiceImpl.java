@@ -246,8 +246,8 @@ public class NotificationServiceImpl implements NotificationService {
      */
     private List<NotificationDto> mapList(List<Notification> notifications) {
         return notifications.stream()
-                .map(notificationDtoMapper::convertToDto)
-                .collect(Collectors.toList());
+            .map(notificationDtoMapper::convertToDto)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -259,12 +259,12 @@ public class NotificationServiceImpl implements NotificationService {
      */
     private PageableDto<NotificationDto> mapToPageableDto(Page<Notification> pages) {
         List<NotificationDto> notificationDtos = pages.stream()
-                .map(notificationDtoMapper::convertToDto)
-                .collect(Collectors.toList());
+            .map(notificationDtoMapper::convertToDto)
+            .collect(Collectors.toList());
         return new PageableDto<>(
-                notificationDtos,
-                pages.getTotalElements(),
-                pages.getPageable().getPageNumber(),
-                pages.getTotalPages());
+            notificationDtos,
+            pages.getTotalElements(),
+            pages.getPageable().getPageNumber(),
+            pages.getTotalPages());
     }
 }
