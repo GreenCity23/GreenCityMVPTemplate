@@ -253,6 +253,12 @@ public class NotificationServiceImpl implements NotificationService {
             pages.getTotalPages());
     }
 
+    /**
+     * Method to check if a user exists in a database.
+     *
+     * @param id {@link Long} user id.
+     * @author Nazar Klimovych
+     */
     private void doesUserExist(Long id) {
         if (userRepo.findById(id).isEmpty()) {
             throw new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + id);
