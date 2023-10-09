@@ -12,7 +12,7 @@ import javax.validation.ConstraintValidatorContext;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-public class ImageValidatorTest {
+class ImageValidatorTest {
     private ImageValidator imageValidator;
 
     @Mock
@@ -35,25 +35,25 @@ public class ImageValidatorTest {
     }
 
     @Test
-    public void testValidImageType() {
+    void testValidImageType() {
         when(multipartFile.getContentType()).thenReturn("image/jpeg");
         assertTrue(imageValidator.isValid(multipartFile, constraintValidatorContext));
     }
 
     @Test
-    public void testValidImageType_PNG() {
+    void testValidImageType_PNG() {
         when(multipartFile.getContentType()).thenReturn("image/png");
         assertTrue(imageValidator.isValid(multipartFile, constraintValidatorContext));
     }
 
     @Test
-    public void testInvalidImageType() {
+    void testInvalidImageType() {
         when(multipartFile.getContentType()).thenReturn("application/pdf");
         assertFalse(imageValidator.isValid(multipartFile, constraintValidatorContext));
     }
 
     @Test
-    public void testNullImage() {
+    void testNullImage() {
         assertTrue(imageValidator.isValid(null, constraintValidatorContext));
     }
 }

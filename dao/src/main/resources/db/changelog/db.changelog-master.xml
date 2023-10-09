@@ -156,31 +156,13 @@
     <include file="db/changelog/logs/ch-update-employee_authorities-table-name-value-Bondar.xml"/>
     <include file="db/changelog/logs/ch-add-table-events-followers-Bondar.xml"/>
     <include file="db/changelog/logs/ch-add-formatted_address-to-event_dates_locations-Lenets.xml"/>
-    <include file="db/changelog/logs/ch-drop-table-achievements-Bokalo.xml"/>
-    <include file="/db/changelog/logs/ch-drop-table-achievement-translation-Bokalo.xml"/>
-    <include file="/db/changelog/logs/ch-drop-table-achievements-categories-Bokalo.xml"/>
-    <include file="db/changelog/logs/ch-drop-all-employee-tables-Bokalo.xml"/>
-    <include file="db/changelog/logs/ch-drop-all-events-tables-Bokalo.xml"/>
-    <include file="db/changelog/logs/ch-drop-table-user-achievemets.xml"/>
-    <include file="db/changelog/logs/ch-drop-all-positions-tables.xml"/>
-    <include file="db/changelog/logs/ch-drop-all-advices-tables-Bokalo.xml"/>
-    <include file="db/changelog/logs/ch-drop-table-break-time-Bokalo.xml"/>
-    <include file="db/changelog/logs/ch-drop-all-chat-tables-Bokalo.xml"/>
-    <include file="db/changelog/logs/ch-drop-all-fact-of-the-day-tables-Bokalo.xml"/>
-    <include file="db/changelog/logs/ch-drop-discount-values-table-Bokalo.xml"/>
-    <include file="db/changelog/logs/ch-drop-estimates-table.xml"/>
-    <include file="db/changelog/logs/ch-drop-favorite-places-table.xml"/>
-    <include file="db/changelog/logs/ch-drop-locations-table-Bokalo.xml"/>
-    <include file="db/changelog/logs/ch-drop-opening-hours-table.xml"/>
-    <include file="db/changelog/logs/ch-drop-photo-table-Bokalo.xml"/>
-    <include file="db/changelog/logs/ch-drop-places-table-Bokalo.xml"/>
-    <include file="db/changelog/logs/ch-drop-news-subscribers-table-Bokalo.xml"/>
-    <include file="db/changelog/logs/ch-drop-user-friends-table-Bokalo.xml"/>
     <include file="db/changelog/logs/ch-add-user-friend-table-Anisimov.xml"/>
     <include file="db/changelog/logs/ch-add-tables-events-addresses-dates-locations.xml"/>
     <include file="db/changelog/logs/ch-add-tables-event-tags-event-attenders.xml"/>
     <include file="db/changelog/logs/ch-add-table-events-additional-images.xml"/>
     <include file="db/changelog/logs/ch-add-table-event-grades-Anisimov.xml"/>
-
+    <include file="db/changelog/logs/ch-add-table-event-comments-siverskyi.xml"/>
+    <include file="db/changelog/logs/ch-event-comments-add-fk-Siverkyi.xml"/>
+    <include file="db/changelog/logs/ch-add-timestamp-column-to-userFriends-table.xml"/>
 </databaseChangeLog>
 

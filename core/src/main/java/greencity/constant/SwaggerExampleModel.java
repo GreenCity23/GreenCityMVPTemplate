@@ -27,7 +27,6 @@ public final class SwaggerExampleModel {
             + "  \"textTranslation\":\n"
             + "     {\"content\": \"string\",\n"
             + "     \"languageCode\": \"string\"}\n";
-    // {"tags":["string"],"text":"string","title":"string","source":"string"}
     private static final String ECO_NEWS_REQUEST =
         "{\"tags\":[\"string\"],\"text\":\"string\",\"title\":\"string\",\"source\":\"string\"}";
 
@@ -78,23 +77,24 @@ public final class SwaggerExampleModel {
         + "}" + AFTER_EXAMPLE;
 
     public static final String UPDATE_EVENT = BEFORE_EXAMPLE
-            + "{\n"
-            + "  \"id\": null,\n"
-            + "  \"title\": \"title\",\n"
-            + "  \"description\": \"description\",\n"
-            + "  \"open\": null,\n"
-            + "  \"datesLocations\": [\n"
-            + "    {\n"
-            + "      \"startDate\": null,\n"
-            + "      \"finishDate\": null,\n"
-            + "      \"coordinates\": {\n"
-            + "        \"latitude\": null,\n"
-            + "        \"longitude\": null\n"
-            + "      }\n"
-            + "    }\n"
-            + "  ],\n"
-            + "  \"tags\": [\"null\"]\n"
-            + "}" + AFTER_EXAMPLE;
+        + "{\n"
+        + "  \"id\": null,\n"
+        + "  \"title\": \"title\",\n"
+        + "  \"description\": \"description\",\n"
+        + "  \"open\": null,\n"
+        + "  \"datesLocations\": [\n"
+        + "    {\n"
+        + "      \"startDate\": null,\n"
+        + "      \"finishDate\": null,\n"
+        + "      \"coordinates\": {\n"
+        + "        \"latitude\": null,\n"
+        + "        \"longitude\": null\n"
+        + "      }\n"
+        + "    }\n"
+        + "  ],\n"
+        + "  \"tags\": [\"null\"]\n"
+        + "}" + AFTER_EXAMPLE;
+
     private SwaggerExampleModel() {
     }
 }

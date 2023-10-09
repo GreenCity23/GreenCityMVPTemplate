@@ -1,6 +1,5 @@
 package greencity.entity;
 
-
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,7 +13,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-@ToString
+@ToString(exclude = "event")
 public class DateLocation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,4 +30,3 @@ public class DateLocation {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 }
-

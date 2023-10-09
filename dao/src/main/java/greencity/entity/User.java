@@ -63,22 +63,23 @@ import java.util.Set;
             + "       AND u.id IN :friends "
             + "       AND LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%')) "
             + "ORDER BY rating DESC, mutualFriends DESC",
-            resultSetMapping = "userFriendDtoMapping"),
-        @NamedNativeQuery(name = "User.getAllUsersExceptMainUserAndFriends",
-                query = "SELECT *, (SELECT count(*) "
-                        + "        FROM users_friends uf1 "
-                        + "        WHERE uf1.user_id not in :notFriends "
-                        + "          and uf1.friend_id = u.id "
-                        + "          and uf1.status = 'FRIEND' "
-                        + "           or "
-                        + "         uf1.friend_id not in :notFriends "
-                        + "          and uf1.user_id = u.id "
-                        + "          and uf1.status = 'FRIEND') as mutualFriends, "
-                        + "       u.profile_picture           as profilePicturePath "
-                        + "FROM users u "
-                        + "WHERE u.id != :userId "
-                        + "AND u.id IN :notFriends AND LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%')) ",
-                resultSetMapping = "userFriendDtoMapping")
+        resultSetMapping = "userFriendDtoMapping"),
+    @NamedNativeQuery(name = "User.getAllUsersExceptMainUserAndFriends",
+        query = "SELECT *, (SELECT count(*) "
+            + "        FROM users_friends uf1 "
+            + "        WHERE uf1.user_id not in :notFriends "
+            + "          and uf1.friend_id = u.id "
+            + "          and uf1.status = 'FRIEND' "
+            + "           or "
+            + "         uf1.friend_id not in :notFriends "
+            + "          and uf1.user_id = u.id "
+            + "          and uf1.status = 'FRIEND') as mutualFriends, "
+            + "       u.profile_picture           as profilePicturePath "
+            + "FROM users u "
+            + "WHERE u.id != :userId "
+            + "AND u.id IN :notFriends AND (LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%'))"
+            + " OR LOWER(u.first_name) LIKE LOWER(CONCAT('%', :name, '%')))",
+        resultSetMapping = "userFriendDtoMapping")
 })
 @NoArgsConstructor
 @AllArgsConstructor

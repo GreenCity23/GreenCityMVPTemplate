@@ -69,20 +69,20 @@ class HabitFactSpecificationTest {
 
         searchCriteriaList = new ArrayList<>();
         searchCriteriaList.add(SearchCriteria.builder()
-            .key("id")
-            .type("id")
-            .value(habitFactViewDto.getId())
-            .build());
+                .key("id")
+                .type("id")
+                .value(habitFactViewDto.getId())
+                .build());
         searchCriteriaList.add(SearchCriteria.builder()
-            .key("habitId")
-            .type("habitId")
-            .value(habitFactViewDto.getHabitId())
-            .build());
+                .key("habitId")
+                .type("habitId")
+                .value(habitFactViewDto.getHabitId())
+                .build());
         searchCriteriaList.add(SearchCriteria.builder()
-            .key("content")
-            .type("content")
-            .value(habitFactViewDto.getContent())
-            .build());
+                .key("content")
+                .type("content")
+                .value(habitFactViewDto.getContent())
+                .build());
         habitFactSpecification = new HabitFactSpecification(searchCriteriaList);
     }
 

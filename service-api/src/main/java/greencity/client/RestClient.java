@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import greencity.constant.RestTemplateLinks;
 import greencity.dto.PageableAdvancedDto;
 import greencity.dto.econews.EcoNewsForSendEmailDto;
+import greencity.dto.eventcomments.EventCommentForSendDto;
 import greencity.dto.event.EventForSendEmailDto;
 import greencity.dto.user.*;
 import greencity.enums.EmailNotification;
@@ -369,8 +370,41 @@ public class RestClient {
         headers.setBearerAuth(token);
         HttpEntity<EventForSendEmailDto> entity = new HttpEntity<>(message, headers);
         restTemplate.exchange(greenCityUserServerAddress
-                              + RestTemplateLinks.ADD_EVENT, HttpMethod.POST, entity, Object.class)
-                .getBody();
+            + RestTemplateLinks.ADD_EVENT, HttpMethod.POST, entity, Object.class)
+            .getBody();
+    }
+
+    /**
+     * send EventCommentForSendDto to GreenCityUser.
+     *
+     * @param message with information for sending email about commenting event.
+     * @author Vladyslav Siverskyi
+     */
+    public void sendEmailAfterEmailWasCommented(EventCommentForSendDto message, String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token);
+        HttpEntity<EventCommentForSendDto> entity = new HttpEntity<>(message, headers);
+        restTemplate.exchange(greenCityUserServerAddress
+            + RestTemplateLinks.COMMENT_EVENT, HttpMethod.POST, entity, Object.class)
+            .getBody();
+    }
+
+    /**
+     * send AddEventMessage to GreenCityUser.
+     *
+     * @param message containing information for sending an email about updating an
+     *                existing event.
+     */
+
+    public void editEvent(EventForSendEmailDto message, String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token);
+        HttpEntity<EventForSendEmailDto> entity = new HttpEntity<>(message, headers);
+        restTemplate.exchange(greenCityUserServerAddress
+            + RestTemplateLinks.EDIT_EVENT, HttpMethod.POST, entity, Object.class)
+            .getBody();
     }
 
     /**

@@ -16,18 +16,22 @@ import java.util.Map;
 
 @Service
 public class GeocodingService {
-    private final String API_KEY;
+    private final String apiKey;
 
+    /**
+     * Initialize service.
+     */
     public GeocodingService() {
-        API_KEY = System.getenv("GEOCODING_API_KEY");
+        apiKey = System.getenv("GEOCODING_API_KEY");
     }
 
     /**
-     * Method for getting address by coordinates of the place
+     * Method for getting address by coordinates of the place.
      *
      * @param latitude  - latitude of the place
      * @param longitude - longitude of the place
-     * @return {@link HashMap} instance with formatted address, country, region, city, street in English and Ukrainian, house number.
+     * @return {@link HashMap} instance with formatted address, country, region,
+     *         city, street in English and Ukrainian, house number.
      * @author Maksym Fartushok
      */
     public Map<String, String> getAddress(double latitude, double longitude) {
@@ -46,12 +50,13 @@ public class GeocodingService {
     private void processAddressComponents(LatLng latLng, String language, Map<String, String> addresses) {
         GeocodingResult[] results;
 
-        try (GeoApiContext context = new GeoApiContext.Builder().apiKey(API_KEY).build()) {
+        try (GeoApiContext context = new GeoApiContext.Builder().apiKey(apiKey).build()) {
             results = GeocodingApi.reverseGeocode(context, latLng)
-                    .language(language)
-                    .await();
+                .language(language)
+                .await();
         } catch (ApiException | InterruptedException | IOException e) {
-            throw new BadRequestException("An error occurred while calling the Google Geocoding API, reason: " + e.getMessage());
+            throw new BadRequestException(
+                "An error occurred while calling the Google Geocoding API, reason: " + e.getMessage());
         }
 
         for (int i = results.length - 1; i >= 0; i--) {
@@ -63,7 +68,8 @@ public class GeocodingService {
         }
     }
 
-    private void processAddressComponentType(AddressComponentType type, AddressComponent addressComponent, Map<String, String> addresses, String language) {
+    private void processAddressComponentType(AddressComponentType type, AddressComponent addressComponent,
+        Map<String, String> addresses, String language) {
         switch (type) {
             case LOCALITY:
                 putIfNotExists(language.equals("en") ? "cityEn" : "cityUa", addressComponent, addresses);
@@ -73,11 +79,14 @@ public class GeocodingService {
                 break;
             case STREET_NUMBER:
                 putIfNotExists("houseNumber", addressComponent, addresses);
+                break;
             case ADMINISTRATIVE_AREA_LEVEL_1:
                 putIfNotExists(language.equals("en") ? "regionEn" : "regionUa", addressComponent, addresses);
                 break;
             case ROUTE:
                 putIfNotExists(language.equals("en") ? "streetEn" : "streetUa", addressComponent, addresses);
+                break;
+            default:
                 break;
         }
     }
@@ -92,22 +101,17 @@ public class GeocodingService {
         String formattedAddress;
         if (language.equals("uk")) {
             formattedAddress = addresses.get("houseNumber") + ", "
-                    + addresses.get("streetUa") + ", "
-                    + addresses.get("cityUa") + ", "
-                    + addresses.get("regionUa") + ", "
-                    + addresses.get("countryUa");
+                + addresses.get("streetUa") + ", "
+                + addresses.get("cityUa") + ", "
+                + addresses.get("regionUa") + ", "
+                + addresses.get("countryUa");
         } else {
             formattedAddress = addresses.get("houseNumber") + ", "
-                    + addresses.get("streetEn") + ", "
-                    + addresses.get("cityEn") + ", "
-                    + addresses.get("regionEn") + ", "
-                    + addresses.get("countryEn");
+                + addresses.get("streetEn") + ", "
+                + addresses.get("cityEn") + ", "
+                + addresses.get("regionEn") + ", "
+                + addresses.get("countryEn");
         }
         return formattedAddress;
     }
 }
-
-
-
-
-

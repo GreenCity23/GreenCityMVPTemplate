@@ -22,16 +22,16 @@ public class EventVOMapper extends AbstractConverter<Event, EventVO> {
     @Override
     protected EventVO convert(Event event) {
         return EventVO.builder()
-                .id(event.getId())
-                .title(event.getTitle())
-                .description(event.getDescription())
-                .organizer(UserVO.builder()
-                        .id(event.getOrganizer().getId())
-                        .name(event.getOrganizer().getName())
-                        .userStatus(event.getOrganizer().getUserStatus())
-                        .role(event.getOrganizer().getRole())
-                        .build())
-                .titleImage(event.getTitleImage())
-                .build();
+            .id(event.getId())
+            .title(event.getTitle())
+            .description(event.getDescription())
+            .organizer(UserVO.builder()
+                .id(event.getOrganizer().getId())
+                .name(event.getOrganizer().getName())
+                .userStatus(event.getOrganizer().getUserStatus())
+                .role(event.getOrganizer().getRole())
+                .build())
+            .titleImage(event.getTitleImage())
+            .build();
     }
 }

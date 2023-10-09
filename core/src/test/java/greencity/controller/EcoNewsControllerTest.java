@@ -67,17 +67,17 @@ class EcoNewsControllerTest {
     @BeforeEach
     public void setUp() {
         this.mockMvc = MockMvcBuilders
-                .standaloneSetup(ecoNewsController)
-                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver(),
-                        new UserArgumentResolver(userService, modelMapper))
-                .setControllerAdvice(new CustomExceptionHandler(errorAttributes, objectMapper))
-                .build();
+            .standaloneSetup(ecoNewsController)
+            .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver(),
+                new UserArgumentResolver(userService, modelMapper))
+            .setControllerAdvice(new CustomExceptionHandler(errorAttributes, objectMapper))
+            .build();
     }
 
     @Test
     void getThreeLastEcoNewsTest() throws Exception {
         mockMvc.perform(get(ecoNewsLink + "/newest"))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
 
         verify(ecoNewsService).getThreeLastEcoNews();
     }
@@ -85,9 +85,9 @@ class EcoNewsControllerTest {
     @Test
     void uploadImageTest() throws Exception {
         MockMultipartFile image = new MockMultipartFile("data", "filename.txt",
-                "text/plain", "some xml".getBytes());
+            "text/plain", "some xml".getBytes());
         mockMvc.perform(MockMvcRequestBuilders.multipart(ecoNewsLink + uploadImageLink)
-                .file(image)).andExpect(status().isCreated());
+            .file(image)).andExpect(status().isCreated());
         verify(ecoNewsService).uploadImage(isNull());
     }
 
@@ -96,12 +96,12 @@ class EcoNewsControllerTest {
         Principal principal = Mockito.mock(Principal.class);
         when(principal.getName()).thenReturn("Olivia.Johnson@gmail.com");
         String json = "{\n" +
-                "\"title\": \"title\",\n" +
-                " \"tags\": [\"news\"],\n" +
-                " \"text\": \"content content content\", \n" +
-                "\"source\": \"\",\n" +
-                " \"image\": null\n" +
-                "}";
+            "\"title\": \"title\",\n" +
+            " \"tags\": [\"news\"],\n" +
+            " \"text\": \"content content content\", \n" +
+            "\"source\": \"\",\n" +
+            " \"image\": null\n" +
+            "}";
         MockMultipartFile jsonFile =
             new MockMultipartFile("addEcoNewsDtoRequest", "", "application/json", json.getBytes());
 
@@ -168,7 +168,7 @@ class EcoNewsControllerTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         when(userService.findByEmail(principal.getName())).thenReturn(getUserVO());
         mockMvc.perform(get(ecoNewsLink + "/byUserPage?page=1&size=2")
-                        .principal(principal))
+            .principal(principal))
             .andExpect(status().isOk());
 
         verify(ecoNewsService).findAllByUser(ModelUtils.getUserVO(), pageable);
