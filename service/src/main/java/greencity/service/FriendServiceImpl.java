@@ -73,6 +73,7 @@ public class FriendServiceImpl implements FriendService {
      */
     @Override
     public PageableDto<UserFriendDto> findAllFriendsOfUser(Long id, String name, Pageable page) {
+        validateUserExistById(id);
         name = (name == null) ? "" : name;
         Page<User> userPage = userRepo.findAllFriendsOfUser(id, name, page);
         if (page.getPageNumber() >= userPage.getTotalPages()) {
@@ -138,6 +139,7 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public void deleteUserFriendById(Long id, Long friendId) {
         validateUserExistById(friendId);
+        validateUserExistById(id);
 
         userRepo.deleteUserFriend(id, friendId);
     }
@@ -152,8 +154,8 @@ public class FriendServiceImpl implements FriendService {
      */
     @Override
     public PageableDto<UserFriendDto> findAllUsersExceptMainUserAndUsersFriend(Long id, String name, Pageable page) {
+        validateUserExistById(id);
         name = name == null ? "" : name;
-
         Page<User> userPage =
             userRepo.getAllUsersExceptMainUserAndFriends(id, name, page);
         if (page.getPageNumber() >= userPage.getTotalPages()) {
