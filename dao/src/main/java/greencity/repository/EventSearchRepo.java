@@ -29,7 +29,7 @@ public class EventSearchRepo {
 
     public Page<Event> find(Pageable pageable, String searchQuery) {
         CriteriaQuery<Event> criteriaQuery =
-                criteriaBuilder.createQuery(Event.class);
+            criteriaBuilder.createQuery(Event.class);
         Root<Event> root = criteriaQuery.from(Event.class);
 
         Predicate predicate = getPredicate(searchQuery, root);
@@ -52,8 +52,8 @@ public class EventSearchRepo {
         Expression<String> title = root.get("title").as(String.class);
         List<Predicate> predicateList = new ArrayList<>();
         Arrays.stream(searchingText.split(" ")).forEach(partOfSearchingText -> predicateList.add(
-                criteriaBuilder.or(
-                        criteriaBuilder.like(criteriaBuilder.lower(title), "%" + partOfSearchingText.toLowerCase() + "%"))));
+            criteriaBuilder.or(
+                criteriaBuilder.like(criteriaBuilder.lower(title), "%" + partOfSearchingText.toLowerCase() + "%"))));
         return predicateList;
     }
 

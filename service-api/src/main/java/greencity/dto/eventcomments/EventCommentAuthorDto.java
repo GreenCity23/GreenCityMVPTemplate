@@ -19,4 +19,3 @@ public class EventCommentAuthorDto {
 
     private String userProfilePicturePath;
 }
-

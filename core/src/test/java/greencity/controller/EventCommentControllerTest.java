@@ -56,9 +56,9 @@ class EventCommentControllerTest {
     @BeforeEach
     void setup() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(eventCommentController)
-                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver(),
-                        new UserArgumentResolver(userService, modelMapper))
-                .build();
+            .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver(),
+                new UserArgumentResolver(userService, modelMapper))
+            .build();
     }
 
     @Test
@@ -67,17 +67,18 @@ class EventCommentControllerTest {
         when(userService.findByEmail(anyString())).thenReturn(userVO);
         when(modelMapper.map(userVO, UserVO.class)).thenReturn(userVO);
         String content = "{\n"
-                         + "  \"parentCommentId\": 0,\n"
-                         + "  \"text\": \"string\"\n"
-                         + "}";
+            + "  \"parentCommentId\": 0,\n"
+            + "  \"text\": \"string\"\n"
+            + "}";
         mockMvc.perform(post(eventCommentControllerLink + "/{eventId}", 1)
-                        .principal(principal)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content))
-                .andExpect(status().isCreated());
+            .principal(principal)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(content))
+            .andExpect(status().isCreated());
 
         ObjectMapper mapper = new ObjectMapper();
-        AddEventCommentDtoRequest addEventCommentDtoRequest = mapper.readValue(content, AddEventCommentDtoRequest.class);
+        AddEventCommentDtoRequest addEventCommentDtoRequest =
+            mapper.readValue(content, AddEventCommentDtoRequest.class);
 
         verify(userService).findByEmail("test@gmail.com");
         verify(eventCommentService).save(addEventCommentDtoRequest, 1L, userVO);
@@ -86,15 +87,15 @@ class EventCommentControllerTest {
     @Test
     void saveBadRequestTest() throws Exception {
         mockMvc.perform(post(eventCommentControllerLink + "/{eventId}", 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
-                .andExpect(status().isBadRequest());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{}"))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
     void getCountOfComments() throws Exception {
         mockMvc.perform(get(eventCommentControllerLink + "/count/{eventId}", 1))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
 
         verify(eventCommentService).getEventCommentsAmount(1L);
     }
@@ -105,8 +106,8 @@ class EventCommentControllerTest {
         when(userService.findByEmail(anyString())).thenReturn(userVO);
 
         mockMvc.perform(delete(eventCommentControllerLink + "/{eventCommentId}", 1L)
-                        .principal(principal))
-                .andExpect(status().isOk());
+            .principal(principal))
+            .andExpect(status().isOk());
 
         verify(userService).findByEmail("test@gmail.com");
         verify(eventCommentService).deleteById(1L, userVO);
@@ -115,7 +116,7 @@ class EventCommentControllerTest {
     @Test
     void getCountOfReplies() throws Exception {
         mockMvc.perform(get(eventCommentControllerLink + "/replies/count/{parentCommentId}", 1L))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
 
         verify(eventCommentService).getCountOfCommentReplies(1L);
     }
@@ -129,8 +130,8 @@ class EventCommentControllerTest {
         int pageSize = 20;
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         mockMvc.perform(get(eventCommentControllerLink + "/active?eventId=1&page=5")
-                        .principal(principal))
-                .andExpect(status().isOk());
+            .principal(principal))
+            .andExpect(status().isOk());
 
         verify(userService).findByEmail("test@gmail.com");
         verify(eventCommentService).getAllActiveComments(pageable, userVO, 1L);
@@ -146,13 +147,12 @@ class EventCommentControllerTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
         mockMvc.perform(get(eventCommentControllerLink + "/replies/active/{parentCommentId}?page=5&size=20", 1)
-                        .principal(principal))
-                .andExpect(status().isOk());
+            .principal(principal))
+            .andExpect(status().isOk());
 
         verify(userService).findByEmail("test@gmail.com");
         verify(eventCommentService).getAllActiveReplies(pageable, 1L, userVO);
     }
-
 
     @Test
     void updateComment() throws Exception {
@@ -160,8 +160,8 @@ class EventCommentControllerTest {
         when(userService.findByEmail(anyString())).thenReturn(userVO);
 
         mockMvc.perform(patch(eventCommentControllerLink + "?id=1&commentText=great thing")
-                        .principal(principal))
-                .andExpect(status().isOk());
+            .principal(principal))
+            .andExpect(status().isOk());
 
         verify(userService).findByEmail("test@gmail.com");
         verify(eventCommentService).update(1L, "great thing", userVO);

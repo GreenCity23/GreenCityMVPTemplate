@@ -27,7 +27,8 @@ public class GeocodingService {
      *
      * @param latitude  - latitude of the place
      * @param longitude - longitude of the place
-     * @return {@link HashMap} instance with formatted address, country, region, city, street in English and Ukrainian, house number.
+     * @return {@link HashMap} instance with formatted address, country, region,
+     *         city, street in English and Ukrainian, house number.
      * @author Maksym Fartushok
      */
     public Map<String, String> getAddress(double latitude, double longitude) {
@@ -48,10 +49,11 @@ public class GeocodingService {
 
         try (GeoApiContext context = new GeoApiContext.Builder().apiKey(API_KEY).build()) {
             results = GeocodingApi.reverseGeocode(context, latLng)
-                    .language(language)
-                    .await();
+                .language(language)
+                .await();
         } catch (ApiException | InterruptedException | IOException e) {
-            throw new BadRequestException("An error occurred while calling the Google Geocoding API, reason: " + e.getMessage());
+            throw new BadRequestException(
+                "An error occurred while calling the Google Geocoding API, reason: " + e.getMessage());
         }
 
         for (int i = results.length - 1; i >= 0; i--) {
@@ -63,7 +65,8 @@ public class GeocodingService {
         }
     }
 
-    private void processAddressComponentType(AddressComponentType type, AddressComponent addressComponent, Map<String, String> addresses, String language) {
+    private void processAddressComponentType(AddressComponentType type, AddressComponent addressComponent,
+        Map<String, String> addresses, String language) {
         switch (type) {
             case LOCALITY:
                 putIfNotExists(language.equals("en") ? "cityEn" : "cityUa", addressComponent, addresses);
@@ -92,22 +95,17 @@ public class GeocodingService {
         String formattedAddress;
         if (language.equals("uk")) {
             formattedAddress = addresses.get("houseNumber") + ", "
-                    + addresses.get("streetUa") + ", "
-                    + addresses.get("cityUa") + ", "
-                    + addresses.get("regionUa") + ", "
-                    + addresses.get("countryUa");
+                + addresses.get("streetUa") + ", "
+                + addresses.get("cityUa") + ", "
+                + addresses.get("regionUa") + ", "
+                + addresses.get("countryUa");
         } else {
             formattedAddress = addresses.get("houseNumber") + ", "
-                    + addresses.get("streetEn") + ", "
-                    + addresses.get("cityEn") + ", "
-                    + addresses.get("regionEn") + ", "
-                    + addresses.get("countryEn");
+                + addresses.get("streetEn") + ", "
+                + addresses.get("cityEn") + ", "
+                + addresses.get("regionEn") + ", "
+                + addresses.get("countryEn");
         }
         return formattedAddress;
     }
 }
-
-
-
-
-

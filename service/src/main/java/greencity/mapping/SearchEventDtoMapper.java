@@ -14,17 +14,17 @@ public class SearchEventDtoMapper extends AbstractConverter<Event, SearchEventDt
     @Override
     protected SearchEventDto convert(Event event) {
         return SearchEventDto.builder()
-                .id(event.getId())
-                .title(event.getTitle())
-                .author(EventAuthorDto.builder()
-                        .id(event.getOrganizer().getId())
-                        .name(event.getOrganizer().getName())
-                        .organizerRating(event.getOrganizer().getEventOrganizerRating() == null ? 0.0 :
-                                event.getOrganizer().getEventOrganizerRating())
-                        .build())
-                .creationDate(event.getCreationDate())
-                .tags(event.getTags().stream()
-                        .map(Tag::toString).collect(Collectors.toList()))
-                .build();
+            .id(event.getId())
+            .title(event.getTitle())
+            .author(EventAuthorDto.builder()
+                .id(event.getOrganizer().getId())
+                .name(event.getOrganizer().getName())
+                .organizerRating(event.getOrganizer().getEventOrganizerRating() == null ? 0.0
+                    : event.getOrganizer().getEventOrganizerRating())
+                .build())
+            .creationDate(event.getCreationDate())
+            .tags(event.getTags().stream()
+                .map(Tag::toString).collect(Collectors.toList()))
+            .build();
     }
 }

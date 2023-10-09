@@ -22,7 +22,7 @@ public interface FriendService {
      * Finds paged representation for friends of a user specified by user ID,
      * matching a given name pattern.
      *
-     * @param id User ID of the user to find friends for.
+     * @param id   User ID of the user to find friends for.
      * @param name Name pattern to match friends' names against.
      * @param page Paging and sorting information.
      * @return PageableDto of UserFriendDto representing friends of the user.
@@ -33,7 +33,7 @@ public interface FriendService {
     /**
      * Deletes a friend of a user specified by user ID and friend ID.
      *
-     * @param id User ID of the user to delete friend from.
+     * @param id       User ID of the user to delete friend from.
      * @param friendId User ID of the friend to be removed.
      * @author Yevhen Anisimov
      */
@@ -43,7 +43,7 @@ public interface FriendService {
      * Finds all users that are not friends with the user specified by user ID.
      * Matches users against the given name pattern.
      *
-     * @param id User ID of the user to find non-friends for.
+     * @param id   User ID of the user to find non-friends for.
      * @param name Name pattern to match users' names against.
      * @param page Paging and sorting information.
      * @return PageableDto of UserFriendDto representing non-friends of the user.
@@ -54,7 +54,7 @@ public interface FriendService {
     /**
      * Adds a new friend to the user specified by user ID.
      *
-     * @param id The ID of the user to add a new friend to.
+     * @param id       The ID of the user to add a new friend to.
      * @param friendId The ID of the friend to be added.
      * @author Yevhen Anisimov
      */
@@ -63,7 +63,7 @@ public interface FriendService {
     /**
      * Accepts a friend request from the user specified by user ID.
      *
-     * @param id The ID of the user accepting the friend request.
+     * @param id       The ID of the user accepting the friend request.
      * @param friendId The ID of the user who sent the friend request.
      * @author Yevhen Anisimov
      */
@@ -74,7 +74,8 @@ public interface FriendService {
      *
      * @param id   The ID of the user.
      * @param page The page details for pagination.
-     * @return A {@link PageableDto} containing a list of {@link UserFriendDto} objects representing the friend requests.
+     * @return A {@link PageableDto} containing a list of {@link UserFriendDto}
+     *         objects representing the friend requests.
      * @author Yevhen Anisimov
      */
     PageableDto<UserFriendDto> getAllUserFriendRequests(Long id, Pageable page);
@@ -82,7 +83,7 @@ public interface FriendService {
     /**
      * Declines a friend request from a given user.
      *
-     * @param id The ID of the user who received the friend request.
+     * @param id       The ID of the user who received the friend request.
      * @param friendId The ID of the user who sent the friend request.
      * @author Yevhen Anisimov
      */

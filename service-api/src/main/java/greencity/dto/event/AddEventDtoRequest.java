@@ -16,7 +16,7 @@ import java.util.List;
 public class AddEventDtoRequest {
 
     private Long id;
-    
+
     private List<EventDateLocationDto> datesLocations;
 
     @NotEmpty

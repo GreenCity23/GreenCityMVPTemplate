@@ -35,7 +35,7 @@ import static greencity.constant.AppConstant.AUTHORIZATION;
 
 @Service
 @AllArgsConstructor
-public class EventCommentServiceImpl implements EventCommentService{
+public class EventCommentServiceImpl implements EventCommentService {
     private final EventRepo eventRepo;
     private final EventCommentRepo eventCommentRepo;
     private final ModelMapper modelMapper;
@@ -47,9 +47,10 @@ public class EventCommentServiceImpl implements EventCommentService{
      * {@inheritDoc}
      */
     @Override
-    public AddEventCommentDtoResponse save(AddEventCommentDtoRequest addEventCommentDtoRequest, Long eventId, UserVO userVO) {
+    public AddEventCommentDtoResponse save(AddEventCommentDtoRequest addEventCommentDtoRequest, Long eventId,
+        UserVO userVO) {
         Event event = eventRepo.findById(eventId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventId));
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventId));
         EventComment eventComment = modelMapper.map(addEventCommentDtoRequest, EventComment.class);
         eventComment.setEvent(event);
         eventComment.setUser(modelMapper.map(userVO, User.class));
@@ -57,8 +58,8 @@ public class EventCommentServiceImpl implements EventCommentService{
         eventComment.setModifiedDate(LocalDateTime.now());
         if (addEventCommentDtoRequest.getParentCommentId() != 0) {
             EventComment parentComment = eventCommentRepo.findById(addEventCommentDtoRequest.getParentCommentId())
-                    .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_COMMENT_NOT_FOUND_BY_ID +
-                                                             addEventCommentDtoRequest.getParentCommentId()));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_COMMENT_NOT_FOUND_BY_ID +
+                    addEventCommentDtoRequest.getParentCommentId()));
             if (parentComment.getParentComment() == null) {
                 eventComment.setParentComment(parentComment);
             } else {
@@ -67,10 +68,10 @@ public class EventCommentServiceImpl implements EventCommentService{
         }
         String accessToken = httpServletRequest.getHeader(AUTHORIZATION);
         CompletableFuture.runAsync(
-                () -> ratingCalculation.ratingCalculation(RatingCalculationEnum.ADD_COMMENT, userVO, accessToken));
-        if(!event.getOrganizer().getId().equals(eventComment.getUser().getId())) {
-            sendEmailNotificationToOrganizer(modelMapper.map(eventComment,EventCommentDto.class),
-                    modelMapper.map(event, EventDto.class));
+            () -> ratingCalculation.ratingCalculation(RatingCalculationEnum.ADD_COMMENT, userVO, accessToken));
+        if (!event.getOrganizer().getId().equals(eventComment.getUser().getId())) {
+            sendEmailNotificationToOrganizer(modelMapper.map(eventComment, EventCommentDto.class),
+                modelMapper.map(event, EventDto.class));
         }
         return modelMapper.map(eventCommentRepo.save(eventComment), AddEventCommentDtoResponse.class);
     }
@@ -80,14 +81,14 @@ public class EventCommentServiceImpl implements EventCommentService{
      */
     private void sendEmailNotificationToOrganizer(EventCommentDto eventCommentDto, EventDto eventDto) {
         EventCommentForSendDto eventCommentForSendDto = EventCommentForSendDto.builder()
-                .eventName(eventDto.getTitle())
-                .eventAuthorDto(eventDto.getOrganizer())
-                .eventCommentCreationDate(eventCommentDto.getCreatedDate())
-                .eventCommentText(eventCommentDto.getText())
-                .eventCommentAuthorDto(eventCommentDto.getAuthor())
-                .build();
+            .eventName(eventDto.getTitle())
+            .eventAuthorDto(eventDto.getOrganizer())
+            .eventCommentCreationDate(eventCommentDto.getCreatedDate())
+            .eventCommentText(eventCommentDto.getText())
+            .eventCommentAuthorDto(eventCommentDto.getAuthor())
+            .build();
         restClient.sendEmailAfterEmailWasCommented(eventCommentForSendDto,
-                httpServletRequest.getHeader(AUTHORIZATION).substring(7));
+            httpServletRequest.getHeader(AUTHORIZATION).substring(7));
     }
 
     /**
@@ -96,7 +97,7 @@ public class EventCommentServiceImpl implements EventCommentService{
     @Override
     public void update(Long id, String commentText, UserVO userVO) {
         EventComment comment = eventCommentRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_COMMENT_NOT_FOUND_BY_ID + id));
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_COMMENT_NOT_FOUND_BY_ID + id));
         if (!userVO.getId().equals(comment.getUser().getId())) {
             throw new BadRequestException(ErrorMessage.NOT_A_CURRENT_USER);
         }
@@ -111,9 +112,9 @@ public class EventCommentServiceImpl implements EventCommentService{
     @Override
     public void likeCommentById(Long id, UserVO userVO) {
         EventComment comment = eventCommentRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_COMMENT_NOT_FOUND_BY_ID + id));
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_COMMENT_NOT_FOUND_BY_ID + id));
         if (comment.getUsersLiked().stream()
-                .anyMatch(user -> user.getId().equals(userVO.getId()))) {
+            .anyMatch(user -> user.getId().equals(userVO.getId()))) {
             unlikeComment(userVO, comment);
         } else {
             likeComment(userVO, comment);
@@ -127,7 +128,7 @@ public class EventCommentServiceImpl implements EventCommentService{
     @Override
     public void deleteById(Long id, UserVO userVO) {
         EventComment eventComment = eventCommentRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_COMMENT_NOT_FOUND_BY_ID + id));
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_COMMENT_NOT_FOUND_BY_ID + id));
         if (!userVO.getId().equals(eventComment.getUser().getId())) {
             throw new BadRequestException(ErrorMessage.NOT_A_CURRENT_USER);
         }
@@ -142,7 +143,8 @@ public class EventCommentServiceImpl implements EventCommentService{
         eventComment.getUsersLiked().add(user);
         String accessToken = httpServletRequest.getHeader(AUTHORIZATION);
         CompletableFuture
-                .runAsync(() -> ratingCalculation.ratingCalculation(RatingCalculationEnum.LIKE_COMMENT, userVO, accessToken));
+            .runAsync(
+                () -> ratingCalculation.ratingCalculation(RatingCalculationEnum.LIKE_COMMENT, userVO, accessToken));
     }
 
     /**
@@ -161,7 +163,7 @@ public class EventCommentServiceImpl implements EventCommentService{
     @Override
     public EventCommentDto findEventCommentById(Long id) {
         EventComment eventComment = eventCommentRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_COMMENT_NOT_FOUND_BY_ID + id));
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_COMMENT_NOT_FOUND_BY_ID + id));
         return modelMapper.map(eventComment, EventCommentDto.class);
     }
 
@@ -171,7 +173,7 @@ public class EventCommentServiceImpl implements EventCommentService{
     @Override
     public Integer getEventCommentsAmount(Long eventId) {
         Event event = eventRepo.findById(eventId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventId));
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventId));
         return event.getEventComments().size();
     }
 
@@ -180,7 +182,7 @@ public class EventCommentServiceImpl implements EventCommentService{
      */
     @Override
     public Integer getCountOfCommentReplies(Long id) {
-        if(eventCommentRepo.findById(id).isEmpty()) {
+        if (eventCommentRepo.findById(id).isEmpty()) {
             throw new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + id);
         }
         return eventCommentRepo.countByParentCommentId(id);
@@ -192,7 +194,7 @@ public class EventCommentServiceImpl implements EventCommentService{
     @Override
     public AmountCommentLikesDto getCountOfCommentLikes(Long id, UserVO userVO) {
         EventComment eventComment = eventCommentRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + id));
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + id));
         return modelMapper.map(eventComment, AmountCommentLikesDto.class);
     }
 
@@ -201,23 +203,24 @@ public class EventCommentServiceImpl implements EventCommentService{
      */
     @Override
     public PageableDto<EventCommentDto> getAllActiveReplies(Pageable pageable, Long parentCommentId, UserVO userVO) {
-        Page<EventComment> pages = eventCommentRepo.findAllByParentCommentIdAndDeletedFalseOrderByCreatedDateDesc(pageable, parentCommentId);
+        Page<EventComment> pages =
+            eventCommentRepo.findAllByParentCommentIdAndDeletedFalseOrderByCreatedDateDesc(pageable, parentCommentId);
 
         UserVO user = userVO == null ? UserVO.builder().build() : userVO;
         List<EventCommentDto> eventCommentDTOs = pages.stream()
-                .map(comment -> {
-                    comment.setCurrentUserLiked(comment.getUsersLiked().stream()
-                            .anyMatch(u -> u.getId().equals(user.getId())));
-                    return comment;
-                })
-                .map(eventComment -> modelMapper.map(eventComment, EventCommentDto.class))
-                .collect(Collectors.toList());
+            .map(comment -> {
+                comment.setCurrentUserLiked(comment.getUsersLiked().stream()
+                    .anyMatch(u -> u.getId().equals(user.getId())));
+                return comment;
+            })
+            .map(eventComment -> modelMapper.map(eventComment, EventCommentDto.class))
+            .collect(Collectors.toList());
 
         return new PageableDto<>(
-                eventCommentDTOs,
-                pages.getTotalElements(),
-                pages.getPageable().getPageNumber(),
-                pages.getTotalPages());
+            eventCommentDTOs,
+            pages.getTotalElements(),
+            pages.getPageable().getPageNumber(),
+            pages.getTotalPages());
     }
 
     /**
@@ -226,27 +229,27 @@ public class EventCommentServiceImpl implements EventCommentService{
     @Override
     public PageableDto<EventCommentDto> getAllActiveComments(Pageable pageable, UserVO userVO, Long eventId) {
         Page<EventComment> pages =
-                eventCommentRepo
-                        .findAllByParentCommentIsNullAndDeletedFalseAndEventIdOrderByCreatedDateDesc(pageable, eventId);
+            eventCommentRepo
+                .findAllByParentCommentIsNullAndDeletedFalseAndEventIdOrderByCreatedDateDesc(pageable, eventId);
         UserVO user = userVO == null ? UserVO.builder().build() : userVO;
         List<EventCommentDto> eventCommentsDTOs = pages
-                .stream()
-                .map(comment -> {
-                    comment.setCurrentUserLiked(comment.getUsersLiked().stream()
-                            .anyMatch(u -> u.getId().equals(user.getId())));
-                    return comment;
-                })
-                .map(eventComment -> modelMapper.map(eventComment, EventCommentDto.class))
-                .map(comment -> {
-                    comment.setReplies(eventCommentRepo.countByParentCommentId(comment.getId()));
-                    return comment;
-                })
-                .collect(Collectors.toList());
+            .stream()
+            .map(comment -> {
+                comment.setCurrentUserLiked(comment.getUsersLiked().stream()
+                    .anyMatch(u -> u.getId().equals(user.getId())));
+                return comment;
+            })
+            .map(eventComment -> modelMapper.map(eventComment, EventCommentDto.class))
+            .map(comment -> {
+                comment.setReplies(eventCommentRepo.countByParentCommentId(comment.getId()));
+                return comment;
+            })
+            .collect(Collectors.toList());
 
         return new PageableDto<>(
-                eventCommentsDTOs,
-                pages.getTotalElements(),
-                pages.getPageable().getPageNumber(),
-                pages.getTotalPages());
+            eventCommentsDTOs,
+            pages.getTotalElements(),
+            pages.getPageable().getPageNumber(),
+            pages.getTotalPages());
     }
 }

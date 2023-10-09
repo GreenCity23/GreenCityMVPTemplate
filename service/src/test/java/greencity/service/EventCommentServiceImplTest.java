@@ -53,7 +53,7 @@ class EventCommentServiceImplTest {
         when(modelMapper.map(addEventCommentDtoRequest, EventComment.class)).thenReturn(ModelUtils.getEventComment());
         when(eventCommentRepo.save(any())).thenReturn(ModelUtils.getEventComment());
 
-        eventCommentService.save(addEventCommentDtoRequest,1L, userVO);
+        eventCommentService.save(addEventCommentDtoRequest, 1L, userVO);
         verify(eventCommentRepo).save(any(EventComment.class));
     }
 
@@ -68,7 +68,7 @@ class EventCommentServiceImplTest {
         when(modelMapper.map(addEventCommentDtoRequest, EventComment.class)).thenReturn(ModelUtils.getEventComment());
         when(eventCommentRepo.save(any())).thenReturn(ModelUtils.getEventComment());
 
-        eventCommentService.save(addEventCommentDtoRequest,1L, userVO);
+        eventCommentService.save(addEventCommentDtoRequest, 1L, userVO);
         verify(eventCommentRepo).save(any(EventComment.class));
     }
 
@@ -90,7 +90,7 @@ class EventCommentServiceImplTest {
 
         when(eventCommentRepo.findById(1L)).thenReturn(Optional.of(ModelUtils.getEventComment()));
 
-        eventCommentService.update(1L,"new text", userVO);
+        eventCommentService.update(1L, "new text", userVO);
 
         verify(eventCommentRepo).save(any(EventComment.class));
     }
@@ -103,7 +103,7 @@ class EventCommentServiceImplTest {
 
         when(eventCommentRepo.findById(2L)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> eventCommentService.update(2L,"new text", userVO));
+        assertThrows(NotFoundException.class, () -> eventCommentService.update(2L, "new text", userVO));
     }
 
     @Test

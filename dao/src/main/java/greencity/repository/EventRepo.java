@@ -37,7 +37,7 @@ public interface EventRepo extends JpaRepository<Event, Long>, JpaSpecificationE
      * @return {@link int} total count of Events
      */
     @Query(nativeQuery = true,
-            value = "select count(id) from events")
+        value = "select count(id) from events")
     int totalCountOfCreationEvents();
 
     /**
@@ -48,12 +48,11 @@ public interface EventRepo extends JpaRepository<Event, Long>, JpaSpecificationE
      * @author Maksym Fartushok
      */
     @Query(nativeQuery = true,
-            value = "SELECT e.* " +
-                    "FROM events AS e " +
-                    "INNER JOIN events_attenders AS ea ON e.id = ea.event_id " +
-                    "WHERE ea.user_id = (:attenderId) " +
-                    "ORDER BY e.creation_date DESC "
-    )
+        value = "SELECT e.* " +
+            "FROM events AS e " +
+            "INNER JOIN events_attenders AS ea ON e.id = ea.event_id " +
+            "WHERE ea.user_id = (:attenderId) " +
+            "ORDER BY e.creation_date DESC ")
     Page<Event> findAllByAttenderIdOrderByCreationDateDesc(Long attenderId, Pageable page);
 
     /**
@@ -64,15 +63,14 @@ public interface EventRepo extends JpaRepository<Event, Long>, JpaSpecificationE
      * @author Maksym Fartushok
      */
     @Query(nativeQuery = true,
-            value = "SELECT e.* " +
-                    "FROM events AS e " +
-                    "WHERE e.organizer_id = (:userId) " +
-                    "OR e.id in " +
-                    "(SELECT ea.event_id " +
-                    "FROM events_attenders AS ea " +
-                    "WHERE ea.user_id = (:userId)) " +
-                    "ORDER BY e.creation_date DESC "
-    )
+        value = "SELECT e.* " +
+            "FROM events AS e " +
+            "WHERE e.organizer_id = (:userId) " +
+            "OR e.id in " +
+            "(SELECT ea.event_id " +
+            "FROM events_attenders AS ea " +
+            "WHERE ea.user_id = (:userId)) " +
+            "ORDER BY e.creation_date DESC ")
     Page<Event> findAllRelatedToUserOrderByCreationDateDesc(Long userId, Pageable page);
 
     /**
@@ -83,7 +81,7 @@ public interface EventRepo extends JpaRepository<Event, Long>, JpaSpecificationE
      */
     @Modifying
     @Query(nativeQuery = true,
-            value = "INSERT INTO events_attenders (event_id, user_id) VALUES (:eventId, :userId)")
+        value = "INSERT INTO events_attenders (event_id, user_id) VALUES (:eventId, :userId)")
     void addAttender(Long userId, Long eventId);
 
     /**
@@ -94,7 +92,7 @@ public interface EventRepo extends JpaRepository<Event, Long>, JpaSpecificationE
      */
     @Modifying
     @Query(nativeQuery = true,
-            value = "DELETE FROM events_attenders WHERE event_id = :eventId AND user_id = :userId")
+        value = "DELETE FROM events_attenders WHERE event_id = :eventId AND user_id = :userId")
     void removeAttender(Long userId, Long eventId);
 
     /**
@@ -105,9 +103,9 @@ public interface EventRepo extends JpaRepository<Event, Long>, JpaSpecificationE
      */
     @Modifying
     @Query(nativeQuery = true,
-            value = "UPDATE events " +
-                    "SET is_favorite = true " +
-                    "WHERE id = (:eventId)")
+        value = "UPDATE events " +
+            "SET is_favorite = true " +
+            "WHERE id = (:eventId)")
     void addToFavorites(Long eventId);
 
     /**
@@ -118,9 +116,9 @@ public interface EventRepo extends JpaRepository<Event, Long>, JpaSpecificationE
      */
     @Modifying
     @Query(nativeQuery = true,
-            value = "UPDATE events " +
-                    "SET is_favorite = false " +
-                    "WHERE id = (:eventId)")
+        value = "UPDATE events " +
+            "SET is_favorite = false " +
+            "WHERE id = (:eventId)")
     void removeFromFavorites(Long eventId);
 
 }

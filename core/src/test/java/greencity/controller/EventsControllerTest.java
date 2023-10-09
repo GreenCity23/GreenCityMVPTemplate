@@ -60,15 +60,14 @@ class EventsControllerTest {
     private Principal principal = getPrincipal();
     private ErrorAttributes errorAttributes = new DefaultErrorAttributes();
 
-
     @BeforeEach
     public void setUp() {
         this.mockMvc = MockMvcBuilders
-                .standaloneSetup(eventsController)
-                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver(),
-                        new UserArgumentResolver(userService, modelMapper))
-                .setControllerAdvice(new CustomExceptionHandler(errorAttributes, objectMapper))
-                .build();
+            .standaloneSetup(eventsController)
+            .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver(),
+                new UserArgumentResolver(userService, modelMapper))
+            .setControllerAdvice(new CustomExceptionHandler(errorAttributes, objectMapper))
+            .build();
     }
 
     @Test
@@ -77,59 +76,59 @@ class EventsControllerTest {
         when(userVO.getId()).thenReturn(3L);
 
         String json = "{\"title\":\"test events\",\n" +
-                      "\"description\":\"test test test test test test test test test\",\n" +
-                      "\"open\":\"true\",\n" +
-                      "\"datesLocations\":[\n" +
-                      "\t{\n" +
-                      "\t\"startDate\":\"2023-10-27T15:00:00Z\",\n" +
-                      "\t\"finishDate\":\"2023-10-27T17:00:00Z\",\n" +
-                      "\t\"coordinates\":{\n" +
-                      "\t\t\"latitude\":1,\n" +
-                      "\t\t\"longitude\":1\n" +
-                      "\t    }\n" +
-                      "\t},\n" +
-                      "{\n" +
-                      "\t\"startDate\":\"2023-10-27T15:00:00Z\",\n" +
-                      "\t\"finishDate\":\"2023-10-27T17:00:00Z\",\n" +
-                      "\t\"coordinates\":{\n" +
-                      "\t\t\"latitude\":1,\n" +
-                      "\t\t\"longitude\":1\n" +
-                      "\t\t}\n" +
-                      "\t}\n" +
-                      "\t],\n" +
-                      "\t\"tags\":[\"Social\"]\n" +
-                      "}\t";
+            "\"description\":\"test test test test test test test test test\",\n" +
+            "\"open\":\"true\",\n" +
+            "\"datesLocations\":[\n" +
+            "\t{\n" +
+            "\t\"startDate\":\"2023-10-27T15:00:00Z\",\n" +
+            "\t\"finishDate\":\"2023-10-27T17:00:00Z\",\n" +
+            "\t\"coordinates\":{\n" +
+            "\t\t\"latitude\":1,\n" +
+            "\t\t\"longitude\":1\n" +
+            "\t    }\n" +
+            "\t},\n" +
+            "{\n" +
+            "\t\"startDate\":\"2023-10-27T15:00:00Z\",\n" +
+            "\t\"finishDate\":\"2023-10-27T17:00:00Z\",\n" +
+            "\t\"coordinates\":{\n" +
+            "\t\t\"latitude\":1,\n" +
+            "\t\t\"longitude\":1\n" +
+            "\t\t}\n" +
+            "\t}\n" +
+            "\t],\n" +
+            "\t\"tags\":[\"Social\"]\n" +
+            "}\t";
         MockMultipartFile image1 =
-                new MockMultipartFile("images", "image1.jpg", "image/jpeg",
-                        "image data".getBytes());
+            new MockMultipartFile("images", "image1.jpg", "image/jpeg",
+                "image data".getBytes());
         MockMultipartFile image2 =
-                new MockMultipartFile("images", "image2.png", "image/jpeg",
-                        "image data 2".getBytes());
+            new MockMultipartFile("images", "image2.png", "image/jpeg",
+                "image data 2".getBytes());
 
         when(userService.findByEmail(anyString())).thenReturn(userVO);
         when(eventService.save(any(AddEventDtoRequest.class), any(MultipartFile[].class), anyLong()))
-                .thenReturn(new EventDto());
+            .thenReturn(new EventDto());
 
         MockMultipartFile jsonFile =
-                new MockMultipartFile("addEventDtoRequest", "", "application/json", json.getBytes());
+            new MockMultipartFile("addEventDtoRequest", "", "application/json", json.getBytes());
         mockMvc.perform(multipart(eventsLink + "/create")
-                        .file(image1)
-                        .file(image2)
-                        .file(jsonFile)
-                        .principal(principal)
-                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
-                .andExpect(status().isCreated());
+            .file(image1)
+            .file(image2)
+            .file(jsonFile)
+            .principal(principal)
+            .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+            .andExpect(status().isCreated());
 
         verify(eventService, times(1))
-                .save(any(AddEventDtoRequest.class), any(MultipartFile[].class), anyLong());
+            .save(any(AddEventDtoRequest.class), any(MultipartFile[].class), anyLong());
     }
 
     @Test
     void createEventBadRequestTest() throws Exception {
         mockMvc.perform(multipart(eventsLink + "/create")
-                .content("{}")
-                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
-                .andExpect(status().isBadRequest());
+            .content("{}")
+            .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -138,57 +137,57 @@ class EventsControllerTest {
         when(userVO.getId()).thenReturn(3L);
 
         String json = "{\n" +
-                "\"id\": 1,\n" +
-                "\"title\":\"test events\",\n" +
-                "\"description\":\"test test test test test test test test test\",\n" +
-                "\"open\":\"true\",\n" +
-                "\"datesLocations\":[\n" +
-                "\t{\n" +
-                "\t\"startDate\":\"2023-10-27T15:00:00Z\",\n" +
-                "\t\"finishDate\":\"2023-10-27T17:00:00Z\",\n" +
-                "\t\"coordinates\":{\n" +
-                "\t\t\"latitude\":1,\n" +
-                "\t\t\"longitude\":1\n" +
-                "\t    }\n" +
-                "\t},\n" +
-                "{\n" +
-                "\t\"startDate\":\"2023-10-27T15:00:00Z\",\n" +
-                "\t\"finishDate\":\"2023-10-27T17:00:00Z\",\n" +
-                "\t\"coordinates\":{\n" +
-                "\t\t\"latitude\":1,\n" +
-                "\t\t\"longitude\":1\n" +
-                "\t\t}\n" +
-                "\t}\n" +
-                "\t],\n" +
-                "\t\"tags\":[\"Social\"]\n" +
-                "}\t";
+            "\"id\": 1,\n" +
+            "\"title\":\"test events\",\n" +
+            "\"description\":\"test test test test test test test test test\",\n" +
+            "\"open\":\"true\",\n" +
+            "\"datesLocations\":[\n" +
+            "\t{\n" +
+            "\t\"startDate\":\"2023-10-27T15:00:00Z\",\n" +
+            "\t\"finishDate\":\"2023-10-27T17:00:00Z\",\n" +
+            "\t\"coordinates\":{\n" +
+            "\t\t\"latitude\":1,\n" +
+            "\t\t\"longitude\":1\n" +
+            "\t    }\n" +
+            "\t},\n" +
+            "{\n" +
+            "\t\"startDate\":\"2023-10-27T15:00:00Z\",\n" +
+            "\t\"finishDate\":\"2023-10-27T17:00:00Z\",\n" +
+            "\t\"coordinates\":{\n" +
+            "\t\t\"latitude\":1,\n" +
+            "\t\t\"longitude\":1\n" +
+            "\t\t}\n" +
+            "\t}\n" +
+            "\t],\n" +
+            "\t\"tags\":[\"Social\"]\n" +
+            "}\t";
 
         when(userService.findByEmail(anyString())).thenReturn(userVO);
         when(eventService.update(any(AddEventDtoRequest.class), any(MultipartFile[].class), anyLong()))
-                .thenReturn(new EventDto());
+            .thenReturn(new EventDto());
 
         MockMultipartFile jsonFile =
-                new MockMultipartFile("addEventDtoRequest", "", "application/json", json.getBytes());
+            new MockMultipartFile("addEventDtoRequest", "", "application/json", json.getBytes());
 
         MockMultipartHttpServletRequestBuilder builder =
-                MockMvcRequestBuilders.multipart(eventsLink + "/update");
+            MockMvcRequestBuilders.multipart(eventsLink + "/update");
         builder.with(request -> {
             request.setMethod("PUT");
             return request;
         });
         MockMultipartFile image3 =
-                new MockMultipartFile("images", "image3.jpg", "image/jpeg",
-                        "image data".getBytes());
+            new MockMultipartFile("images", "image3.jpg", "image/jpeg",
+                "image data".getBytes());
 
         mockMvc.perform(builder
-                        .file(jsonFile)
-                        .file(image3)
-                        .principal(principal)
-                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
-                .andExpect(status().isOk());
+            .file(jsonFile)
+            .file(image3)
+            .principal(principal)
+            .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+            .andExpect(status().isOk());
 
         verify(eventService, times(1))
-                .update(any(AddEventDtoRequest.class), any(MultipartFile[].class), anyLong());
+            .update(any(AddEventDtoRequest.class), any(MultipartFile[].class), anyLong());
     }
 
     @Test
@@ -198,7 +197,7 @@ class EventsControllerTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
         mockMvc.perform(get(eventsLink + "?page=1"))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
 
         verify(eventService).findAll(pageable);
     }
@@ -210,7 +209,7 @@ class EventsControllerTest {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
         mockMvc.perform(get(eventsLink + "/myEvents/createdEvents?page=5&size=2"))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
         verify(eventService, times(1)).findAllByUser(null, pageable);
     }
 
@@ -224,7 +223,7 @@ class EventsControllerTest {
         when(eventService.getAllSubscribers(eventId)).thenReturn(subscribers);
 
         mockMvc.perform(get(eventsLink + "/getAllSubscribers/{eventId}", eventId))
-                .andExpect(status().isOk());
+            .andExpect(status().isOk());
         verify(eventService, times(1)).getAllSubscribers(eventId);
     }
 
@@ -234,8 +233,8 @@ class EventsControllerTest {
         UserVO userVO = ModelUtils.getUserVO();
         when(userService.findByEmail(anyString())).thenReturn(userVO);
         mockMvc.perform(post(eventsLink + "/addAttender/{eventId}", eventId)
-                        .principal(principal))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+            .principal(principal))
+            .andExpect(MockMvcResultMatchers.status().isOk());
 
         verify(eventService, times(1)).addAttenderToEvent(eventId, userVO.getId());
     }
@@ -246,8 +245,8 @@ class EventsControllerTest {
         UserVO userVO = ModelUtils.getUserVO();
         when(userService.findByEmail(anyString())).thenReturn(userVO);
         mockMvc.perform(MockMvcRequestBuilders.delete(eventsLink + "/removeAttender/{eventId}", eventId)
-                        .principal(principal))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+            .principal(principal))
+            .andExpect(MockMvcResultMatchers.status().isOk());
 
         verify(eventService, times(1)).removeAttenderFromEvent(eq(eventId), anyLong());
     }

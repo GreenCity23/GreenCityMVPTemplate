@@ -84,7 +84,8 @@ public interface EventService {
     PageableDto<SearchEventDto> searchEvent(Pageable pageable, String searchQuery);
 
     /**
-     * Method returns PageableAdvancedDto of {@link EventDto} by attender id and page.
+     * Method returns PageableAdvancedDto of {@link EventDto} by attender id and
+     * page.
      *
      * @param attenderId {@link Long} attender id.
      * @param page       parameters of to search.
@@ -94,7 +95,8 @@ public interface EventService {
     PageableAdvancedDto<EventDto> findAllByAttenderId(Long attenderId, Pageable page);
 
     /**
-     * Method returns PageableAdvancedDto of {@link EventDto} where user is organizer or attender by page.
+     * Method returns PageableAdvancedDto of {@link EventDto} where user is
+     * organizer or attender by page.
      *
      * @param userId {@link Long} attender id.
      * @param page   parameters of to search.

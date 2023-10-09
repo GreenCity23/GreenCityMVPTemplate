@@ -10,7 +10,7 @@ public class AddEventCommentDtoRequestMapper extends AbstractConverter<AddEventC
     @Override
     protected EventComment convert(AddEventCommentDtoRequest addEventCommentDtoRequest) {
         return EventComment.builder()
-                .text(addEventCommentDtoRequest.getText())
-                .build();
+            .text(addEventCommentDtoRequest.getText())
+            .build();
     }
 }

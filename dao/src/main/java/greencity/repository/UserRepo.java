@@ -175,20 +175,24 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
     void deleteUserFriend(Long userId, Long friendId);
 
     /**
-     * Retrieve a page of users who are not the main user and are not friends with the main user.
+     * Retrieve a page of users who are not the main user and are not friends with
+     * the main user.
      *
      * @param userId        The ID of the main user.
-     * @param filteringName The name to be used for filtering. The users retrieved will have names that contain the filteringName, case-insensitive.
+     * @param filteringName The name to be used for filtering. The users retrieved
+     *                      will have names that contain the filteringName,
+     *                      case-insensitive.
      * @param pageable      The pageable object used for pagination and sorting.
-     * @return A Page object containing the list of users who meet the filter criteria.
+     * @return A Page object containing the list of users who meet the filter
+     *         criteria.
      */
     @Query(nativeQuery = true, value = "SELECT * FROM users u "
-            + "WHERE u.id != :userId "
-            + "AND u.id NOT IN ("
-            + "      SELECT user_id AS id FROM users_friends WHERE friend_id = :userId AND status = 'FRIEND' "
-            + "      UNION "
-            + "      SELECT friend_id AS id FROM users_friends WHERE user_id = :userId AND status = 'FRIEND' "
-            + ") AND LOWER(u.name) LIKE LOWER(CONCAT('%', :filteringName, '%'))")
+        + "WHERE u.id != :userId "
+        + "AND u.id NOT IN ("
+        + "      SELECT user_id AS id FROM users_friends WHERE friend_id = :userId AND status = 'FRIEND' "
+        + "      UNION "
+        + "      SELECT friend_id AS id FROM users_friends WHERE user_id = :userId AND status = 'FRIEND' "
+        + ") AND LOWER(u.name) LIKE LOWER(CONCAT('%', :filteringName, '%'))")
     Page<User> getAllUsersExceptMainUserAndFriends(Long userId, String filteringName, Pageable pageable);
 
     /**
@@ -199,8 +203,8 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
      */
     @Modifying
     @Query(nativeQuery = true,
-            value = "INSERT INTO users_friends(user_id, friend_id, status, created_date) "
-                    + "VALUES (:userId, :friendId, 'REQUEST', CURRENT_TIMESTAMP)")
+        value = "INSERT INTO users_friends(user_id, friend_id, status, created_date) "
+            + "VALUES (:userId, :friendId, 'REQUEST', CURRENT_TIMESTAMP)")
     void addNewFriend(Long userId, Long friendId);
 
     /**
@@ -211,31 +215,31 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
      */
     @Modifying
     @Query(nativeQuery = true,
-            value = "UPDATE users_friends SET status = 'FRIEND' "
-                    + "WHERE user_id = :friendId AND friend_id = :userId")
+        value = "UPDATE users_friends SET status = 'FRIEND' "
+            + "WHERE user_id = :friendId AND friend_id = :userId")
     void acceptFriendRequest(Long userId, Long friendId);
 
     /**
      * Retrieves all friend requests for a given user.
      *
-     * @param userId    the ID of the user for whom to retrieve friend requests
-     * @param pageable  the pagination information
+     * @param userId   the ID of the user for whom to retrieve friend requests
+     * @param pageable the pagination information
      * @return a Page containing the list of friend requests
      */
     @Query(nativeQuery = true, value = "SELECT u.* FROM users u "
-            + "       INNER JOIN (SELECT DISTINCT uf.user_id FROM users_friends uf"
-            + "                  WHERE uf.friend_id = :userId AND uf.status = 'REQUEST'"
-            + "                  GROUP BY uf.user_id) AS uf ON u.id = uf.user_id")
+        + "       INNER JOIN (SELECT DISTINCT uf.user_id FROM users_friends uf"
+        + "                  WHERE uf.friend_id = :userId AND uf.status = 'REQUEST'"
+        + "                  GROUP BY uf.user_id) AS uf ON u.id = uf.user_id")
     Page<User> getAllUserFriendRequests(Long userId, Pageable pageable);
 
     /**
      * Declines a friend request between two users.
      *
-     * @param userId    the ID of the user who received the friend request
-     * @param friendId  the ID of the user who sent the friend request
+     * @param userId   the ID of the user who received the friend request
+     * @param friendId the ID of the user who sent the friend request
      */
     @Modifying
     @Query(nativeQuery = true,
-            value = "DELETE FROM users_friends WHERE user_id = :friendId AND friend_id = :userId")
+        value = "DELETE FROM users_friends WHERE user_id = :friendId AND friend_id = :userId")
     void declineFriendRequest(Long userId, Long friendId);
 }

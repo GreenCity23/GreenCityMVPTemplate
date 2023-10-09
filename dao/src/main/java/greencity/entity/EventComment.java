@@ -57,9 +57,9 @@ public class EventComment {
 
     @ManyToMany
     @JoinTable(
-            name = "event_comment_users_liked",
-            joinColumns = @JoinColumn(name = "event_comment_id"),
-            inverseJoinColumns = @JoinColumn(name = "users_liked_id"))
+        name = "event_comment_users_liked",
+        joinColumns = @JoinColumn(name = "event_comment_id"),
+        inverseJoinColumns = @JoinColumn(name = "users_liked_id"))
     private Set<User> usersLiked;
 
 }

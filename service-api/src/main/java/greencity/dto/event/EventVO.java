@@ -3,7 +3,6 @@ package greencity.dto.event;
 import greencity.dto.user.UserVO;
 import lombok.*;
 
-
 @Getter
 @Setter
 @NoArgsConstructor

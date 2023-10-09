@@ -1,6 +1,5 @@
 package greencity.entity;
 
-
 import lombok.*;
 
 import javax.persistence.*;
@@ -31,4 +30,3 @@ public class DateLocation {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 }
-

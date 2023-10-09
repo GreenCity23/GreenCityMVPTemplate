@@ -10,10 +10,10 @@ public class AmountCommentLikesDtoMapper extends AbstractConverter<EventComment,
     @Override
     protected AmountCommentLikesDto convert(EventComment eventComment) {
         return AmountCommentLikesDto.builder()
-                .id(eventComment.getId())
-                .liked(!eventComment.getUsersLiked().isEmpty())
-                .amountLikes(eventComment.getUsersLiked().size())
-                .userId(eventComment.getUser().getId())
-                .build();
+            .id(eventComment.getId())
+            .liked(!eventComment.getUsersLiked().isEmpty())
+            .amountLikes(eventComment.getUsersLiked().size())
+            .userId(eventComment.getUser().getId())
+            .build();
     }
 }

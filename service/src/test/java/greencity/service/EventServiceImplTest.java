@@ -68,7 +68,7 @@ class EventServiceImplTest {
 
     @Test
     void save() throws MalformedURLException {
-        MultipartFile[] images = new MultipartFile[]{getImage()};
+        MultipartFile[] images = new MultipartFile[] {getImage()};
         AddEventDtoRequest addEventDtoRequest = getAddEventDtoRequest();
         List<TagVO> tagVOS = Collections.singletonList(ModelUtils.getEventTagVO());
         List<Tag> tags = Collections.singletonList(getEventTag());
@@ -78,7 +78,7 @@ class EventServiceImplTest {
         when(userRepo.findById(anyLong())).thenReturn(Optional.of(getUser()));
         when(eventRepo.save(event)).thenReturn(event);
         when(tagsService.findTagsWithAllTranslationsByNamesAndType(
-                addEventDtoRequest.getTags(), TagType.EVENT)).thenReturn(tagVOS);
+            addEventDtoRequest.getTags(), TagType.EVENT)).thenReturn(tagVOS);
         when(modelMapper.map(tagVOS, new TypeToken<List<Tag>>() {
         }.getType())).thenReturn(tags);
         when(modelMapper.map(getEventDateLocationDto(), DateLocation.class)).thenReturn(getDateLocation());
@@ -93,7 +93,7 @@ class EventServiceImplTest {
 
     @Test()
     void saveThrowsNotFoundException() {
-        MultipartFile[] images = new MultipartFile[]{getFile()};
+        MultipartFile[] images = new MultipartFile[] {getFile()};
 
         when(userRepo.findById(4L)).thenReturn(Optional.empty());
 
@@ -102,7 +102,7 @@ class EventServiceImplTest {
 
     @Test()
     void saveThrowsNotSavedException() throws MalformedURLException {
-        MultipartFile[] images = new MultipartFile[]{getFile()};
+        MultipartFile[] images = new MultipartFile[] {getFile()};
         AddEventDtoRequest addEventDtoRequest = getAddEventDtoRequest();
         addEventDtoRequest.setDatesLocations(List.of(getInvalidEventDateLocationDto()));
         List<TagVO> tagVOS = Collections.singletonList(ModelUtils.getEventTagVO());
@@ -111,7 +111,7 @@ class EventServiceImplTest {
         when(modelMapper.map(addEventDtoRequest, Event.class)).thenReturn(getNotValidEvent());
         when(userRepo.findById(anyLong())).thenReturn(Optional.of(getUser()));
         when(tagsService.findTagsWithAllTranslationsByNamesAndType(
-                addEventDtoRequest.getTags(), TagType.EVENT)).thenReturn(tagVOS);
+            addEventDtoRequest.getTags(), TagType.EVENT)).thenReturn(tagVOS);
         when(modelMapper.map(tagVOS, new TypeToken<List<Tag>>() {
         }.getType())).thenReturn(tags);
         when(fileService.upload(any())).thenReturn(ModelUtils.getUrl().toString());
@@ -145,33 +145,33 @@ class EventServiceImplTest {
         ZonedDateTime now = ZonedDateTime.now();
         Tag tag = new Tag();
         tag.setTagTranslations(
-                List.of(TagTranslation.builder().name("Social").language(Language.builder().code("en").build()).build(),
-                        TagTranslation.builder().name("Соціальний").language(Language.builder().code("ua").build()).build()));
+            List.of(TagTranslation.builder().name("Social").language(Language.builder().code("en").build()).build(),
+                TagTranslation.builder().name("Соціальний").language(Language.builder().code("ua").build()).build()));
 
         TagUaEnDto tagUaEnDto = TagUaEnDto.builder().id(1L).nameUa("Соціальний").nameEn("Social").build();
 
         List<Event> events = Collections.singletonList(ModelUtils.getEvent());
         PageRequest pageRequest = PageRequest.of(0, 2);
         Page<Event> translationPage = new PageImpl<>(events,
-                pageRequest, events.size());
+            pageRequest, events.size());
 
         EventAuthorDto authorDto = EventAuthorDto.builder()
-                .id(1L)
-                .name(TestConst.NAME)
-                .build();
+            .id(1L)
+            .name(TestConst.NAME)
+            .build();
 
         List<EventDto> dtoList = Collections.singletonList(
-                EventDto.builder()
-                        .creationDate(now)
-                        .id(1L)
-                        .title("Title")
-                        .description("description description description")
-                        .organizer(authorDto)
-                        .tags(Set.of(tagUaEnDto))
-                        .build());
+            EventDto.builder()
+                .creationDate(now)
+                .id(1L)
+                .title("Title")
+                .description("description description description")
+                .organizer(authorDto)
+                .tags(Set.of(tagUaEnDto))
+                .build());
 
         PageableAdvancedDto<EventDto> pageableDto = new PageableAdvancedDto<>(dtoList, dtoList.size(), 0, 1,
-                0, false, false, true, true);
+            0, false, false, true, true);
 
         when(eventRepo.findAllByOrderByCreationDateDesc(pageRequest)).thenReturn(translationPage);
         when(modelMapper.map(events.get(0), EventDto.class)).thenReturn(dtoList.get(0));
@@ -186,12 +186,12 @@ class EventServiceImplTest {
         List<Event> events = Collections.singletonList(ModelUtils.getEvent());
         PageRequest pageRequest = PageRequest.of(0, 2);
         Page<Event> translationPage = new PageImpl<>(events,
-                pageRequest, events.size());
+            pageRequest, events.size());
 
         List<EventDto> dtoList = Collections.singletonList(
-                ModelUtils.getEventDto());
+            ModelUtils.getEventDto());
         PageableAdvancedDto<EventDto> pageableDto = new PageableAdvancedDto<>(dtoList, dtoList.size(), 0, 1,
-                0, false, false, true, true);
+            0, false, false, true, true);
 
         UserVO userVO = UserVO.builder().id(1L).build();
         User user = User.builder().id(1L).build();
@@ -217,7 +217,7 @@ class EventServiceImplTest {
 
     @Test
     void update() throws MalformedURLException {
-        MultipartFile[] images = new MultipartFile[]{getImage()};
+        MultipartFile[] images = new MultipartFile[] {getImage()};
         AddEventDtoRequest addEventDtoRequest = getAddEventDtoRequest();
         List<TagVO> tagVOS = Collections.singletonList(ModelUtils.getEventTagVO());
         List<Tag> tags = Collections.singletonList(getEventTag());
@@ -231,7 +231,7 @@ class EventServiceImplTest {
         when(userRepo.findById(anyLong())).thenReturn(Optional.of(getUser()));
         when(eventRepo.save(event)).thenReturn(event);
         when(tagsService.findTagsWithAllTranslationsByNamesAndType(
-                addEventDtoRequest.getTags(), TagType.EVENT)).thenReturn(tagVOS);
+            addEventDtoRequest.getTags(), TagType.EVENT)).thenReturn(tagVOS);
         when(modelMapper.map(tagVOS, new TypeToken<List<Tag>>() {
         }.getType())).thenReturn(tags);
         when(modelMapper.map(getEventDateLocationDto(), DateLocation.class)).thenReturn(getDateLocation());
@@ -314,10 +314,11 @@ class EventServiceImplTest {
         List<Event> events = Collections.singletonList(event);
         PageRequest pageRequest = PageRequest.of(0, 5);
         Page<Event> page = new PageImpl<>(events,
-                pageRequest, events.size());
+            pageRequest, events.size());
 
         List<EventDto> eventDtoList = Collections.singletonList(getEventDto());
-        PageableAdvancedDto<EventDto> expected = new PageableAdvancedDto<>(eventDtoList, eventDtoList.size(), 0, 1, 0, false, false, true, true);
+        PageableAdvancedDto<EventDto> expected =
+            new PageableAdvancedDto<>(eventDtoList, eventDtoList.size(), 0, 1, 0, false, false, true, true);
 
         UserVO userVO = getUserVO();
         User user = getUser();
@@ -337,10 +338,11 @@ class EventServiceImplTest {
         List<Event> events = Collections.singletonList(event);
         PageRequest pageRequest = PageRequest.of(0, 5);
         Page<Event> page = new PageImpl<>(events,
-                pageRequest, events.size());
+            pageRequest, events.size());
 
         List<EventDto> eventDtoList = Collections.singletonList(getEventDto());
-        PageableAdvancedDto<EventDto> expected = new PageableAdvancedDto<>(eventDtoList, eventDtoList.size(), 0, 1, 0, false, false, true, true);
+        PageableAdvancedDto<EventDto> expected =
+            new PageableAdvancedDto<>(eventDtoList, eventDtoList.size(), 0, 1, 0, false, false, true, true);
 
         UserVO userVO = getUserVO();
         User user = getUser();

@@ -29,27 +29,28 @@ public class DateLocationMapper extends AbstractConverter<EventDateLocationDto, 
      */
     @Override
     protected DateLocation convert(EventDateLocationDto eventDateLocationDto) {
-        Map<String, String> addresses = geocodingService.getAddress(eventDateLocationDto.getCoordinates().getLatitude(), eventDateLocationDto.getCoordinates().getLongitude());
+        Map<String, String> addresses = geocodingService.getAddress(eventDateLocationDto.getCoordinates().getLatitude(),
+            eventDateLocationDto.getCoordinates().getLongitude());
         return DateLocation.builder()
-                .id(eventDateLocationDto.getId())
-                .startDate(eventDateLocationDto.getStartDate())
-                .finishDate(eventDateLocationDto.getFinishDate())
-                .address(Address.builder()
-                        .cityEn(addresses.get("cityEn"))
-                        .cityUa(addresses.get("cityUa"))
-                        .countryEn(addresses.get("countryEn"))
-                        .countryUa(addresses.get("countryUa"))
-                        .formattedAddressEn(addresses.get("formattedAddressEn"))
-                        .formattedAddressUa(addresses.get("formattedAddressUa"))
-                        .houseNumber(addresses.get("houseNumber"))
-                        .latitude(eventDateLocationDto.getCoordinates().getLatitude())
-                        .longitude(eventDateLocationDto.getCoordinates().getLongitude())
-                        .regionEn(addresses.get("regionEn"))
-                        .regionUa(addresses.get("regionUa"))
-                        .streetEn(addresses.get("streetEn"))
-                        .streetUa(addresses.get("streetUa"))
-                        .build())
-                .onlineLink(eventDateLocationDto.getOnlineLink())
-                .build();
+            .id(eventDateLocationDto.getId())
+            .startDate(eventDateLocationDto.getStartDate())
+            .finishDate(eventDateLocationDto.getFinishDate())
+            .address(Address.builder()
+                .cityEn(addresses.get("cityEn"))
+                .cityUa(addresses.get("cityUa"))
+                .countryEn(addresses.get("countryEn"))
+                .countryUa(addresses.get("countryUa"))
+                .formattedAddressEn(addresses.get("formattedAddressEn"))
+                .formattedAddressUa(addresses.get("formattedAddressUa"))
+                .houseNumber(addresses.get("houseNumber"))
+                .latitude(eventDateLocationDto.getCoordinates().getLatitude())
+                .longitude(eventDateLocationDto.getCoordinates().getLongitude())
+                .regionEn(addresses.get("regionEn"))
+                .regionUa(addresses.get("regionUa"))
+                .streetEn(addresses.get("streetEn"))
+                .streetUa(addresses.get("streetUa"))
+                .build())
+            .onlineLink(eventDateLocationDto.getOnlineLink())
+            .build();
     }
 }

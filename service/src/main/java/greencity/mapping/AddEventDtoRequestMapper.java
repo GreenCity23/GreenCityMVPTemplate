@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import java.time.ZonedDateTime;
 
 /**
- * Class that used by {@link ModelMapper} to map {@link AddEventDtoRequest}
- * into {@link Event}.
+ * Class that used by {@link ModelMapper} to map {@link AddEventDtoRequest} into
+ * {@link Event}.
  */
 @Component
 public class AddEventDtoRequestMapper extends AbstractConverter<AddEventDtoRequest, Event> {
@@ -23,10 +23,10 @@ public class AddEventDtoRequestMapper extends AbstractConverter<AddEventDtoReque
     @Override
     protected Event convert(AddEventDtoRequest addEventDtoRequest) {
         return Event.builder()
-                .title(addEventDtoRequest.getTitle())
-                .description(addEventDtoRequest.getDescription())
-                .eventClosed(!Boolean.parseBoolean(addEventDtoRequest.getOpen()))
-                .creationDate(ZonedDateTime.now())
-                .build();
+            .title(addEventDtoRequest.getTitle())
+            .description(addEventDtoRequest.getDescription())
+            .eventClosed(!Boolean.parseBoolean(addEventDtoRequest.getOpen()))
+            .creationDate(ZonedDateTime.now())
+            .build();
     }
 }

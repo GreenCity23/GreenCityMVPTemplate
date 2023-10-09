@@ -105,7 +105,7 @@ public final class ErrorMessage {
     public static final String USER_CANNOT_ADD_MORE_THAN_5_EVENT_IMAGES =
         "User cannot add more than 5 event images";
     public static final String IMAGE_SIZE_EXCEEDS_10MB =
-    "Image size should be less than 10MB.";
+        "Image size should be less than 10MB.";
     public static final String UNSUPPORTED_IMAGE_FORMAT = "Image should be in JPG or PNG format.";
     public static final String INVALID_URI = "The string could not be parsed as a URI reference.";
     public static final String MALFORMED_URL = "Malformed URL. The string could not be parsed.";
@@ -147,8 +147,8 @@ public final class ErrorMessage {
     public static final String INVALID_DURATION = "The duration for such habit is lower than previously set";
     public static final String ATTENDER_ALREADY_EXISTS = "User is already an attender for this event";
     public static final String USER_NOT_ATTENDING_EVENT = "User is not attending this event";
-    public static final String ORGANIZER_CANNOT_JOIN_OR_LEAVE_ATTENDER_LIST = "Organizer cant join/leave the attender list";
-
+    public static final String ORGANIZER_CANNOT_JOIN_OR_LEAVE_ATTENDER_LIST =
+        "Organizer cant join/leave the attender list";
 
     private ErrorMessage() {
     }

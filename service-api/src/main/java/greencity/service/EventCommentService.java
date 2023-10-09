@@ -10,10 +10,9 @@ public interface EventCommentService {
     /**
      * Method to save {@link EventCommentVO}.
      *
-     * @param eventId                   id of event to which we save
-     *                                    comment.
+     * @param eventId                   id of event to which we save comment.
      * @param addEventCommentDtoRequest dto with {@link EventCommentVO} text,
-     *                                    parentCommentId.
+     *                                  parentCommentId.
      * @param user                      {@link UserVO} that saves the comment.
      * @return {@link AddEventCommentDtoResponse} instance.
      */
@@ -23,14 +22,14 @@ public interface EventCommentService {
      * Method to change the existing {@link EventCommentVO}.
      *
      * @param commentText new text of {@link EventCommentVO}.
-     * @param id   to specify {@link EventCommentVO} that user wants to change.
-     * @param user current {@link UserVO} that wants to change.
+     * @param id          to specify {@link EventCommentVO} that user wants to
+     *                    change.
+     * @param user        current {@link UserVO} that wants to change.
      */
     void update(Long id, String commentText, UserVO user);
 
     /**
-     * Method to like or dislike {@link EventCommentVO} specified
-     * by id.
+     * Method to like or dislike {@link EventCommentVO} specified by id.
      *
      * @param id     of {@link EventCommentVO} to like/dislike.
      * @param userVO current User that wants to like/dislike.
@@ -48,21 +47,21 @@ public interface EventCommentService {
     /**
      * Method to find {@link EventCommentVO} by id.
      *
-     * @param id     of {@link EventCommentVO}.
+     * @param id of {@link EventCommentVO}.
      */
     EventCommentDto findEventCommentById(Long id);
 
     /**
      * Method to get comments amount by event id.
      *
-     * @param id     of Event.
+     * @param id of Event.
      */
     Integer getEventCommentsAmount(Long id);
 
     /**
      * Method to get comment replies amount by comment id.
      *
-     * @param id     of Event Comment.
+     * @param id of Event Comment.
      */
     Integer getCountOfCommentReplies(Long id);
 
@@ -78,7 +77,7 @@ public interface EventCommentService {
      * Method to get all active comment replies.
      *
      * @param parentCommentId id parent event comment.
-     * @param user current User.
+     * @param user            current User.
      */
     PageableDto<EventCommentDto> getAllActiveReplies(Pageable pageable, Long parentCommentId, UserVO user);
 
@@ -86,7 +85,7 @@ public interface EventCommentService {
      * Method to get all active comments.
      *
      * @param eventId id event.
-     * @param user current User.
+     * @param user    current User.
      */
     PageableDto<EventCommentDto> getAllActiveComments(Pageable pageable, UserVO user, Long eventId);
 }

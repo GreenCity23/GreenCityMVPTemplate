@@ -20,7 +20,6 @@ public class EventCommentDto {
 
     private LocalDateTime createdDate;
 
-
     private LocalDateTime modifiedDate;
 
     private EventCommentAuthorDto author;
