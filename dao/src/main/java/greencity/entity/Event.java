@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -54,6 +55,9 @@ public class Event {
 
     @Column(name = "is_subscribed")
     private boolean isSubscribed;
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    private List<EventGrade> eventGrades = new ArrayList<>();
 
     @Column(name = "is_favorite")
     private boolean isFavorite;
