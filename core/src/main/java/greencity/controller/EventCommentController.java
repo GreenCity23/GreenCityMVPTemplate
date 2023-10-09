@@ -66,7 +66,7 @@ public class EventCommentController {
     }
 
     /**
-     * Method to get all active comment replies
+     * Method to get all active comment replies.
      * 
      * @param parentCommentId id of comment
      * @param user            current user
@@ -86,7 +86,7 @@ public class EventCommentController {
     }
 
     /**
-     * Method to get all event active comments
+     * Method to get all event active comments.
      * 
      * @param eventId id of event
      * @param user    current user
