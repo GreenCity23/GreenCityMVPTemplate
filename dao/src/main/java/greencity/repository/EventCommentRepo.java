@@ -32,9 +32,9 @@ public interface EventCommentRepo extends JpaRepository<EventComment, Long> {
     /**
      * Method returns all {@link EventComment} by page.
      *
-     * @param pageable  page of events.
-     * @param eventId id of {@link greencity.entity.Event} for which comments we
-     *                  search.
+     * @param pageable page of events.
+     * @param eventId  id of {@link greencity.entity.Event} for which comments we
+     *                 search.
      * @return all {@link EventComment} by page.
      */
     Page<EventComment> findAllByParentCommentIsNullAndDeletedFalseAndEventIdOrderByCreatedDateDesc(Pageable pageable,
