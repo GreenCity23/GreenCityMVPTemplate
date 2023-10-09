@@ -1,11 +1,15 @@
 package greencity.service;
 
 import greencity.dto.PageableAdvancedDto;
+import greencity.dto.PageableDto;
 import greencity.dto.event.AddEventDtoRequest;
+import greencity.dto.event.EventAttenderDto;
 import greencity.dto.event.EventDto;
+import greencity.dto.event.SearchEventDto;
 import greencity.dto.user.UserVO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
+
 
 public interface EventService {
     /**
@@ -67,4 +71,74 @@ public interface EventService {
      * @return array of images path
      */
     String[] uploadImages(MultipartFile[] images);
+
+    /**
+     * Method that allow you to search {@link SearchEventDto}.
+     *
+     * @param pageable    {@link Pageable}.
+     * @param searchQuery query to search.
+     * @return PageableDto of {@link SearchEventDto} instances.
+     */
+    PageableDto<SearchEventDto> searchEvent(Pageable pageable, String searchQuery);
+
+    /**
+     * Method returns PageableAdvancedDto of {@link EventDto} by attender id and
+     * page.
+     *
+     * @param attenderId {@link Long} attender id.
+     * @param page       parameters of to search.
+     * @return PageableAdvancedDto of {@link EventDto} instances.
+     * @author Maksym Fartushok
+     */
+    PageableAdvancedDto<EventDto> findAllByAttenderId(Long attenderId, Pageable page);
+
+    /**
+     * Method returns PageableAdvancedDto of {@link EventDto} where user is
+     * organizer or attender by page.
+     *
+     * @param userId {@link Long} attender id.
+     * @param page   parameters of to search.
+     * @return PageableAdvancedDto of {@link EventDto} instances.
+     * @author Maksym Fartushok
+     */
+    PageableAdvancedDto<EventDto> findAllRelatedToUser(Long userId, Pageable page);
+
+    /**
+     * Method for adding attenders to event.
+     *
+     * @param eventId    ID of the event.
+     * @param attenderId {@link Long} attender id.
+     */
+    void addAttenderToEvent(Long eventId, Long attenderId);
+
+    /**
+     * Method for getting all attenders of the event.
+     *
+     * @param eventId ID of the event.
+     */
+    List<EventAttenderDto> getAllSubscribers(Long eventId);
+
+    /**
+     * Method for remove attenders from the event.
+     *
+     * @param eventId    ID of the event.
+     * @param attenderId {@link Long} attender id.
+     */
+    void removeAttenderFromEvent(Long eventId, Long attenderId);
+
+    /**
+     * Method for adding event to favourites.
+     *
+     * @param eventId ID of the event to be added to favorites.
+     * @author Maksym Fartushok
+     */
+    void addToFavorites(Long eventId);
+
+    /**
+     * Method for removing event from favourites.
+     *
+     * @param eventId ID of the event to be removed from favorites.
+     * @author Maksym Fartushok
+     */
+    void removeFromFavorites(Long eventId);
 }

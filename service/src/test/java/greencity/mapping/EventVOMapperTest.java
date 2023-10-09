@@ -12,7 +12,7 @@ import static greencity.ModelUtils.getEventVO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
-public class EventVOMapperTest {
+class EventVOMapperTest {
 
     @InjectMocks
     private EventVOMapper eventVOMapper;

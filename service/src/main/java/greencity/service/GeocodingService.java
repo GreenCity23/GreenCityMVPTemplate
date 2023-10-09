@@ -16,14 +16,13 @@ import java.util.Map;
 
 @Service
 public class GeocodingService {
-    private final String apiKEY;
+    private final String apiKey;
 
     /**
-     * Creates a new instance of the GeocodingService class. The constructor
-     * retrieves the geocoding API key from the system environment variables.
+     * Initialize service.
      */
     public GeocodingService() {
-        apiKEY = System.getenv("GEOCODING_API_KEY");
+        apiKey = System.getenv("GEOCODING_API_KEY");
     }
 
     /**
@@ -51,7 +50,7 @@ public class GeocodingService {
     private void processAddressComponents(LatLng latLng, String language, Map<String, String> addresses) {
         GeocodingResult[] results;
 
-        try (GeoApiContext context = new GeoApiContext.Builder().apiKey(apiKEY).build()) {
+        try (GeoApiContext context = new GeoApiContext.Builder().apiKey(apiKey).build()) {
             results = GeocodingApi.reverseGeocode(context, latLng)
                 .language(language)
                 .await();
@@ -88,7 +87,7 @@ public class GeocodingService {
                 putIfNotExists(language.equals("en") ? "streetEn" : "streetUa", addressComponent, addresses);
                 break;
             default:
-                throw new IllegalArgumentException("Unexpected type: " + type);
+                break;
         }
     }
 

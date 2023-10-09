@@ -4,6 +4,9 @@ import greencity.constant.AppConstant;
 import greencity.dto.PageableAdvancedDto;
 import greencity.dto.econews.*;
 import greencity.dto.econewscomment.*;
+import greencity.dto.eventcomments.AddEventCommentDtoRequest;
+import greencity.dto.eventcomments.EventCommentAuthorDto;
+import greencity.dto.eventcomments.EventCommentDto;
 import greencity.dto.tag.TagUaEnDto;
 import greencity.dto.event.*;
 import greencity.dto.habit.HabitAssignPropertiesDto;
@@ -204,7 +207,7 @@ public class ModelUtils {
         return new Event(1L, "event title", "event description event description", zonedDateTime,
             List.of(getDateLocation()),
             getUser(), "https://google.com/", false, false, false,
-            null, List.of(tag), null);
+            null, List.of(tag), null, new ArrayList<>());
     }
 
     public static Event getNotValidEvent() {
@@ -215,7 +218,7 @@ public class ModelUtils {
         return new Event(1L, "event title", "event description event description", zonedDateTime,
             List.of(getDateLocation()),
             getUser(), "https://google.com/", false, false, false,
-            null, List.of(tag), null);
+            null, List.of(tag), null, null);
     }
 
     public static DateLocation getDateLocation() {
@@ -433,6 +436,20 @@ public class ModelUtils {
             name, contentType, content);
     }
 
+    public static MultipartFile getImage() {
+        Path path = Paths.get("src/test/resources/test.jpg");
+        String name = TestConst.IMG_NAME;
+        String contentType = "image/jpeg";
+        byte[] content = null;
+        try {
+            content = Files.readAllBytes(path);
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+        return new MockMultipartFile(name,
+            name, contentType, content);
+    }
+
     public static URL getUrl() throws MalformedURLException {
         return new URL(TestConst.SITE);
     }
@@ -594,6 +611,7 @@ public class ModelUtils {
             .open(true)
             .isSubscribed(false)
             .isFavorite(false)
+            .attendersEmailsDtos(new ArrayList<>())
             .tags(Set.of(getTagUaEnDto()))
             .build();
     }
@@ -812,6 +830,45 @@ public class ModelUtils {
             .id("1L")
             .habitId("1L")
             .content("Test content")
+            .build();
+    }
+
+    public static AddEventCommentDtoRequest getAddEventCommentDtoRequest() {
+        return AddEventCommentDtoRequest.builder()
+            .parentCommentId(0L)
+            .text("My comment")
+            .build();
+    }
+
+    public static AddEventCommentDtoRequest getAddEventReplyCommentDtoRequest() {
+        return AddEventCommentDtoRequest.builder()
+            .parentCommentId(1L)
+            .text("My comment")
+            .build();
+    }
+
+    public static EventComment getEventComment() {
+        return EventComment.builder()
+            .id(1L)
+            .createdDate(LocalDateTime.now())
+            .event(getEvent())
+            .user(getUser())
+            .usersLiked(new HashSet<>())
+            .text("My comment")
+            .build();
+    }
+
+    public static EventCommentDto getEventCommentDto() {
+        return EventCommentDto.builder()
+            .id(1l)
+            .createdDate(LocalDateTime.now())
+            .likes(0)
+            .text("My comment")
+            .author(EventCommentAuthorDto.builder()
+                .id(getUser().getId())
+                .name(getUser().getName())
+                .userProfilePicturePath(getUser().getProfilePicturePath())
+                .build())
             .build();
     }
 }

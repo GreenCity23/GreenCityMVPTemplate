@@ -19,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -131,6 +130,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/econews/comments/count/likes",
                 "/econews/comments/replies/active/{parentCommentId}",
                 "/econews/comments/active",
+                "/events/comments/count/{eventId}",
+                "/events/comments/{id}",
+                "/events/comments/active",
+                "/events/comments/likes/count/{commentId}",
+                "/events/comments/replies/active/{parentCommentId}",
+                "/events/comments/replies/active/count/{parentCommentId}",
                 "/language",
                 "/search",
                 "/search/econews",
@@ -201,6 +206,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/econews/dislike",
                 "/econews/comments/{econewsId}",
                 "/econews/comments/like",
+                "/events/comments/like",
+                "/events/comments/{eventId}",
                 "/events/create",
                 "/events/addAttender/{eventId}",
                 "/events/addToFavorites/{eventId}",

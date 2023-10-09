@@ -3,18 +3,18 @@ package greencity.service;
 import greencity.client.RestClient;
 import greencity.constant.ErrorMessage;
 import greencity.dto.PageableAdvancedDto;
+import greencity.dto.PageableDto;
 import greencity.dto.event.*;
 import greencity.dto.tag.TagVO;
+import greencity.dto.user.AttendersEmailsDto;
 import greencity.dto.user.PlaceAuthorDto;
 import greencity.dto.user.UserVO;
 import greencity.entity.*;
 import greencity.enums.Role;
 import greencity.enums.TagType;
-import greencity.exception.exceptions.NotFoundException;
-import greencity.exception.exceptions.NotSavedException;
-import greencity.exception.exceptions.UnsupportedSortException;
-import greencity.exception.exceptions.UserHasNoPermissionToAccessException;
+import greencity.exception.exceptions.*;
 import greencity.repository.EventRepo;
+import greencity.repository.EventSearchRepo;
 import greencity.repository.TagTranslationRepo;
 import greencity.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,11 +33,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static greencity.constant.AppConstant.AUTHORIZATION;
+import static greencity.constant.ErrorMessage.USER_NOT_FOUND_BY_ID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class EventServiceImpl implements EventService {
     private final EventRepo eventRepo;
+    private final EventSearchRepo eventSearchRepo;
     private final UserRepo userRepo;
     private final ModelMapper modelMapper;
     private final TagsService tagService;
@@ -78,6 +82,10 @@ public class EventServiceImpl implements EventService {
         updatedEvent.setEventClosed(!Boolean.parseBoolean(addEventDtoRequest.getOpen()));
         EventDto eventDto =
             modelMapper.map(genericSaveOrUpdate(updatedEvent, addEventDtoRequest, images), EventDto.class);
+        eventDto.setAttendersEmailsDtos(updatedEvent.getAttenders()
+            .stream().map(attender -> modelMapper.map(attender, AttendersEmailsDto.class))
+            .collect(Collectors.toList()));
+        sendUpdatedEmailDto(eventDto, organizer);
         return eventDto;
     }
 
@@ -113,7 +121,9 @@ public class EventServiceImpl implements EventService {
                     throw new NotSavedException(ErrorMessage.INVALID_DATE_RANGE);
                 }
 
-                return modelMapper.map(eventDateLocationDto, DateLocation.class).setEvent(event);
+                DateLocation dateLocation = modelMapper.map(eventDateLocationDto, DateLocation.class);
+                dateLocation.setEvent(event);
+                return dateLocation;
             })
             .collect(Collectors.toList()));
     }
@@ -147,6 +157,27 @@ public class EventServiceImpl implements EventService {
             .author(placeAuthorDto)
             .build();
         restClient.addEvent(eventForSendEmailDto, accessToken.substring(7));
+    }
+
+    /**
+     * Method for sending an email to user and event attenders, when event was
+     * edited.
+     *
+     */
+
+    public void sendUpdatedEmailDto(EventDto eventDto, User user) {
+        String accessToken = httpServletRequest.getHeader(AUTHORIZATION);
+        PlaceAuthorDto placeAuthorDto = modelMapper.map(user, PlaceAuthorDto.class);
+        EventForSendEmailDto eventForSendEmailDto = EventForSendEmailDto.builder()
+            .title(eventDto.getTitle())
+            .titleImage(eventDto.getTitleImage())
+            .description(eventDto.getDescription())
+            .creationDate(eventDto.getCreationDate())
+            .open(eventDto.isOpen())
+            .author(placeAuthorDto)
+            .attenders(eventDto.getAttendersEmailsDtos())
+            .build();
+        restClient.editEvent(eventForSendEmailDto, accessToken.substring(7));
     }
 
     /**
@@ -247,6 +278,70 @@ public class EventServiceImpl implements EventService {
         return Arrays.stream(images).map(fileService::upload).toArray(String[]::new);
     }
 
+    @Override
+    public PageableDto<SearchEventDto> searchEvent(Pageable pageable, String searchQuery) {
+        Page<Event> page = eventSearchRepo.find(pageable, searchQuery);
+        return getSearchEventDtoPageableDto(page);
+    }
+
+    private PageableDto<SearchEventDto> getSearchEventDtoPageableDto(Page<Event> page) {
+        List<SearchEventDto> searchEventDTOs = page.stream()
+            .map(event -> modelMapper.map(event, SearchEventDto.class))
+            .collect(Collectors.toList());
+
+        return new PageableDto<>(
+            searchEventDTOs,
+            page.getTotalElements(),
+            page.getPageable().getPageNumber(),
+            page.getTotalPages());
+    }
+
+    /**
+     * Method returns PageableAdvancedDto of {@link EventDto} by attender id and
+     * page.
+     *
+     * @param attenderId {@link Long} attender id.
+     * @param page       parameters of to search.
+     * @return PageableAdvancedDto of {@link EventDto} instances.
+     * @author Maksym Fartushok
+     */
+    @Override
+    public PageableAdvancedDto<EventDto> findAllByAttenderId(Long attenderId, Pageable page) {
+        userRepo.findById(attenderId)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + attenderId));
+
+        Page<Event> pages;
+        if (page.getSort().isEmpty()) {
+            pages = eventRepo.findAllByAttenderIdOrderByCreationDateDesc(attenderId, page);
+        } else {
+            throw new UnsupportedSortException(ErrorMessage.INVALID_SORTING_VALUE);
+        }
+        return buildPageableAdvancedDto(pages);
+    }
+
+    /**
+     * Method returns PageableAdvancedDto of {@link EventDto} where user is
+     * organizer or attender by page.
+     *
+     * @param userId {@link Long} attender id.
+     * @param page   parameters of to search.
+     * @return PageableAdvancedDto of {@link EventDto} instances.
+     * @author Maksym Fartushok
+     */
+    @Override
+    public PageableAdvancedDto<EventDto> findAllRelatedToUser(Long userId, Pageable page) {
+        userRepo.findById(userId)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND_BY_ID + userId));
+
+        Page<Event> pages;
+        if (page.getSort().isEmpty()) {
+            pages = eventRepo.findAllRelatedToUserOrderByCreationDateDesc(userId, page);
+        } else {
+            throw new UnsupportedSortException(ErrorMessage.INVALID_SORTING_VALUE);
+        }
+        return buildPageableAdvancedDto(pages);
+    }
+
     /**
      * Method to upload events images.
      *
@@ -281,5 +376,95 @@ public class EventServiceImpl implements EventService {
     private boolean isSupportedContentType(String contentType) {
         var supportedContents = List.of("image/jpg", "image/jpeg", "image/png");
         return supportedContents.contains(contentType);
+    }
+
+    @Override
+    public void addAttenderToEvent(Long eventId, Long attenderId) {
+        validateUserExistById(attenderId);
+        checkIfUserIsOrganizer(eventId, attenderId);
+        checkIfAttenderIsFriendOfOrganizer(eventId, attenderId);
+
+        if (eventRepo.getOne(eventId).getAttenders().contains(userRepo.getOne(attenderId))) {
+            throw new UsersAttendingException(ErrorMessage.ATTENDER_ALREADY_EXISTS);
+        }
+        eventRepo.addAttender(attenderId, eventId);
+    }
+
+    private void validateUserExistById(Long userId) {
+        if (!userRepo.existsById(userId)) {
+            throw new NotFoundException(USER_NOT_FOUND_BY_ID + userId);
+        }
+    }
+
+    private void validateEventExistById(Long eventId) {
+        eventRepo.findById(eventId)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventId));
+    }
+
+    @Override
+    public void removeAttenderFromEvent(Long eventId, Long attenderId) {
+        validateEventExistById(eventId);
+        checkIfUserIsOrganizer(eventId, attenderId);
+        if (eventRepo.getOne(eventId).getAttenders().contains(userRepo.getOne(attenderId))) {
+            eventRepo.removeAttender(attenderId, eventId);
+        } else {
+            throw new UsersAttendingException("Can't remove user, because he is not the attender of the event");
+        }
+    }
+
+    /**
+     * Method for adding event to favourites.
+     *
+     * @param eventId ID of the event to be added to favorites.
+     * @author Maksym Fartushok
+     */
+    @Override
+    public void addToFavorites(Long eventId) {
+        eventRepo.findById(eventId)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventId));
+
+        eventRepo.addToFavorites(eventId);
+    }
+
+    /**
+     * Method for removing event from favourites.
+     *
+     * @param eventId ID of the event to be removed from favorites.
+     * @author Maksym Fartushok
+     */
+    @Override
+    public void removeFromFavorites(Long eventId) {
+        eventRepo.findById(eventId)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventId));
+
+        eventRepo.removeFromFavorites(eventId);
+    }
+
+    private void checkIfUserIsOrganizer(Long eventId, Long userId) {
+        if (userId.equals(getOrganizer(eventId).getId())) {
+            throw new UsersAttendingException(ErrorMessage.ORGANIZER_CANNOT_JOIN_OR_LEAVE_ATTENDER_LIST);
+        }
+    }
+
+    private User getOrganizer(Long eventId) {
+        return eventRepo.findById(eventId).get().getOrganizer();
+    }
+
+    private void checkIfAttenderIsFriendOfOrganizer(Long eventId, Long userId) {
+        validateEventExistById(eventId);
+        if (eventRepo.getOne(eventId).isEventClosed() && (!userRepo.getAllUserFriends(getOrganizer(eventId)
+            .getId()).contains(userRepo.getOne(userId)))) {
+            throw new UsersAttendingException(ErrorMessage.USER_HAS_NO_PERMISSION);
+        }
+    }
+
+    @Override
+    public List<EventAttenderDto> getAllSubscribers(Long eventId) {
+        Event event = eventRepo
+            .findById(eventId)
+            .orElseThrow(() -> new NotFoundException(ErrorMessage.EVENT_NOT_FOUND_BY_ID + eventId));
+        return event.getAttenders()
+            .stream()
+            .map(user -> modelMapper.map(user, EventAttenderDto.class)).collect(Collectors.toList());
     }
 }

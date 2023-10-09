@@ -1,13 +1,16 @@
 package greencity.controller;
 
 import greencity.annotations.ApiPageable;
+import greencity.annotations.ApiPageableWithLocale;
 import greencity.annotations.CurrentUser;
 import greencity.constant.HttpStatuses;
 import greencity.constant.SwaggerExampleModel;
 import greencity.dto.PageableAdvancedDto;
+import greencity.dto.PageableDto;
 import greencity.dto.event.*;
 import greencity.dto.user.UserVO;
 import greencity.service.EventService;
+import greencity.service.SearchService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -31,6 +34,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EventsController {
     private final EventService eventService;
+    private final SearchService searchService;
 
     /**
      * Method for creating Event.
@@ -64,10 +68,10 @@ public class EventsController {
         @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
         @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
         @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
-    @PostMapping(path = "/addAttender/{eventId}",
-        consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE})
-    public ResponseEntity<String> addAttender(@PathVariable Long eventId) {
-        return null;
+    @PostMapping(path = "/addAttender/{eventId}")
+    public ResponseEntity<Object> addAttender(@PathVariable Long eventId, @ApiIgnore @CurrentUser UserVO userVO) {
+        eventService.addAttenderToEvent(eventId, userVO.getId());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
@@ -78,10 +82,10 @@ public class EventsController {
         @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
         @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
         @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
-    @PostMapping(path = "/addToFavorites/{eventId}",
-        consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    @PostMapping(path = "/addToFavorites/{eventId}")
     public ResponseEntity<Object> addToFavorites(@PathVariable Long eventId) {
-        return null;
+        eventService.addToFavorites(eventId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
@@ -110,7 +114,7 @@ public class EventsController {
         @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @GetMapping(path = "/getAllSubscribers/{eventId}")
     public ResponseEntity<List<EventAttenderDto>> getAllEventSubscribers(@PathVariable Long eventId) {
-        return null;
+        return ResponseEntity.status(HttpStatus.OK).body(eventService.getAllSubscribers(eventId));
     }
 
     /**
@@ -124,7 +128,6 @@ public class EventsController {
         @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @GetMapping(path = "/{eventId}")
     public ResponseEntity<EventDto> getEventById(@PathVariable Long eventId) {
-        System.out.println(eventId);
         return ResponseEntity.status(HttpStatus.OK).body(eventService.findById(eventId));
     }
 
@@ -171,8 +174,9 @@ public class EventsController {
         @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)})
     @GetMapping("/myEvents/relatedEvents")
     @ApiPageable
-    public ResponseEntity<PageableAdvancedDto<EventDto>> getRelatedToUserEvents(@ApiIgnore Pageable page) {
-        return null;
+    public ResponseEntity<PageableAdvancedDto<EventDto>> getRelatedToUserEvents(@ApiIgnore Pageable page,
+        @ApiIgnore @CurrentUser UserVO user) {
+        return ResponseEntity.status(HttpStatus.OK).body(eventService.findAllRelatedToUser(user.getId(), page));
     }
 
     /**
@@ -186,8 +190,9 @@ public class EventsController {
         @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED)})
     @GetMapping("/myEvents")
     @ApiPageable
-    public ResponseEntity<PageableAdvancedDto<EventDto>> getUserEvents(@ApiIgnore Pageable page) {
-        return null;
+    public ResponseEntity<PageableAdvancedDto<EventDto>> getUserEvents(@ApiIgnore Pageable page,
+        @ApiIgnore @CurrentUser UserVO user) {
+        return ResponseEntity.status(HttpStatus.OK).body(eventService.findAllByAttenderId(user.getId(), page));
     }
 
     /**
@@ -213,8 +218,9 @@ public class EventsController {
         @ApiResponse(code = 401, message = HttpStatuses.UNAUTHORIZED),
         @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @DeleteMapping(path = "/removeAttender/{eventId}")
-    public ResponseEntity<Object> removeAttender(@PathVariable Long eventId) {
-        return null;
+    public ResponseEntity<Object> removeAttender(@PathVariable Long eventId, @ApiIgnore @CurrentUser UserVO userVO) {
+        eventService.removeAttenderFromEvent(eventId, userVO.getId());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
@@ -227,7 +233,8 @@ public class EventsController {
         @ApiResponse(code = 404, message = HttpStatuses.NOT_FOUND)})
     @DeleteMapping(path = "/removeFromFavorites/{eventId}")
     public ResponseEntity<Object> removeFromFavorites(@PathVariable Long eventId) {
-        return null;
+        eventService.removeFromFavorites(eventId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
@@ -235,6 +242,7 @@ public class EventsController {
      *
      * @return dto {@link EventDto} instance.
      */
+
     @ApiOperation(value = "Update event")
     @ApiResponses(value = {@ApiResponse(code = 200, message = HttpStatuses.OK, response = EventDto.class),
         @ApiResponse(code = 400, message = HttpStatuses.BAD_REQUEST),
@@ -251,5 +259,26 @@ public class EventsController {
         @ApiParam(value = "Image of event") @RequestPart(required = false) MultipartFile[] images,
         @ApiIgnore @CurrentUser UserVO user) {
         return ResponseEntity.status(HttpStatus.OK).body(eventService.update(addEventDtoRequest, images, user.getId()));
+    }
+
+    /**
+     * Method for search.
+     *
+     * @param searchQuery query to search.
+     * @return PageableDto of {@link SearchEventDto} instances.
+     */
+    @ApiOperation(value = "Search Event.")
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = HttpStatuses.OK),
+        @ApiResponse(code = 303, message = HttpStatuses.SEE_OTHER),
+        @ApiResponse(code = 403, message = HttpStatuses.FORBIDDEN)
+    })
+    @GetMapping("/search")
+    @ApiPageableWithLocale
+    public ResponseEntity<PageableDto<SearchEventDto>> searchEvent(
+        @ApiIgnore Pageable pageable,
+        @ApiParam(value = "Query to search") @RequestParam String searchQuery) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(eventService.searchEvent(pageable, searchQuery));
     }
 }

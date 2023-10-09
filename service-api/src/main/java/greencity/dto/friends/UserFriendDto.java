@@ -1,6 +1,5 @@
 package greencity.dto.friends;
 
-import greencity.service.HabitFactService;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

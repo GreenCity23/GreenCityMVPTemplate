@@ -12,7 +12,7 @@ import static greencity.ModelUtils.getShoppingListItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class ShoppingListItemDtoMapperTest {
+class ShoppingListItemDtoMapperTest {
     @InjectMocks
     ShoppingListItemDtoMapper shoppingListItemDtoMapper;
 

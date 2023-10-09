@@ -2,8 +2,6 @@ package greencity.dto.event;
 
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * DTO for {greencity.entity.Address}
  */

@@ -1,9 +1,11 @@
 package greencity.dto.event;
 
+import greencity.dto.user.AttendersEmailsDto;
 import greencity.dto.user.PlaceAuthorDto;
 import lombok.*;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,4 +21,5 @@ public class EventForSendEmailDto {
     private PlaceAuthorDto author;
     private String titleImage;
     private boolean open;
+    private List<AttendersEmailsDto> attenders;
 }
