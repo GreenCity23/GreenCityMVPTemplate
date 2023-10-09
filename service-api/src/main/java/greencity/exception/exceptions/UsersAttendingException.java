@@ -2,7 +2,8 @@ package greencity.exception.exceptions;
 
 public class UsersAttendingException extends RuntimeException {
 
-    /** constructor for UsersAttendingException
+    /**
+     * constructor for UsersAttendingException
      *
      * @param message exception message
      */

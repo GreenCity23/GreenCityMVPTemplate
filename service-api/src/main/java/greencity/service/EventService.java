@@ -107,23 +107,23 @@ public interface EventService {
     /**
      * Method for adding attenders to event.
      *
-     * @param eventId ID of the event.
+     * @param eventId    ID of the event.
      * @param attenderId {@link Long} attender id.
      */
     void addAttenderToEvent(Long eventId, Long attenderId);
 
     /**
-     *  Method for getting all attenders of the event.
+     * Method for getting all attenders of the event.
      *
-     *  @param eventId ID of the event.
+     * @param eventId ID of the event.
      */
     List<EventAttenderDto> getAllSubscribers(Long eventId);
 
     /**
-     *  Method for remove attenders from the event.
+     * Method for remove attenders from the event.
      *
-     *  @param eventId ID of the event.
-     *  @param attenderId {@link Long} attender id.
+     * @param eventId    ID of the event.
+     * @param attenderId {@link Long} attender id.
      */
     void removeAttenderFromEvent(Long eventId, Long attenderId);
 
