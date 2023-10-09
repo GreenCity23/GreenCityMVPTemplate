@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
+
+
 /**
  * Class that used by {@link ModelMapper} to map {@link Event} into
  * {@link EventDto}.
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 public class EventDtoMapper extends AbstractConverter<Event, EventDto> {
+
     /**
      * Method for converting {@link Event} into {@link EventDto}.
      *

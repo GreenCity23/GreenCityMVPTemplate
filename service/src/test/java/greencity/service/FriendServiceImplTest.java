@@ -169,6 +169,4 @@ public class FriendServiceImplTest {
         verify(userRepo, times(1)).existsById(userId);
         verify(userRepo, times(1)).existsById(friendId);
     }
-
-    // Add more test cases for other methods as needed
 }
