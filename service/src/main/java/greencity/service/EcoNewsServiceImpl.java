@@ -15,6 +15,7 @@ import greencity.dto.user.EcoNewsAuthorDto;
 import greencity.dto.user.PlaceAuthorDto;
 import greencity.dto.user.UserVO;
 import greencity.entity.*;
+import greencity.entity.EcoNews_;
 import greencity.entity.localization.TagTranslation;
 import greencity.enums.Role;
 import greencity.enums.TagType;
@@ -132,6 +133,7 @@ public class EcoNewsServiceImpl implements EcoNewsService {
             .source(ecoNewsDto.getSource())
             .build();
         log.warn("ACCESS TOKEN: " + accessToken);
+        log.warn("CREATION DATE: " + ecoNewsDto.getCreationDate());
         restClient.addEcoNews(dto);
     }
 

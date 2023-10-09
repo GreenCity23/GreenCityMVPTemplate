@@ -81,7 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests()
-                .antMatchers("/email/send-confirmation","/newsSubscriber/confirm", "/subscribers").permitAll()
+                .antMatchers("/email/send-confirmation","/newsSubscriber/confirm", "/newsSubscriber", "/econews").permitAll()
                 .and()
                 .addFilterBefore(
                         new AccessTokenAuthenticationFilter(jwtTool, authenticationManager(), userService),

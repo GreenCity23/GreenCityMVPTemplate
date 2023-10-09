@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/newsSubscriber")
@@ -37,6 +39,7 @@ public class NewsSubscriberController {
             List<NewsSubscriberResponseDto> subscribers = newsSubscriberService.getAllSubscribers();
             return ResponseEntity.ok(subscribers);
         } catch (Exception e) {
+            log.warn("EXCEPTION NY: " + e);
             return ResponseEntity.status(401).build();
         }
     }
