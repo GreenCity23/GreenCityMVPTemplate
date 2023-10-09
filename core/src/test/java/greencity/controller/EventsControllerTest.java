@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -30,9 +29,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.security.Principal;
 
 import static greencity.ModelUtils.getPrincipal;
-import static greencity.ModelUtils.getUserVO;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -71,28 +70,28 @@ class EventsControllerTest {
         when(userVO.getId()).thenReturn(3L);
 
         String json = "{\"title\":\"test events\",\n" +
-                      "\"description\":\"test test test test test test test test test\",\n" +
-                      "\"open\":\"true\",\n" +
-                      "\"datesLocations\":[\n" +
-                      "\t{\n" +
-                      "\t\"startDate\":\"2023-10-27T15:00:00Z\",\n" +
-                      "\t\"finishDate\":\"2023-10-27T17:00:00Z\",\n" +
-                      "\t\"coordinates\":{\n" +
-                      "\t\t\"latitude\":1,\n" +
-                      "\t\t\"longitude\":1\n" +
-                      "\t    }\n" +
-                      "\t},\n" +
-                      "{\n" +
-                      "\t\"startDate\":\"2023-10-27T15:00:00Z\",\n" +
-                      "\t\"finishDate\":\"2023-10-27T17:00:00Z\",\n" +
-                      "\t\"coordinates\":{\n" +
-                      "\t\t\"latitude\":1,\n" +
-                      "\t\t\"longitude\":1\n" +
-                      "\t\t}\n" +
-                      "\t}\n" +
-                      "\t],\n" +
-                      "\t\"tags\":[\"Social\"]\n" +
-                      "}\t";
+                "\"description\":\"test test test test test test test test test\",\n" +
+                "\"open\":\"true\",\n" +
+                "\"datesLocations\":[\n" +
+                "\t{\n" +
+                "\t\"startDate\":\"2023-10-27T15:00:00Z\",\n" +
+                "\t\"finishDate\":\"2023-10-27T17:00:00Z\",\n" +
+                "\t\"coordinates\":{\n" +
+                "\t\t\"latitude\":1,\n" +
+                "\t\t\"longitude\":1\n" +
+                "\t    }\n" +
+                "\t},\n" +
+                "{\n" +
+                "\t\"startDate\":\"2023-10-27T15:00:00Z\",\n" +
+                "\t\"finishDate\":\"2023-10-27T17:00:00Z\",\n" +
+                "\t\"coordinates\":{\n" +
+                "\t\t\"latitude\":1,\n" +
+                "\t\t\"longitude\":1\n" +
+                "\t\t}\n" +
+                "\t}\n" +
+                "\t],\n" +
+                "\t\"tags\":[\"Social\"]\n" +
+                "}\t";
         MockMultipartFile image1 =
                 new MockMultipartFile("images", "image1.jpg", "image/jpeg",
                         "image data".getBytes());
@@ -121,13 +120,29 @@ class EventsControllerTest {
     @Test
     void createEventBadRequestTest() throws Exception {
         mockMvc.perform(multipart(eventsLink + "/create")
-                .content("{}")
-                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+                        .content("{}")
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void delete() {
+    }
+
+    @Test
+    public void testRateEvent() throws Exception {
+        Long eventId = 1L;
+        Integer grade = 5;
+        String principalName = "testUser";
+
+        doNothing().when(eventService).rateEvent(eventId, principalName, grade);
+
+        this.mockMvc.perform(post(eventsLink+"/rateEvent/{eventId}/{grade}", eventId, grade)
+                        .principal(() -> principalName)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(eventService, times(1)).rateEvent(eventId, principalName, grade);
     }
 
     @Test

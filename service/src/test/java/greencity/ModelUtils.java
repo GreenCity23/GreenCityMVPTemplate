@@ -36,6 +36,7 @@ import java.nio.file.Paths;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -813,5 +814,28 @@ public class ModelUtils {
             .habitId("1L")
             .content("Test content")
             .build();
+    }
+
+    public static Event getEvents() {
+        Event event = new Event();
+        event.setDescription("Description");
+        event.setId(1L);
+        event.setOrganizer(getUser());
+        event.setTitle("Title");
+        event.setTags(List.of(getEventTag()));
+        event.setTitleImage(AppConstant.DEFAULT_HABIT_IMAGE);
+        return event;
+    }
+
+    public static Event getEventWithGrades() {
+        Event event = new Event();
+        event.setDescription("Description");
+        event.setId(1L);
+        event.setOrganizer(getUser());
+        event.setTitle("Title");
+        event.setTags(List.of(getEventTag()));
+        event.setTitleImage(AppConstant.DEFAULT_HABIT_IMAGE);
+        event.setEventGrades(List.of(EventGrade.builder().grade(2).event(event).build()));
+        return event;
     }
 }
