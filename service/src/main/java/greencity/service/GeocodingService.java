@@ -19,7 +19,7 @@ public class GeocodingService {
     private final String apiKey;
 
     /**
-     * Initialize service
+     * Initialize service.
      */
     public GeocodingService() {
         apiKey = System.getenv("GEOCODING_API_KEY");
