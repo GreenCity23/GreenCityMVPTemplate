@@ -135,6 +135,7 @@ public final class ErrorMessage {
     public static final String INVALID_DURATION = "The duration for such habit is lower than previously set";
 
     public static final String NOTIFICATION_NOT_FOUND_FOR_USER = "Notification for the user not found";
+    public static final String NOTIFICATION_ALREADY_EXIST = "Notification already exist for the %s with id: %d";
     public static final String NOTIFICATION_NOT_FOUND_BY_ID = "Notification doesn't exist by this id: ";
 
     private ErrorMessage() {

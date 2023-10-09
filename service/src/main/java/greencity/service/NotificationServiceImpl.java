@@ -11,6 +11,7 @@ import greencity.entity.NotifiedUser;
 import greencity.entity.User;
 import greencity.enums.NotificationSourceType;
 import greencity.enums.Role;
+import greencity.exception.exceptions.BadRequestException;
 import greencity.exception.exceptions.NotFoundException;
 import greencity.exception.exceptions.UserHasNoPermissionToAccessException;
 import greencity.mapping.NotificationDtoMapper;
@@ -88,6 +89,10 @@ public class NotificationServiceImpl implements NotificationService {
     public List<NotificationDto> createEcoNewsCommentNotification(Long id){
         EcoNewsComment comment = ecoNewsCommentRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.COMMENT_NOT_FOUND_EXCEPTION));
+
+        if (notificationSourcesRepo.countBySourceAndEcoNewsCommentId(id) != 0L){
+            throw new BadRequestException(String.format(ErrorMessage.NOTIFICATION_ALREADY_EXIST, "comment",id));
+        }
 
         List<Notification> notifications = new ArrayList<>();
 

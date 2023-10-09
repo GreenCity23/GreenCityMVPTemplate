@@ -182,9 +182,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/habit/tags/search",
                 "/habit/search",
                 "/habit/{habitId}/friends/profile-pictures",
-                "/notifications/{id}/user/read",
-                "/notifications/{id}/user/unread",
-                "/notifications/{id}/user/delete",
+                "/notifications/user",
                 "/notifications/user/unread")
             .hasAnyRole(USER, ADMIN, MODERATOR, UBS_EMPLOYEE)
             .antMatchers(HttpMethod.POST,
@@ -230,7 +228,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 USER_SHOPPING_LIST + "/{shoppingListItemId}/status/{status}",
                 USER_SHOPPING_LIST + "/{userShoppingListItemId}",
                 "/user/profilePicture",
-                "/user/deleteProfilePicture")
+                "/user/deleteProfilePicture",
+                "/notifications/{id}/user/read",
+                "/notifications/{id}/user/unread",
+                "/notifications/user/unread")
             .hasAnyRole(USER, ADMIN, MODERATOR, UBS_EMPLOYEE)
             .antMatchers(HttpMethod.DELETE,
                 ECONEWS_COMMENTS,
@@ -241,7 +242,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/favorite_place/{placeId}",
                 "/social-networks",
                 USER_CUSTOM_SHOPPING_LIST_ITEMS,
-                USER_SHOPPING_LIST + "/user-shopping-list-items")
+                USER_SHOPPING_LIST + "/user-shopping-list-items",
+                "/notifications/{id}/user/delete")
             .hasAnyRole(USER, ADMIN, MODERATOR, UBS_EMPLOYEE)
             .antMatchers(HttpMethod.GET,
                 "/newsSubscriber",
