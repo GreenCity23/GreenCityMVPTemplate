@@ -9,7 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class EventVO {
-
     Long id;
     String title;
     String description;

@@ -6,7 +6,6 @@ import greencity.dto.user.UserVO;
 import org.springframework.data.domain.Pageable;
 
 public interface EventCommentService {
-
     /**
      * Method to save {@link EventCommentVO}.
      *

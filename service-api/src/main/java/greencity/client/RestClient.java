@@ -374,6 +374,12 @@ public class RestClient {
             .getBody();
     }
 
+    /**
+     * send EventCommentForSendDto to GreenCityUser.
+     *
+     * @param message with information for sending email about commenting event.
+     * @author Vladyslav Siverskyi
+     */
     public void sendEmailAfterEmailWasCommented(EventCommentForSendDto message, String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
