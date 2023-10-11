@@ -39,7 +39,6 @@ public class NewsSubscriberController {
             List<NewsSubscriberResponseDto> subscribers = newsSubscriberService.getAllSubscribers();
             return ResponseEntity.ok(subscribers);
         } catch (Exception e) {
-            log.warn("EXCEPTION NY: " + e);
             return ResponseEntity.status(401).build();
         }
     }
@@ -109,5 +108,4 @@ public class NewsSubscriberController {
             return ResponseEntity.status(400).build();
         }
     }
-
 }
