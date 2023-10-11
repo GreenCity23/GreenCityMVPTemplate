@@ -26,6 +26,7 @@
     <include file="db/changelog/logs/ch-modify-column-Koval-3.xml"/>
     <include file="db/changelog/logs/ch-update-habit-dictionary-turko.xml"/>
     <include file="db/changelog/logs/ch-habit-dictionary-translation-turko.xml"/>
+    <include file="db/changelog/logs/ch-news-subscriber-Mkrtchian-1.xml"/>
     <include file="db/changelog/logs/ch-eco-news-localization-Kopylchak-1.xml"/>
     <include file="db/changelog/logs/ch-eco-news-Kovaliv-1.xml"/>
     <include file="db/changelog/logs/ch-eco-news-Kovaliv-2.xml"/>
@@ -60,7 +61,6 @@
     <include file="db/changelog/logs/ch-habits-new-fields-Kravchenko.xml"/>
     <include file="db/changelog/logs/ch-habit-goals-Khonko-1.xml"/>
     <include file="db/changelog/logs/ch-change-column-name-user-goals-Khonko.xml"/>
-    <include file="db/changelog/logs/ch-news-subscriber-Mkrtchian-1.xml"/>
     <include file="db/changelog/logs/ch-change-table-achievement-Mamchuk.xml"/>
     <include file="db/changelog/logs/ch-achievement_translations-Mamchuk.xml"/>
     <include file="db/changelog/logs/ch-change-habitAssign-Khonko.xml"/>

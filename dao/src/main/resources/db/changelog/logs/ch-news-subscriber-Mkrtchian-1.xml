@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-
-    <changeSet id="create-news_subscribers-table" author="yourName">
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="1696956160884-56" author="Arthur Mkrtchian">
         <createTable tableName="news_subscribers">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_news_subscribers"/>
             </column>
-            <column name="email" type="varchar(255)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-            <column name="confirmation_token" type="varchar(255)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-            <column name="unsubscribe_token" type="varchar(255)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-            <column name="is_confirmed" type="boolean" defaultValueBoolean="false">
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="confirmation_token" type="VARCHAR(255)"/>
+            <column name="unsubscribe_token" type="VARCHAR(255)"/>
+            <column name="is_confirmed" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_at" type="timestamp">
-                <constraints nullable="false"/>
-            </column>
+            <column name="created_at" type="DATETIME"/>
         </createTable>
     </changeSet>
-
+    <changeSet id="1696956160884-61" author="Arthur Mkrtchian">
+        <addUniqueConstraint columnNames="confirmation_token" constraintName="uc_news_subscribers_confirmation_token"
+                             tableName="news_subscribers"/>
+    </changeSet>
+    <changeSet id="1696956160884-62" author="Arthur Mkrtchian">
+        <addUniqueConstraint columnNames="email" constraintName="uc_news_subscribers_email"
+                             tableName="news_subscribers"/>
+    </changeSet>
+    <changeSet id="1696956160884-63" author="Arthur Mkrtchian">
+        <addUniqueConstraint columnNames="unsubscribe_token" constraintName="uc_news_subscribers_unsubscribe_token"
+                             tableName="news_subscribers"/>
+    </changeSet>
 </databaseChangeLog>
